@@ -37,6 +37,11 @@
         "selector": "function",
         "format": ["camelCase", "PascalCase"]
       }
-    ]
+    ],
+
+    // 型で分岐を網羅できてるときでもエラーになるのでoffにする。TypeScriptのチェックに任せる。
+    "consistent-return": "off",
+    // case句だけで型の全ての分岐を網羅しててもエラーになるのでoff。
+    "default-case": "off"
   }
 }
