@@ -1,0 +1,27 @@
+version: '3.8'
+
+name: jgdps
+
+services:
+  db:
+    image: postgres:14
+    ports:
+      - 5432:5432
+    volumes:
+      - db-store:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: jgdps
+      POSTGRES_USER_FILE:  /run/secrets/psql_user
+      POSTGRES_PASSWORD_FILE: /run/secrets/psql_pass
+    secrets:
+      - psql_user
+      - psql_pass
+
+volumes:
+  db-store:
+
+secrets:
+  psql_user:
+    file: psql_user.txt
+  psql_pass:
+    file: psql_pass.txt
