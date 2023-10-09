@@ -2,13 +2,13 @@ import { skillTypeFromNum } from "@/domain/track/skill_type";
 import { openTypeFromNum } from "@/domain/track/open_type";
 import { difficultyFromNum } from "@/domain/track/difficulty";
 import { PrismaTransaction } from "./prisma_client";
-import { TracksDto } from "./tracks_dto";
+import { TracksDto as TrackListDto } from "./track_list_dto";
 
 /** 曲一覧のDB参照機能 */
-export default class TracksQueryService {
+export default class TrackListQueryService {
   constructor(public readonly prismaTransaction: PrismaTransaction) {}
 
-  async allTracks(): Promise<TracksDto[]> {
+  async allTracks(): Promise<TrackListDto[]> {
     return (
       await this.prismaTransaction.track.findMany({
         include: { difficulties: { select: { difficulty: true, lv: true } } },

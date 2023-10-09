@@ -24,8 +24,13 @@ export type Track = Readonly<{
   openType: OpenType;
 
   /** 難易度毎の情報 */
-  difficulties: Readonly<Record<Difficulty, TrackByDifficulty>>;
+  difficulties: TrackDifficulties;
 }>;
+
+/** 曲の全難易度についての難易度別情報 */
+export type TrackDifficulties = {
+  readonly [K in Difficulty]?: TrackByDifficulty;
+};
 
 /** 曲の難易度別の情報 */
 export type TrackByDifficulty = Readonly<{
@@ -42,3 +47,8 @@ export type TrackByDifficulty = Readonly<{
    */
   lv: number;
 }>;
+
+/** 曲のレベルを小数点2桁表記の文字列に変換 */
+export function lvToString(lv: number): string {
+  return lv.toFixed(2);
+}

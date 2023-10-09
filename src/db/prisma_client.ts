@@ -7,5 +7,5 @@ export default prismaClient;
 /** PrismaClientとトランザクションのどちらも受け付けられる型 */
 export type PrismaTransaction = Omit<
   PrismaClient,
-  "$connect" | "$disconnect" | "$on" | "$transaction" | "$use"
+  "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
 >;

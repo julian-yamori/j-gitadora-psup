@@ -28,25 +28,18 @@ export type TrackUserData = Readonly<{
 
 /** 曲の難易度別のユーザー編集データ */
 export type TrackUserDataByDifficulty = Readonly<{
-  /** 曲のID */
+  /** 曲のID (key) */
   trackId: string;
 
-  /** 難易度 */
+  /** 難易度 (key) */
   difficulty: Difficulty;
 
   /**
-   * 達成率
+   * 曲のプレイ時の得点情報
    *
-   * 0〜1のfloat
+   * 未プレイならundefined
    */
-  achievement: number;
-
-  /**
-   * 獲得スキルポイント
-   *
-   * 達成率とLvが変わる度に再計算する
-   */
-  skillPoint: number;
+  score: TrackScore | undefined;
 
   /** ウィッシュリストの練習枠 */
   wishPractice: boolean;
@@ -66,3 +59,21 @@ export type TrackUserDataByDifficulty = Readonly<{
   /** 譜面参考動画のURL */
   movieURL: string;
 }>;
+
+export type TrackScore = Readonly<{
+  /** 達成率 */
+  achievement: TrackAchievement;
+
+  /**
+   * 獲得スキルポイント
+   *
+   * 達成率とLvが変わる度に再計算する
+   */
+  skillPoint: number;
+}>;
+
+/**
+ * 曲の達成率
+ * 0〜1のfloatか、失敗した場合はfailed
+ */
+export type TrackAchievement = number | "failed";

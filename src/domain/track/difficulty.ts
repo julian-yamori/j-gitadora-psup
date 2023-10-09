@@ -14,6 +14,13 @@ export type Difficulty =
   | typeof EXTREME
   | typeof MASTER;
 
+export const ALL_DIFFICULTIES: ReadonlyArray<Difficulty> = [
+  BASIC,
+  ADVANCED,
+  EXTREME,
+  MASTER,
+];
+
 /** OpenTypeをnumber型から変換 */
 export function difficultyFromNum(value: number): Difficulty {
   switch (value) {
@@ -23,7 +30,7 @@ export function difficultyFromNum(value: number): Difficulty {
     case MASTER:
       return value;
     default:
-      throw Error(`invalid SkillType : ${value}`);
+      throw Error(`invalid Difficulty : ${value}`);
   }
 }
 

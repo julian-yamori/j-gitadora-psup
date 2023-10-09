@@ -1,8 +1,9 @@
 import prismaClient from "@/db/prisma_client";
-import TracksQueryService from "@/db/tracks_query_service";
+import TrackListQueryService from "@/db/track_list_query_service";
 import { difficultyToStr } from "@/domain/track/difficulty";
 import { openTypeToStr } from "@/domain/track/open_type";
 import { skillTypeToStr } from "@/domain/track/skill_type";
+import { lvToString } from "@/domain/track/track";
 
 export const dynamic = "force-dynamic";
 
@@ -12,7 +13,7 @@ export const metadata = {
 
 /** 曲リストページ */
 export default async function Home() {
-  const tracksQueryService = new TracksQueryService(prismaClient);
+  const tracksQueryService = new TrackListQueryService(prismaClient);
   const tracks = await tracksQueryService.allTracks();
 
   return tracks.map((track) => (
@@ -22,7 +23,7 @@ export default async function Home() {
         <li>{skillTypeToStr(track.skillType)}</li>
         <li>
           {track.difficulties.map(
-            (d) => `${difficultyToStr(d.difficulty)}: ${d.lv.toFixed(2)}, `,
+            (d) => `${difficultyToStr(d.difficulty)}: ${lvToString(d.lv)}, `,
           )}
         </li>
         {track.long ? <li>long</li> : undefined}

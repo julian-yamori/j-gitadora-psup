@@ -20,6 +20,8 @@ model Track {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  // todo 論理削除
 }
 
 model TrackByDifficulty {
@@ -30,4 +32,59 @@ model TrackByDifficulty {
   track Track @relation(fields: [trackId], references: [id])
 
   @@unique([trackId, difficulty])
+}
+
+model WikiLoadingIssue {
+  // issue id
+  // type="error"以外は、trackIdに合わせる
+  // type="error"ならランダム生成
+  id String @id
+
+  type String
+
+  // type="delete" 以外用
+  source String?
+  rowNo Int?
+
+  // type="new", "diff" 用
+  track WikiLoadingNewTrack?
+
+  // type="diff" 用
+  diffirences WikiLoadingDiffirence[]
+
+  // type="error" 用
+  errorMessage String?
+}
+
+// wikiから読み込みで追加/上書きしようとしている曲データ
+model WikiLoadingNewTrack {
+  id String @id
+  title String
+  skillType Int
+  long Boolean
+  openType Int
+  difficulties WikiLoadingNewTrackByDifficulty[]
+
+  issue WikiLoadingIssue @relation(fields: [id], references: [id])
+}
+model WikiLoadingNewTrackByDifficulty {
+  trackId String
+  difficulty Int
+  lv Float
+
+  track WikiLoadingNewTrack @relation(fields: [trackId], references: [id])
+
+  @@unique([trackId, difficulty])
+}
+
+// WikiLoadingIssue の type="diff" の場合の、値の相違点1つずつ
+model WikiLoadingDiffirence {
+  id String @id
+  issueId String
+  propertyName String
+  difficulty Int?
+  oldValue String?
+  newValue String?
+
+  issue WikiLoadingIssue @relation(fields: [issueId], references: [id])
 }
