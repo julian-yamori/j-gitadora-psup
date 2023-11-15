@@ -1,3 +1,4 @@
+import { Container, Typography } from "@mui/material";
 import ClientWrapper from "./client_wrapper";
 
 export const metadata = {
@@ -6,5 +7,12 @@ export const metadata = {
 
 /** wikiの曲情報読み込みページ */
 export default function Home() {
-  return <ClientWrapper />;
+  return (
+    <main>
+      <Container>
+        <Typography variant="h4">wikiの曲情報読み込み</Typography>
+        <ClientWrapper />
+      </Container>
+    </main>
+  );
 }

@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useRef } from "react";
+import { Box, Button, Stack, TextField } from "@mui/material";
 import getRefNonNull from "../_util/get_ref_non_null";
 import assertResponseOk from "../_util/assert_response_ok";
 
@@ -28,11 +29,21 @@ export default function ClientWrapper() {
 
   return (
     <form ref={form} onSubmit={(e) => e.preventDefault()}>
-      <textarea id="test" name="test" />
-      <br />
-      <button type="button" onClick={handleLoad}>
-        読込
-      </button>
+      <Stack spacing={1}>
+        <TextField
+          id="test"
+          name="test"
+          label="新曲リスト"
+          multiline
+          rows="10"
+          fullWidth
+        />
+        <Box>
+          <Button variant="contained" onClick={handleLoad}>
+            読込
+          </Button>
+        </Box>
+      </Stack>
     </form>
   );
 }
