@@ -8,6 +8,8 @@ export const PREMIUM_ENCORE = 2;
 export const EVENT = 3;
 /** 曲の開放方法の種別 : GITADORA オールスター GIG！ */
 export const LIVE_HOUSE = 4;
+/** 曲の開放方法の種別 : DX解禁チャレンジ */
+export const DX = 5;
 
 /** 曲の開放方法の種別 */
 export type OpenType =
@@ -15,7 +17,8 @@ export type OpenType =
   | typeof ENCORE
   | typeof PREMIUM_ENCORE
   | typeof EVENT
-  | typeof LIVE_HOUSE;
+  | typeof LIVE_HOUSE
+  | typeof DX;
 
 /** OpenTypeをnumber型から変換 */
 export function openTypeFromNum(value: number): OpenType {
@@ -25,9 +28,10 @@ export function openTypeFromNum(value: number): OpenType {
     case PREMIUM_ENCORE:
     case EVENT:
     case LIVE_HOUSE:
+    case DX:
       return value;
     default:
-      throw Error(`invalid SkillType : ${value}`);
+      throw Error(`invalid OpenType : ${value}`);
   }
 }
 
@@ -44,5 +48,7 @@ export function openTypeToStr(value: OpenType): string {
       return "イベント";
     case LIVE_HOUSE:
       return "ライブハウス";
+    case DX:
+      return "DX解禁チャレンジ";
   }
 }

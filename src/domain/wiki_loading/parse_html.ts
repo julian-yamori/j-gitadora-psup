@@ -2,20 +2,15 @@ import { parse, HTMLElement } from "node-html-parser";
 import { TrackByDifficulty } from "@prisma/client";
 import { Track } from "@/domain/track/track";
 import { HOT } from "@/domain/track/skill_type";
-import {
-  OpenType,
-  INITIAL,
-  EVENT,
-  ENCORE,
-  PREMIUM_ENCORE,
-} from "@/domain/track/open_type";
 import { ALL_DIFFICULTIES, Difficulty } from "@/domain/track/difficulty";
 import { WikiLoadingSource } from "./wiki_loading_source";
 import { WikiLoadingIssueError } from "./wiki_loading_issue";
+import convertBunrui from "./convert_bunrui";
+import splitRowspan from "./split_rowspan";
 
 // 想定している列数
-const NEW_COL_COUNT = 17;
-const NEW_COL_COUNT_STR = NEW_COL_COUNT.toString();
+const COL_COUNT = 17;
+const COL_COUNT_STR = COL_COUNT.toString();
 
 export type ParsedTrack = Omit<Track, "id" | "difficulties"> & {
   difficulties: Readonly<ParsedDifficulties>;
@@ -30,124 +25,125 @@ type ParsedDifficulties = {
   [K in Difficulty]?: ParsedDifficulty;
 };
 
-/** 「新曲リスト」ページのHTMLを解析 */
-// eslint-disable-next-line import/prefer-default-export -- todo 他のページの解析関数もすぐ作る
-export function parseNewTrackHTML(
+/** 曲リストのHTMLを解析 */
+export function parseHTML(
+  source: WikiLoadingSource,
   html: string,
 ): Array<ParsedTrack | WikiLoadingIssueError> {
   const root = parse(html);
-  const rows = root.querySelectorAll("tbody tr");
+  const tableCells = splitRowspan(root);
 
-  if (rows.length === 0) return [errorNoRows("new")];
+  if (tableCells.length === 0) return [errorNoRows(source)];
 
-  return [...rows.entries()]
-    .map(([i, r]) => parseNewRow(i, r))
-    .filter((i) => i !== undefined) as Array<
-    ParsedTrack | WikiLoadingIssueError
-  >;
+  const results: Array<ParsedTrack | WikiLoadingIssueError> = [];
+
+  for (const [i, r] of tableCells.entries()) {
+    const result = parseRow(source, i, r);
+    switch (result.type) {
+      case "track":
+        results.push(result.track);
+        break;
+
+      case "error":
+        results.push(result.error);
+        break;
+
+      case "ignore":
+        break;
+    }
+  }
+
+  return results;
 }
 
+/** parseRow()の結果 */
+type ParseRowResult =
+  | ParseRowResultTrack
+  | ParseRowResultError
+  | ParseRowResultIgnore;
+
+/** parseRow()の結果 : 行の曲データ */
+type ParseRowResultTrack = {
+  type: "track";
+
+  /** 曲データ */
+  track: ParsedTrack;
+};
+
+/** parseRow()の結果 : エラー */
+type ParseRowResultError = {
+  type: "error";
+  error: WikiLoadingIssueError;
+};
+
+/** parseRow()の結果 : 無視していい行 */
+type ParseRowResultIgnore = {
+  type: "ignore";
+};
+
 /**
- * 「新曲リスト」ページのテーブル行を解析
+ * テーブル行を解析
+ * @param source HTMLの取得元ページの識別子
  * @param rowNo テーブル行の行番号
- * @param tr テーブル行の<tr>のHTMLElement
- * @returns
- * 正常に曲データを読み込めた場合はTrack。
- * 読み込めなかった場合はWikiLoadingIssueError。
- * 無視していい行であればundefined。
+ * @param cells テーブル行の<td>のHTMLElementの配列
+ * @returns 行の解析結果
  */
-function parseNewRow(
+function parseRow(
+  source: WikiLoadingSource,
   rowNo: number,
-  tr: HTMLElement,
-): ParsedTrack | WikiLoadingIssueError | undefined {
-  const SOURCE = "new";
-
-  const cells = tr.getElementsByTagName("td");
-
+  cells: ReadonlyArray<HTMLElement>,
+): ParseRowResult {
   // 見出しの連結行は無視
   if (
     cells.length === 1 &&
-    cells[0].getAttribute("colspan") === NEW_COL_COUNT_STR
+    cells[0].getAttribute("colspan") === COL_COUNT_STR
   ) {
-    return undefined;
+    return { type: "ignore" };
   }
 
-  if (cells.length !== NEW_COL_COUNT) {
-    return errorInvalidColumnCount(SOURCE, rowNo);
+  if (cells.length !== COL_COUNT) {
+    return { type: "error", error: errorInvalidColumnCount(source, rowNo) };
   }
 
-  const bunruiResult = convertBunruiNew(cells[0]);
+  const bunruiResult = convertBunrui(cells[0]);
   if (typeof bunruiResult === "string") {
-    return { type: "error", source: SOURCE, rowNo, message: bunruiResult };
+    return {
+      type: "error",
+      error: { type: "error", source, rowNo, message: bunruiResult },
+    };
   }
 
   const title = getTdText(cells[1]);
   if (title === undefined) {
     return {
       type: "error",
-      source: SOURCE,
-      rowNo,
-      message: ERROR_MSG_EMPTY_TITLE,
+      error: {
+        type: "error",
+        source,
+        rowNo,
+        message: ERROR_MSG_EMPTY_TITLE,
+      },
     };
   }
 
   const difficulties = parseDifficultiesFromCell(cells.slice(5, 9));
   if (typeof difficulties === "string") {
-    return { type: "error", source: SOURCE, rowNo, message: difficulties };
+    return {
+      type: "error",
+      error: { type: "error", source, rowNo, message: difficulties },
+    };
   }
 
   return {
-    ...bunruiResult,
-    title,
-    skillType: HOT,
-    difficulties,
-    source: SOURCE,
-    rowNo,
-  };
-}
-
-/** 「新曲リスト」ページの「分類」列を変換 */
-// todo エラーの場合はとりあえずstringでメッセージを返すようにしてるけど、Result型の方が合いそう
-function convertBunruiNew(
-  bunruiCell: HTMLElement,
-): { openType: OpenType; long: boolean } | string {
-  const openTypes: OpenType[] = [];
-  const longs: boolean[] = [];
-
-  for (const text of parseBunruiCell(bunruiCell)) {
-    const enMatch = text.match(/^EN(\d+)$/);
-    if (enMatch) {
-      openTypes.push(ENCORE);
-    } else if (text.match(/^PE\d+$/)) {
-      openTypes.push(PREMIUM_ENCORE);
-    } else {
-      switch (text) {
-        case "版":
-          break;
-        case "SEC":
-        case "10":
-        case "20":
-          openTypes.push(EVENT);
-          break;
-        case "L":
-          longs.push(true);
-          break;
-        default:
-          return errorMsgUnknownBunrui(text);
-      }
-    }
-  }
-
-  if (openTypes.length > 1) {
-    return `OpenTypeが複数指定されました : ${openTypes.join(",")}`;
-  }
-  if (longs.length > 1) {
-    return `longが複数指定されました : ${longs.join(",")}`;
-  }
-
-  return {
-    openType: openTypes.at(0) ?? INITIAL,
-    long: longs.at(0) ?? false,
+    type: "track",
+    track: {
+      ...bunruiResult,
+      title,
+      skillType: HOT,
+      difficulties,
+      source,
+      rowNo,
+    },
   };
 }
 
@@ -173,30 +169,6 @@ function parseDifficultiesFromCell(
   }
 
   return results;
-}
-
-/**
- * 分類セルをまず構文解析
- * @param cell 分類の<td>
- * @returns タグで区切られたテキストの配列
- */
-function parseBunruiCell(cell: HTMLElement): string[] {
-  const result: string[] = [];
-
-  // <br>区切りで複数あることがあるので分解
-  for (const child of cell.childNodes) {
-    // Node.TEXT_NODE
-    if (child.nodeType === 3) {
-      if (child.text !== null) {
-        const trimed = child.text.trim();
-        if (trimed.length > 0) {
-          result.push(trimed);
-        }
-      }
-    }
-  }
-
-  return result;
 }
 
 /**
@@ -231,11 +203,6 @@ function errorInvalidColumnCount(
     rowNo,
     message: "列の数が不正です",
   };
-}
-
-/** 分類列が不明な場合のエラーメッセージを作成 */
-function errorMsgUnknownBunrui(bunruiText: string) {
-  return `不明な分類です : ${bunruiText}`;
 }
 
 const ERROR_MSG_EMPTY_TITLE = "曲名が空です";

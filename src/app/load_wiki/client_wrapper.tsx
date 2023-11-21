@@ -31,9 +31,25 @@ export default function ClientWrapper() {
     <form ref={form} onSubmit={(e) => e.preventDefault()}>
       <Stack spacing={1}>
         <TextField
-          id="test"
-          name="test"
+          id="new"
+          name="new"
           label="新曲リスト"
+          multiline
+          rows="10"
+          fullWidth
+        />
+        <TextField
+          id="old_gfdm"
+          name="old_gfdm"
+          label="旧曲リスト (初代～XG3)"
+          multiline
+          rows="10"
+          fullWidth
+        />
+        <TextField
+          id="old_gd"
+          name="old_gd"
+          label="旧曲リスト (GITADORA)"
           multiline
           rows="10"
           fullWidth

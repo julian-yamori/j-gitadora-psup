@@ -116,7 +116,7 @@ function sourceToViewText(source: WikiLoadingSource): string {
     case "new":
       return "新曲リスト";
     case "old_GFDM":
-      return "旧曲リスト 初代〜SG3";
+      return "旧曲リスト 初代〜XG3";
     case "old_GD":
       return "旧曲リスト GITADORA";
   }

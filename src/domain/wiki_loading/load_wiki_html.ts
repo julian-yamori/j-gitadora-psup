@@ -6,7 +6,7 @@ import {
   WikiLoadingIssueDelete,
   WikiLoadingIssueError,
 } from "./wiki_loading_issue";
-import { ParsedTrack, parseNewTrackHTML } from "./parse_html";
+import { ParsedTrack, parseHTML } from "./parse_html";
 import { Track, lvToString } from "../track/track";
 import { skillTypeToStr } from "../track/skill_type";
 import { openTypeToStr } from "../track/open_type";
@@ -15,13 +15,19 @@ import { ALL_DIFFICULTIES } from "../track/difficulty";
 /**
  * wikiのHTMLから曲情報を読み込み
  * @param newTracksHTML 「新曲リスト」ページの曲テーブルのHTML
+ * @param oldGFDMTracksHTML 「旧曲リスト(初代〜XG3)」ページの曲テーブルのHTML
+ * @param oldGDTracksHTML 「旧曲リスト(GITADORA)」ページの曲テーブルのHTML
  */
 export default async function loadWikiHTML({
   newTracksHTML,
+  oldGFDMTracksHTML,
+  oldGDTracksHTML,
   dbQueryService,
   trackRepository,
 }: {
   newTracksHTML: string;
+  oldGFDMTracksHTML: string;
+  oldGDTracksHTML: string;
   dbQueryService: LoadWikiHtmlQueryService;
   trackRepository: TrackRepository;
 }): Promise<WikiLoadingIssue[]> {
@@ -29,7 +35,11 @@ export default async function loadWikiHTML({
   const existingTrackMap = await dbQueryService.existingTracks();
 
   // HTML解析
-  const parsedRows = [...parseNewTrackHTML(newTracksHTML)];
+  const parsedRows = [
+    ...parseHTML("new", newTracksHTML),
+    ...parseHTML("old_GFDM", oldGFDMTracksHTML),
+    ...parseHTML("old_GD", oldGDTracksHTML),
+  ];
 
   const issues: WikiLoadingIssue[] = [];
 
