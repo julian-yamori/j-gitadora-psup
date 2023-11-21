@@ -34,6 +34,7 @@ export default class TrackRepository {
             lv: d.lv,
           })),
         },
+        deleted: false,
       },
       include: { difficulties: true },
     });
@@ -66,12 +67,10 @@ export default class TrackRepository {
   }
 
   async delete(id: string) {
-    // todo 論理削除
-    await this.prismaTransaction.trackByDifficulty.deleteMany({
-      where: { trackId: id },
-    });
-    await this.prismaTransaction.track.delete({
+    // 論理削除
+    await this.prismaTransaction.track.updateMany({
       where: { id },
+      data: { deleted: true },
     });
   }
 }
@@ -82,6 +81,8 @@ function trackPrisma2Domain(
     difficulties: Omit<PrismaClient.TrackByDifficulty, "trackId">[];
   },
 ): Track {
+  if (dto.deleted) throw Error(`track ${dto.id} has been deleted`);
+
   const difficulties = Object.fromEntries(
     dto.difficulties.map((v) => [difficultyFromNum(v.difficulty), v]),
   );

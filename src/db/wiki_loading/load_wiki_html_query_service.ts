@@ -9,9 +9,9 @@ export default class LoadWikiHtmlQueryService {
    * @returns キーが曲名、値が曲IDのマップ
    */
   async existingTracks(): Promise<Map<string, string>> {
-    // todo 論理削除
     const found = await this.prismaTransaction.track.findMany({
       select: { id: true, title: true },
+      where: { deleted: false },
     });
     return new Map(found.map(({ title, id }) => [title, id]));
   }

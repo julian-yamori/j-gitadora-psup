@@ -11,6 +11,7 @@ export default class TrackListQueryService {
   async allTracks(): Promise<TrackListDto[]> {
     return (
       await this.prismaTransaction.track.findMany({
+        where: { deleted: false },
         include: { difficulties: { select: { difficulty: true, lv: true } } },
       })
     ).map((dbModel) => ({

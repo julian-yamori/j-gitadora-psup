@@ -18,10 +18,11 @@ model Track {
   openType Int
   difficulties TrackByDifficulty[]
 
+  // 論理削除
+  deleted Boolean
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  // todo 論理削除
 }
 
 model TrackByDifficulty {

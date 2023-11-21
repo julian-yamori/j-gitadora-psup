@@ -5,6 +5,7 @@ CREATE TABLE "Track" (
     "skillType" INTEGER NOT NULL,
     "long" BOOLEAN NOT NULL,
     "openType" INTEGER NOT NULL,
+    "deleted" BOOLEAN NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
