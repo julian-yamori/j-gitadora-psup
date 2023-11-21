@@ -5,7 +5,7 @@ import { SkillType } from "@/domain/track/skill_type";
 /**
  * 曲一覧画面に表示するためのDTO
  */
-export type TracksDto = Readonly<{
+export type TrackListDto = Readonly<{
   /** 曲のID */
   id: string;
 
@@ -22,13 +22,13 @@ export type TracksDto = Readonly<{
   openType: OpenType;
 
   /** 難易度ごとのLv */
-  difficulties: ReadonlyArray<TracksDtoLvs>;
+  difficulties: ReadonlyArray<TrackListDtoLvs>;
 }>;
 
 /**
  * 曲一覧画面に表示する曲の、難易度1つごとのDTO
  */
-export type TracksDtoLvs = Readonly<{
+export type TrackListDtoLvs = Readonly<{
   difficulty: Difficulty;
   lv: number;
 }>;
