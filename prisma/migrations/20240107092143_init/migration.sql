@@ -61,6 +61,9 @@ CREATE TABLE "WikiLoadingDiffirence" (
 );
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Track_title_key" ON "Track"("title");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "TrackByDifficulty_trackId_difficulty_key" ON "TrackByDifficulty"("trackId", "difficulty");
 
 -- CreateIndex

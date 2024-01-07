@@ -1,6 +1,4 @@
 import { parse, HTMLElement } from "node-html-parser";
-import { TrackByDifficulty } from "@prisma/client";
-import { Track } from "@/domain/track/track";
 import { HOT } from "@/domain/track/skill_type";
 import { ALL_DIFFICULTIES, Difficulty } from "@/domain/track/difficulty";
 import { Err, Ok, Result } from "@/utils/result";
@@ -8,26 +6,18 @@ import { WikiLoadingSource } from "./wiki_loading_source";
 import { WikiLoadingIssueError } from "./wiki_loading_issue";
 import convertBunrui from "./convert_bunrui";
 import splitRowspan from "./split_rowspan";
+import {
+  ParsedDifficulties,
+  ParsedDifficulty,
+  ParsedTrack,
+} from "./parsed_track";
 
 // 想定している列数
 const COL_COUNT = 17;
 const COL_COUNT_STR = COL_COUNT.toString();
 
-export type ParsedTrack = Omit<Track, "id" | "difficulties"> & {
-  difficulties: Readonly<ParsedDifficulties>;
-
-  /** HTMLの取得元 */
-  source: WikiLoadingSource;
-  /** テーブル行の番号 */
-  rowNo: number;
-};
-export type ParsedDifficulty = Omit<TrackByDifficulty, "trackId">;
-type ParsedDifficulties = {
-  [K in Difficulty]?: ParsedDifficulty;
-};
-
 /** 曲リストのHTMLを解析 */
-export function parseHTML(
+export default function parseHTML(
   source: WikiLoadingSource,
   html: string,
 ): Array<ParsedTrack | WikiLoadingIssueError> {
@@ -156,7 +146,10 @@ function parseDifficultiesFromCell(
     return new Err("難易度の値が不正です");
   }
 
-  const results: ParsedDifficulties = {};
+  // mutable ParsedDifficulties
+  const results: {
+    [K in Difficulty]?: ParsedDifficulty;
+  } = {};
 
   for (const [i, difficulty] of ALL_DIFFICULTIES.entries()) {
     const cell = cells.at(i);

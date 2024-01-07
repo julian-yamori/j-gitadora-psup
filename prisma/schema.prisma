@@ -12,7 +12,7 @@ datasource db {
 
 model Track {
   id String @id
-  title String
+  title String @unique
   skillType Int
   long Boolean
   openType Int

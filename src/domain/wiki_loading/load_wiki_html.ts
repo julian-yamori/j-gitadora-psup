@@ -6,7 +6,8 @@ import {
   WikiLoadingIssueDelete,
   WikiLoadingIssueError,
 } from "./wiki_loading_issue";
-import { ParsedTrack, parseHTML } from "./parse_html";
+import { ParsedTrack, isEqualsParsedTrack } from "./parsed_track";
+import parseHTML from "./parse_html";
 import { Track, lvToString } from "../track/track";
 import { skillTypeToStr } from "../track/skill_type";
 import { openTypeToStr } from "../track/open_type";
@@ -34,12 +35,12 @@ export default async function loadWikiHTML({
   // 既存の曲のMapを取得
   const existingTrackMap = await dbQueryService.existingTracks();
 
-  // HTML解析
-  const parsedRows = [
+  // HTML解析、重複曲マージ
+  const parsedRows = mergeRowsDuplicate([
     ...parseHTML("new", newTracksHTML),
     ...parseHTML("old_GFDM", oldGFDMTracksHTML),
     ...parseHTML("old_GD", oldGDTracksHTML),
-  ];
+  ]);
 
   const issues: WikiLoadingIssue[] = [];
 
@@ -64,6 +65,52 @@ export default async function loadWikiHTML({
   );
 
   return issues;
+}
+
+/**
+ * HTMLテーブル行の重複データを統合
+ * wikiの「新曲リスト」と「旧曲リスト」に同一データがあったりするので、自動でスキップできるようにする
+ * @param rows HTMLから取得した全ての曲データ
+ * @returns 重複を除去した曲データ
+ */
+function mergeRowsDuplicate(
+  rows: ReadonlyArray<ParsedTrack | WikiLoadingIssueError>,
+): Array<ParsedTrack | WikiLoadingIssueError> {
+  // 曲名 -> 行 のマップ
+  const titleMap = new Map<string, ParsedTrack>();
+
+  let mergedRows: Array<ParsedTrack | WikiLoadingIssueError> = [];
+
+  for (const row of rows) {
+    // typeがあればWikiLoadingIssueError型と判断し、そのまま返す
+    if ("type" in row) {
+      mergedRows.push(row);
+      continue;
+    }
+
+    const existing = titleMap.get(row.title);
+    // 重複データが無ければそのまま返す
+    if (existing === undefined) {
+      mergedRows.push(row);
+      titleMap.set(row.title, row);
+    }
+    // 重複データの内容が一致していればスルー、一致しなければエラー
+    else if (!isEqualsParsedTrack(row, existing)) {
+      // この曲は新規曲として追加しないように除去
+      mergedRows = mergedRows.filter(
+        (r) => "type" in r || r.title !== row.title,
+      );
+
+      mergedRows.push({
+        type: "error",
+        source: row.source,
+        rowNo: row.rowNo,
+        message: `重複データの内容が異なります : ${existing.source} (${existing.rowNo})`,
+      });
+    }
+  }
+
+  return mergedRows;
 }
 
 /**

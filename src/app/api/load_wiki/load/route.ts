@@ -13,16 +13,19 @@ export async function POST(request: Request) {
   const oldGFDMTracksHTML = getFormString(form, "old_gfdm");
   const oldGDTracksHTML = getFormString(form, "old_gd");
 
-  await prismaClient.$transaction(async (tx) => {
-    const issues = await loadWikiHTML({
-      newTracksHTML,
-      oldGFDMTracksHTML,
-      oldGDTracksHTML,
-      dbQueryService: new LoadWikiHtmlQueryService(tx),
-      trackRepository: new TrackRepository(tx),
-    });
-    await new WikiLoadingIssueRepository(tx).save(issues);
-  });
+  await prismaClient.$transaction(
+    async (tx) => {
+      const issues = await loadWikiHTML({
+        newTracksHTML,
+        oldGFDMTracksHTML,
+        oldGDTracksHTML,
+        dbQueryService: new LoadWikiHtmlQueryService(tx),
+        trackRepository: new TrackRepository(tx),
+      });
+      await new WikiLoadingIssueRepository(tx).save(issues);
+    },
+    { timeout: 30000 },
+  );
 
   return new Response();
 }
