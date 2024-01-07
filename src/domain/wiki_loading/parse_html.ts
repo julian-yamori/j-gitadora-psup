@@ -171,10 +171,28 @@ function parseDifficultiesFromCell(
 /**
  * <td>からテキストを取得
  * @param element <td>のHTMLElement
- * @returns innerText。空文字列の場合はundefined
+ * @returns <td>内のテキスト。空文字列の場合はundefined
  */
 function getTdText(element: HTMLElement): string | undefined {
-  const text = element.innerText;
+  const text = element.childNodes
+    .map((node) => {
+      if (node instanceof HTMLElement) {
+        // 注釈を除去
+        if (node.classList.contains("note_super")) return undefined;
+        // それ以外のelementの場合は、とりあえず中身のテキストを返しておく (太赤字とかある)
+        return node.innerText;
+      }
+
+      // Node.TEXT_NODE
+      if (node.nodeType === 3) {
+        return node.text;
+      }
+
+      return undefined;
+    })
+    .filter((s) => s !== undefined)
+    .join("");
+
   if (text === "") return undefined;
   return text;
 }
