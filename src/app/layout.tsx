@@ -17,9 +17,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ja">
-      <body className={inter.className}>
+      <body className={inter.className} style={{ margin: 0 }}>
         <AppBar />
-        {children}
+        <div style={{ margin: 8 }}>{children}</div>
       </body>
     </html>
   );
