@@ -26,6 +26,25 @@ export function getFormNumber(form: FormData, name: string): number {
 }
 
 /**
+ * リクエストのフォーム入力値を数値として取得 (テキスト用で、未入力ならundefined)
+ * @param form リクエストのFormData
+ * @param name フォーム項目のname
+ * @throws
+ */
+export function getFormNumberText(
+  form: FormData,
+  name: string,
+): number | undefined {
+  const str = getFormString(form, name);
+  if (str === "") return undefined;
+
+  const num = Number(str);
+  if (Number.isNaN(num))
+    throw Error(`form value "${name}" is not number : ${str}`);
+  else return num;
+}
+
+/**
  * リクエストのフォーム入力値の、単一のチェックボックスがチェックされたかをbooleanとして取得
  * @param form リクエストのFormData
  * @param name フォーム項目のname

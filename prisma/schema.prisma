@@ -21,6 +21,8 @@ model Track {
   // 論理削除
   deleted Boolean
 
+  userData TrackUser?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -31,6 +33,42 @@ model TrackByDifficulty {
   lv Float
 
   track Track @relation(fields: [trackId], references: [id])
+  userDifficulty TrackUserByDifficulty?
+
+  @@unique([trackId, difficulty])
+}
+
+model TrackUser {
+  id String @id
+  like Int?
+  isOpen Boolean
+  memo String
+  difficulties TrackUserByDifficulty[]
+
+  track Track @relation(fields: [id], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model TrackUserByDifficulty {
+  trackId String
+  difficulty Int
+
+  achievement Float
+  failed Boolean
+  skillPoint Float
+
+  wishPractice Boolean
+  wishAchievement Boolean
+  wishEvent Boolean
+  wishNextPick Boolean
+  wishPlayed Boolean
+
+  movieURL String
+
+  trackUser TrackUser @relation(fields: [trackId], references: [id])
+  trackDifficulty TrackByDifficulty @relation(fields: [trackId, difficulty], references: [trackId, difficulty])
 
   @@unique([trackId, difficulty])
 }

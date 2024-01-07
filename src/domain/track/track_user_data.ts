@@ -1,4 +1,6 @@
 import { Difficulty } from "./difficulty";
+import { isOpenTypeInitialOpen } from "./open_type";
+import { Track } from "./track";
 
 /**
  * 曲のユーザー編集データ
@@ -14,7 +16,7 @@ export type TrackUserData = Readonly<{
    *
    * 1〜5の整数
    */
-  like: number;
+  like: number | undefined;
 
   /** 開放しているかどうか */
   isOpen: boolean;
@@ -23,7 +25,12 @@ export type TrackUserData = Readonly<{
   memo: string;
 
   /** 難易度毎の情報 */
-  difficulties: Readonly<Record<Difficulty, TrackUserDataByDifficulty>>;
+  difficulties: TrackUserDifficulties;
+}>;
+
+/** 曲の全難易度についての難易度別情報 */
+export type TrackUserDifficulties = Readonly<{
+  readonly [K in Difficulty]?: TrackUserDataByDifficulty;
 }>;
 
 /** 曲の難易度別のユーザー編集データ */
@@ -34,12 +41,15 @@ export type TrackUserDataByDifficulty = Readonly<{
   /** 難易度 (key) */
   difficulty: Difficulty;
 
+  /** 達成率 */
+  achievement: TrackAchievement;
+
   /**
-   * 曲のプレイ時の得点情報
+   * 獲得スキルポイント
    *
-   * 未プレイならundefined
+   * 達成率とLvが変わる度に再計算する
    */
-  score: TrackScore | undefined;
+  skillPoint: number;
 
   // todo ウィッシュリスト関係は別モデルの方がいいかも
 
@@ -62,20 +72,68 @@ export type TrackUserDataByDifficulty = Readonly<{
   movieURL: string;
 }>;
 
-export type TrackScore = Readonly<{
-  /** 達成率 */
-  achievement: TrackAchievement;
-
-  /**
-   * 獲得スキルポイント
-   *
-   * 達成率とLvが変わる度に再計算する
-   */
-  skillPoint: number;
-}>;
-
 /**
  * 曲の達成率
  * 0〜1のfloatか、失敗した場合はfailed
  */
 export type TrackAchievement = number | "failed";
+
+/**
+ * @param track 初期値の元になるTrack
+ * @return 初期状態のTrackUserData
+ */
+export function initialTrackUserData(track: Track): TrackUserData {
+  const difficulties = Object.fromEntries(
+    [...Object.values(track.difficulties)].map(
+      (d): [Difficulty, TrackUserDataByDifficulty] => [
+        d.difficulty,
+        {
+          trackId: d.trackId,
+          difficulty: d.difficulty,
+          achievement: 0,
+          skillPoint: 0,
+          wishPractice: false,
+          wishAchievement: false,
+          wishEvent: false,
+          wishNextPick: false,
+          wishPlayed: false,
+          movieURL: "",
+        },
+      ],
+    ),
+  );
+
+  return {
+    id: track.id,
+    like: undefined,
+    isOpen: isOpenTypeInitialOpen(track.openType),
+    memo: "",
+    difficulties,
+  };
+}
+
+/**
+ * TrackUserData.like が有効な値か確認
+ * @param like 確認するlikeの値
+ * @return 有効な値ならtrueを返す
+ */
+export function validateTrackLike(like: number): boolean {
+  if (Number.isInteger(like)) return false;
+  if (like < 1 || like > 5) return false;
+  return true;
+}
+
+/**
+ * スキルポイントを計算
+ * @param lv 曲の難易度値
+ * @param achievement 曲の達成率
+ */
+export function trackSkillPoint(
+  lv: number,
+  achievement: TrackAchievement,
+): number {
+  if (achievement === "failed") return 0;
+
+  // lv * 達成率 * 20 (0.01単位で端数切り捨て)
+  return Math.floor(lv * achievement * 2000) / 100;
+}

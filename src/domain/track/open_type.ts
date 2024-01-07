@@ -52,3 +52,18 @@ export function openTypeToStr(value: OpenType): string {
       return "DX解禁チャレンジ";
   }
 }
+
+/** 初期状態で開放されるOpenTypeか */
+export function isOpenTypeInitialOpen(value: OpenType): boolean {
+  switch (value) {
+    case INITIAL:
+      return true;
+
+    case ENCORE:
+    case PREMIUM_ENCORE:
+    case EVENT:
+    case LIVE_HOUSE:
+    case DX:
+      return false;
+  }
+}
