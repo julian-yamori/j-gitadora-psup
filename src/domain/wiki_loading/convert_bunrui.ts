@@ -7,12 +7,12 @@ import {
   PREMIUM_ENCORE,
   DX,
 } from "@/domain/track/open_type";
+import { Err, Ok, Result } from "@/utils/result";
 
 /** 「分類」列を変換 */
-// todo エラーの場合はとりあえずstringでメッセージを返すようにしてるけど、Result型の方が合いそう
 export default function convertBunrui(
   bunruiCell: HTMLElement,
-): { openType: OpenType; long: boolean } | string {
+): Result<{ openType: OpenType; long: boolean }, string> {
   const openTypes: OpenType[] = [];
   const longs: boolean[] = [];
 
@@ -48,22 +48,22 @@ export default function convertBunrui(
           break;
 
         default:
-          return errorMsgUnknownBunrui(text);
+          return new Err(errorMsgUnknownBunrui(text));
       }
     }
   }
 
   if (openTypes.length > 1) {
-    return `OpenTypeが複数指定されました : ${openTypes.join(",")}`;
+    return new Err(`OpenTypeが複数指定されました : ${openTypes.join(",")}`);
   }
   if (longs.length > 1) {
-    return `longが複数指定されました : ${longs.join(",")}`;
+    return new Err(`longが複数指定されました : ${longs.join(",")}`);
   }
 
-  return {
+  return new Ok({
     openType: openTypes.at(0) ?? INITIAL,
     long: longs.at(0) ?? false,
-  };
+  });
 }
 
 /**

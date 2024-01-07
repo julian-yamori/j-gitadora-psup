@@ -3,6 +3,7 @@ import { TrackByDifficulty } from "@prisma/client";
 import { Track } from "@/domain/track/track";
 import { HOT } from "@/domain/track/skill_type";
 import { ALL_DIFFICULTIES, Difficulty } from "@/domain/track/difficulty";
+import { Err, Ok, Result } from "@/utils/result";
 import { WikiLoadingSource } from "./wiki_loading_source";
 import { WikiLoadingIssueError } from "./wiki_loading_issue";
 import convertBunrui from "./convert_bunrui";
@@ -106,10 +107,10 @@ function parseRow(
   }
 
   const bunruiResult = convertBunrui(cells[0]);
-  if (typeof bunruiResult === "string") {
+  if (bunruiResult.isErr()) {
     return {
       type: "error",
-      error: { type: "error", source, rowNo, message: bunruiResult },
+      error: { type: "error", source, rowNo, message: bunruiResult.error },
     };
   }
 
@@ -126,21 +127,21 @@ function parseRow(
     };
   }
 
-  const difficulties = parseDifficultiesFromCell(cells.slice(5, 9));
-  if (typeof difficulties === "string") {
+  const difficultiesR = parseDifficultiesFromCell(cells.slice(5, 9));
+  if (difficultiesR.isErr()) {
     return {
       type: "error",
-      error: { type: "error", source, rowNo, message: difficulties },
+      error: { type: "error", source, rowNo, message: difficultiesR.error },
     };
   }
 
   return {
     type: "track",
     track: {
-      ...bunruiResult,
+      ...bunruiResult.value,
       title,
       skillType: HOT,
-      difficulties,
+      difficulties: difficultiesR.value,
       source,
       rowNo,
     },
@@ -148,27 +149,30 @@ function parseRow(
 }
 
 /** Lv表記の4つのCellをTrackByDifficultyに変換 */
-// todo エラーの場合はとりあえずstringでメッセージを返すようにしてるけど、Result型の方が合いそう
 function parseDifficultiesFromCell(
   cells: ReadonlyArray<HTMLElement>,
-): ParsedDifficulties | string {
+): Result<ParsedDifficulties, string> {
+  function makeErr(): Err<ParsedDifficulties, string> {
+    return new Err("難易度の値が不正です");
+  }
+
   const results: ParsedDifficulties = {};
 
   for (const [i, difficulty] of ALL_DIFFICULTIES.entries()) {
     const cell = cells.at(i);
-    if (cell === undefined) return "難易度の値が不正です";
+    if (cell === undefined) return makeErr();
 
     const text = getTdText(cell);
-    if (text === undefined) return "難易度の値が不正です";
+    if (text === undefined) return makeErr();
     if (text === "-") continue;
 
     const num = Number(text);
-    if (Number.isNaN(num)) return "難易度の値が不正です";
+    if (Number.isNaN(num)) return makeErr();
 
     results[difficulty] = { difficulty, lv: num };
   }
 
-  return results;
+  return new Ok(results);
 }
 
 /**
