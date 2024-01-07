@@ -1,13 +1,13 @@
+import PageTitle from "@/components/page_title";
 import prismaClient from "@/db/prisma_client";
 import TrackListQueryService from "@/db/track_list_query_service";
-import { Typography } from "@mui/material";
 import TracksTable from "./tracks_table";
+import createMetadata from "../_util/create_metadata";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = {
-  title: "曲リスト",
-};
+const PAGE_TITLE = "曲リスト";
+export const metadata = createMetadata(PAGE_TITLE);
 
 /** 曲リストページ */
 export default async function Home() {
@@ -16,7 +16,7 @@ export default async function Home() {
 
   return (
     <main>
-      <Typography variant="h4">曲リスト</Typography>
+      <PageTitle title={PAGE_TITLE} />
       <TracksTable tracks={tracks} />
     </main>
   );

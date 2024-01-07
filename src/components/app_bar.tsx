@@ -38,7 +38,7 @@ export default function AppBar() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            App Bar
+            j GITADORA psup
           </Typography>
 
           <Drawer open={drawerOpened} onClose={() => setDrawerOpened(false)}>

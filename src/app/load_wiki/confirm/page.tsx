@@ -1,3 +1,4 @@
+import createMetadata from "@/app/_util/create_metadata";
 import prismaClient from "@/db/prisma_client";
 import CheckViewQueryService, {
   CheckViewIssueDto,
@@ -11,9 +12,8 @@ import RegisterButton from "./register_button";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = {
-  title: "wikiの曲情報読み込み - 確認",
-};
+const PAGE_TITLE = "wikiの曲情報読み込み - 確認";
+export const metadata = createMetadata(PAGE_TITLE);
 
 /** wikiの曲情報読み込み確認ページ */
 export default async function Home() {
