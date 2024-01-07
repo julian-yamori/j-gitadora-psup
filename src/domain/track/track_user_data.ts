@@ -41,6 +41,8 @@ export type TrackUserDataByDifficulty = Readonly<{
    */
   score: TrackScore | undefined;
 
+  // todo ウィッシュリスト関係は別モデルの方がいいかも
+
   /** ウィッシュリストの練習枠 */
   wishPractice: boolean;
 
