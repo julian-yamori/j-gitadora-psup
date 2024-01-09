@@ -41,8 +41,12 @@ export type TrackUserDataByDifficulty = Readonly<{
   /** 難易度 (key) */
   difficulty: Difficulty;
 
-  /** 達成率 */
-  achievement: TrackAchievement;
+  /**
+   * 達成率
+   *
+   * 0〜1のfloat
+   */
+  achievement: number;
 
   /**
    * 獲得スキルポイント
@@ -50,6 +54,16 @@ export type TrackUserDataByDifficulty = Readonly<{
    * 達成率とLvが変わる度に再計算する
    */
   skillPoint: number;
+
+  /**
+   * 失敗マーク
+   *
+   * 「挑戦したことはあるけど失敗した」と「未挑戦」の区別を付ける用。
+   *
+   * UI上では、達成率と失敗のどちらかしか入力不可。
+   * ただしスキルポイントの計算では、achievementのみ入力可
+   */
+  failed: boolean;
 
   // todo ウィッシュリスト関係は別モデルの方がいいかも
 
@@ -73,12 +87,6 @@ export type TrackUserDataByDifficulty = Readonly<{
 }>;
 
 /**
- * 曲の達成率
- * 0〜1のfloatか、失敗した場合はfailed
- */
-export type TrackAchievement = number | "failed";
-
-/**
  * @param track 初期値の元になるTrack
  * @return 初期状態のTrackUserData
  */
@@ -92,6 +100,7 @@ export function initialTrackUserData(track: Track): TrackUserData {
           difficulty: d.difficulty,
           achievement: 0,
           skillPoint: 0,
+          failed: false,
           wishPractice: false,
           wishAchievement: false,
           wishEvent: false,
@@ -128,12 +137,12 @@ export function validateTrackLike(like: number): boolean {
  * @param lv 曲の難易度値
  * @param achievement 曲の達成率
  */
-export function trackSkillPoint(
-  lv: number,
-  achievement: TrackAchievement,
-): number {
-  if (achievement === "failed") return 0;
-
+export function trackSkillPoint(lv: number, achievement: number): number {
   // lv * 達成率 * 20 (0.01単位で端数切り捨て)
   return Math.floor(lv * achievement * 2000) / 100;
+}
+
+/** 達成率の数値をパーセント表記の文字列に変換 */
+export function achievementToPercent(achievement: number): string {
+  return (achievement * 100).toFixed(2);
 }

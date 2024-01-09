@@ -9,7 +9,6 @@ import TrackUserRepository from "@/db/track_user_repository";
 import { Difficulty } from "@/domain/track/difficulty";
 import { Track } from "@/domain/track/track";
 import {
-  TrackAchievement,
   TrackUserDataByDifficulty,
   TrackUserDifficulties,
   trackSkillPoint,
@@ -22,7 +21,7 @@ import formKeyByDifficulty from "../form_key";
 // eslint-disable-next-line import/prefer-default-export -- defaultにするとメソッド名を認識しなくなる
 export async function POST(
   request: Request,
-  context: { params: Record<string, string> },
+  context: { params: { id: string } },
 ): Promise<Response> {
   const form = await request.formData();
 
@@ -117,6 +116,10 @@ function buildNewDifficulty(
     ...old,
     achievement,
     skillPoint: trackSkillPoint(trackDifficulty.lv, achievement),
+    failed: getFormCheckbox(
+      form,
+      formKeyByDifficulty(old.difficulty, "failed"),
+    ),
     movieURL: getFormString(
       form,
       formKeyByDifficulty(old.difficulty, "movie_url"),
@@ -124,26 +127,12 @@ function buildNewDifficulty(
   };
 }
 
-function achievementFromForm(
-  form: FormData,
-  difficulty: Difficulty,
-): TrackAchievement {
+function achievementFromForm(form: FormData, difficulty: Difficulty): number {
   const achievement = getFormNumberText(
     form,
     formKeyByDifficulty(difficulty, "achievement"),
   );
-  const failed = getFormCheckbox(
-    form,
-    formKeyByDifficulty(difficulty, "failed"),
-  );
 
-  if (failed && !(achievement === undefined || achievement === 0)) {
-    throw Error(
-      `both input achievement and failed (in difficulty "${difficulty}")`,
-    );
-  }
-
-  if (failed) return "failed";
   if (achievement === undefined) return 0;
   // % から 0〜1 に変換
   return achievement / 100;

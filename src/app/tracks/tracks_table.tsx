@@ -19,6 +19,7 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
+import Link from "next/link";
 
 function difficultyLvText(
   difficulties: ReadonlyArray<TrackListDtoLvs>,
@@ -52,7 +53,9 @@ export default function TracksTable({
         <TableBody>
           {tracks.map((track) => (
             <TableRow key={track.id}>
-              <TableCell>{track.title}</TableCell>
+              <TableCell>
+                <Link href={`/tracks/${track.id}`}>{track.title}</Link>
+              </TableCell>
               <TableCell>
                 {difficultyLvText(track.difficulties, BASIC)}
               </TableCell>

@@ -1,6 +1,5 @@
 import PrismaClient from "@prisma/client";
 import {
-  TrackAchievement,
   TrackUserData,
   TrackUserDataByDifficulty,
 } from "@/domain/track/track_user_data";
@@ -62,9 +61,9 @@ export default class TrackUserRepository {
       data: Object.values(track.difficulties).map((d) => ({
         trackId: d.trackId,
         difficulty: d.difficulty,
-        achievement: d.achievement === "failed" ? 0 : d.achievement,
-        failed: d.achievement === "failed",
+        achievement: d.achievement,
         skillPoint: d.skillPoint,
+        failed: d.failed,
         wishPractice: d.wishPractice,
         wishAchievement: d.wishAchievement,
         wishEvent: d.wishEvent,
@@ -88,8 +87,9 @@ function trackPrisma2Domain(
       {
         trackId: dto.id,
         difficulty: difficultyFromNum(v.difficulty),
-        achievement: achievementPrisma2Domain(v.achievement, v.failed),
+        achievement: v.achievement,
         skillPoint: v.skillPoint,
+        failed: v.failed,
         wishPractice: v.wishPractice,
         wishAchievement: v.wishAchievement,
         wishEvent: v.wishEvent,
@@ -107,13 +107,4 @@ function trackPrisma2Domain(
     memo: dto.memo,
     difficulties,
   };
-}
-
-/** TrackAchievementをPrismaの値からドメインモデルに変換 */
-function achievementPrisma2Domain(
-  achievement: number,
-  failed: boolean,
-): TrackAchievement {
-  if (failed && achievement === 0) return "failed";
-  return achievement;
 }
