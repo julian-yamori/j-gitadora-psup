@@ -12,6 +12,7 @@ import { Track, lvToString } from "../track/track";
 import { skillTypeToStr } from "../track/skill_type";
 import { openTypeToStr } from "../track/open_type";
 import { ALL_DIFFICULTIES } from "../track/difficulty";
+import { LoadWikiConfig, readLoadWikiConfig } from "./load_wiki_config";
 
 /**
  * wikiのHTMLから曲情報を読み込み
@@ -32,15 +33,22 @@ export default async function loadWikiHTML({
   dbQueryService: LoadWikiHtmlQueryService;
   trackRepository: TrackRepository;
 }): Promise<WikiLoadingIssue[]> {
+  const config = await readLoadWikiConfig();
+
   // 既存の曲のMapを取得
   const existingTrackMap = await dbQueryService.existingTracks();
 
-  // HTML解析、重複曲マージ
-  const parsedRows = mergeRowsDuplicate([
-    ...parseHTML("new", newTracksHTML),
-    ...parseHTML("old_GFDM", oldGFDMTracksHTML),
-    ...parseHTML("old_GD", oldGDTracksHTML),
-  ]);
+  // HTML解析、NG曲除去、重複曲マージ
+  const parsedRows = mergeRowsDuplicate(
+    filterNgTracks(
+      [
+        ...parseHTML("new", newTracksHTML),
+        ...parseHTML("old_GFDM", oldGFDMTracksHTML),
+        ...parseHTML("old_GD", oldGDTracksHTML),
+      ],
+      config,
+    ),
+  );
 
   const issues: WikiLoadingIssue[] = [];
 
@@ -65,6 +73,25 @@ export default async function loadWikiHTML({
   );
 
   return issues;
+}
+
+/**
+ * configのNG曲に指定された曲を除去
+ */
+function filterNgTracks(
+  rows: ReadonlyArray<ParsedTrack | WikiLoadingIssueError>,
+  config: LoadWikiConfig,
+): Array<ParsedTrack | WikiLoadingIssueError> {
+  // typeがあればWikiLoadingIssueError型と判断し、そのまま返す
+  return rows.filter((r) => {
+    // typeがあればWikiLoadingIssueError型と判断し、そのまま返す
+    if ("type" in r) return true;
+
+    const set = config.ngTracks.get(r.source);
+    if (set === undefined) return true;
+
+    return !set.has(r.title);
+  });
 }
 
 /**
@@ -105,7 +132,7 @@ function mergeRowsDuplicate(
         type: "error",
         source: row.source,
         rowNo: row.rowNo,
-        message: `重複データの内容が異なります : ${existing.source} (${existing.rowNo})`,
+        message: `重複データの内容が異なります : "${row.title}" ${existing.source} (${existing.rowNo})`,
       });
     }
   }

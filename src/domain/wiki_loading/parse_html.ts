@@ -1,5 +1,5 @@
 import { parse, HTMLElement } from "node-html-parser";
-import { HOT } from "@/domain/track/skill_type";
+import { HOT, OTHER } from "@/domain/track/skill_type";
 import { ALL_DIFFICULTIES, Difficulty } from "@/domain/track/difficulty";
 import { Err, Ok, Result } from "@/utils/result";
 import { WikiLoadingSource } from "./wiki_loading_source";
@@ -130,7 +130,7 @@ function parseRow(
     track: {
       ...bunruiResult.value,
       title,
-      skillType: HOT,
+      skillType: source === "new" ? HOT : OTHER,
       difficulties: difficultiesR.value,
       source,
       rowNo,

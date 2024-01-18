@@ -7,6 +7,12 @@ export type WikiLoadingSource =
   /** 旧曲リスト : GITADORA */
   | "old_GD";
 
+export const ALL_WIKI_LOADING_SOURCES: ReadonlyArray<WikiLoadingSource> = [
+  "new",
+  "old_GFDM",
+  "old_GD",
+];
+
 export function validateWikiLoadingSource(source: string): WikiLoadingSource {
   switch (source) {
     case "new":
