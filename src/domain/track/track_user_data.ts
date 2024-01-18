@@ -146,3 +146,8 @@ export function trackSkillPoint(lv: number, achievement: number): number {
 export function achievementToPercent(achievement: number): string {
   return (achievement * 100).toFixed(2);
 }
+
+/** スキルポイントを表示用の文字列に変換 */
+export function skillPointToDisplay(skillPoint: number): string {
+  return skillPoint.toFixed(2);
+}
