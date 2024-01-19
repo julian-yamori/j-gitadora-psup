@@ -63,9 +63,7 @@ export default function TrackForm({
           return set;
         }
         return old;
-      }
-      // eslint-disable-next-line no-else-return -- 分岐を読みやすくするためelse追加
-      else {
+      } else {
         if (old.has(d)) return old;
         return new Set([...old, d]);
       }

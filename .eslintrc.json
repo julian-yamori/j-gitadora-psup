@@ -67,6 +67,8 @@
       }
     ],
     // 手続き的にfor-ofを使うプログラミングだと、ifネストが避けられて見やすくなる (早期returnと同様)
-    "no-continue": "off"
+    "no-continue": "off",
+    // else を無くせば読みやすくなる、とは限らない
+    "no-else-return": "off"
   }
 }
