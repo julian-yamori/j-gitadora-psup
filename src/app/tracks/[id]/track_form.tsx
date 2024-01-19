@@ -105,7 +105,16 @@ export default function TrackForm({
             onAchievementValidChange={handleAchievementValidChanged}
           />
 
-          <TextField name="memo" label="メモ" multiline rows="3" fullWidth />
+          <TextField
+            name="memo"
+            label="メモ"
+            value={userTrack.memo}
+            onChange={(e) =>
+              setUserTrack((old) => ({ ...old, memo: e.target.value }))
+            }
+            multiline
+            fullWidth
+          />
 
           <Button variant="contained" onClick={handleSubmit} disabled={!valid}>
             保存
