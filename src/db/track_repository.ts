@@ -12,7 +12,9 @@ export default class TrackRepository {
   /** IDを指定して曲データを一つ取得 */
   async get(id: string): Promise<Track | undefined> {
     const found = await this.prismaTransaction.track.findUnique({
-      include: { difficulties: { select: { difficulty: true, lv: true } } },
+      include: {
+        difficulties: { select: { trackId: true, difficulty: true, lv: true } },
+      },
       where: { id },
     });
 
@@ -78,7 +80,7 @@ export default class TrackRepository {
 /** PrismaのModelからドメインモデルに変換 */
 function trackPrisma2Domain(
   dto: PrismaClient.Track & {
-    difficulties: Omit<PrismaClient.TrackByDifficulty, "trackId">[];
+    difficulties: PrismaClient.TrackByDifficulty[];
   },
 ): Track {
   if (dto.deleted) throw Error(`track ${dto.id} has been deleted`);

@@ -127,7 +127,7 @@ export function initialTrackUserData(track: Track): TrackUserData {
  * @return 有効な値ならtrueを返す
  */
 export function validateTrackLike(like: number): boolean {
-  if (Number.isInteger(like)) return false;
+  if (!Number.isInteger(like)) return false;
   if (like < 1 || like > 5) return false;
   return true;
 }

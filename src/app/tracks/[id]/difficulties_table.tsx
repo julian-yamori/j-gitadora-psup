@@ -1,3 +1,4 @@
+import formKeyByDifficulty from "@/app/api/tracks/form_key";
 import {
   ALL_DIFFICULTIES,
   Difficulty,
@@ -104,6 +105,7 @@ function DifficultyRowExist({
       <TableCell align="right">{lvToString(difficulty.lv)}</TableCell>
       <TableCell>
         <AchievementInput
+          difficulty={difficulty.difficulty}
           achievement={userDifficulty.achievement}
           failed={userDifficulty.failed}
           onValueChange={(v) =>
@@ -116,6 +118,7 @@ function DifficultyRowExist({
       </TableCell>
       <TableCell align="center">
         <FailedInput
+          difficulty={difficulty.difficulty}
           achievement={userDifficulty.achievement}
           failed={userDifficulty.failed}
           onChange={(v) => onValueChange({ ...userDifficulty, failed: v })}
@@ -128,6 +131,7 @@ function DifficultyRowExist({
       </TableCell>
       <TableCell>
         <TextField
+          name={formKeyByDifficulty(difficulty.difficulty, "movie_url")}
           value={userDifficulty.movieURL}
           onChange={(e) =>
             onValueChange({ ...userDifficulty, movieURL: e.target.value })
@@ -143,16 +147,19 @@ function DifficultyRowExist({
 }
 
 function FailedInput({
+  difficulty,
   achievement,
   failed,
   onChange,
 }: {
+  difficulty: Difficulty;
   achievement: number;
   failed: boolean;
   onChange: (value: boolean) => unknown;
 }) {
   return (
     <Checkbox
+      name={formKeyByDifficulty(difficulty, "failed")}
       checked={failed}
       onChange={(e) => {
         onChange(e.target.checked);

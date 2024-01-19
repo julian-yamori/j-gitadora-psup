@@ -1,5 +1,6 @@
 "use client";
 
+import assertResponseOk from "@/app/_util/assert_response_ok";
 import getRefNonNull from "@/app/_util/get_ref_non_null";
 import { Difficulty } from "@/domain/track/difficulty";
 import { INITIAL, OpenType } from "@/domain/track/open_type";
@@ -60,11 +61,19 @@ export default function TrackForm({
     });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const formCurrent = getRefNonNull(form);
     if (!formCurrent.reportValidity()) return;
 
-    window.alert("test");
+    // API呼び出しfetch
+    assertResponseOk(
+      await fetch(`/api/tracks/${track.id}`, {
+        method: "POST",
+        body: new FormData(formCurrent),
+      }),
+    );
+
+    window.alert("ok");
   };
 
   const valid = invalidAchievements.size === 0;
@@ -83,6 +92,7 @@ export default function TrackForm({
             <Stack direction="row" spacing={1}>
               <Typography>好み</Typography>
               <Rating
+                name="like"
                 value={trackUser.like}
                 onChange={(_, v) =>
                   setTrackUser((old) => ({ ...old, like: Number(v) }))
@@ -99,7 +109,7 @@ export default function TrackForm({
             onAchievementValidChange={handleAchievementValidChanged}
           />
 
-          <TextField label="メモ" multiline rows="3" fullWidth />
+          <TextField name="memo" label="メモ" multiline rows="3" fullWidth />
 
           <Button variant="contained" onClick={handleSubmit} disabled={!valid}>
             保存
@@ -127,7 +137,13 @@ function OpenSwitch({
 
   return (
     <FormControlLabel
-      control={<Switch checked={isOpen} onChange={(_, v) => onChange(v)} />}
+      control={
+        <Switch
+          name="is_open"
+          checked={isOpen}
+          onChange={(_, v) => onChange(v)}
+        />
+      }
       label={label}
     />
   );

@@ -1,8 +1,4 @@
-import {
-  getFormCheckbox,
-  getFormNumberText,
-  getFormString,
-} from "@/app/_util/form_convert";
+import { getFormCheckbox, getFormString } from "@/app/_util/form_convert";
 import prismaClient from "@/db/prisma_client";
 import TrackRepository from "@/db/track_repository";
 import TrackUserRepository from "@/db/track_user_repository";
@@ -110,16 +106,17 @@ function buildNewDifficulty(
     );
   }
 
-  const achievement = achievementFromForm(form, old.difficulty);
+  const failed = getFormCheckbox(
+    form,
+    formKeyByDifficulty(old.difficulty, "failed"),
+  );
+  const achievement = achievementFromForm(form, old.difficulty, failed);
 
   return {
     ...old,
     achievement,
     skillPoint: trackSkillPoint(trackDifficulty.lv, achievement),
-    failed: getFormCheckbox(
-      form,
-      formKeyByDifficulty(old.difficulty, "failed"),
-    ),
+    failed,
     movieURL: getFormString(
       form,
       formKeyByDifficulty(old.difficulty, "movie_url"),
@@ -127,13 +124,32 @@ function buildNewDifficulty(
   };
 }
 
-function achievementFromForm(form: FormData, difficulty: Difficulty): number {
-  const achievement = getFormNumberText(
-    form,
-    formKeyByDifficulty(difficulty, "achievement"),
-  );
+function achievementFromForm(
+  form: FormData,
+  difficulty: Difficulty,
+  failed: boolean,
+): number {
+  const formKey = formKeyByDifficulty(difficulty, "achievement");
 
-  if (achievement === undefined) return 0;
+  const strValue = form.get(formKey);
+
+  // failedの場合、disabledで取得できないので 0 扱い。
+  // UI上では、 0 でなければfailedにできないはず。
+  if (strValue === null && failed) {
+    return 0;
+  }
+
+  if (typeof strValue !== "string") {
+    throw Error(`form value "${formKey}" is not string`);
+  }
+
+  if (strValue === "") return 0;
+
+  const numValue = Number(strValue);
+  if (Number.isNaN(numValue)) {
+    throw Error(`form value "${formKey}" is not number`);
+  }
+
   // % から 0〜1 に変換
-  return achievement / 100;
+  return numValue / 100;
 }
