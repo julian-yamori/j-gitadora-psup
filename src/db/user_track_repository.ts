@@ -1,15 +1,15 @@
 import PrismaClient from "@prisma/client";
-import { TrackUserData, UserScore } from "@/domain/track/track_user_data";
+import { UserTrack, UserScore } from "@/domain/track/user_track";
 import { Difficulty, difficultyFromNum } from "@/domain/track/difficulty";
 import { PrismaTransaction } from "./prisma_client";
 
 /** 曲のユーザー編集データのリポジトリ */
-export default class TrackUserRepository {
+export default class UserTrackRepository {
   constructor(public readonly prismaTransaction: PrismaTransaction) {}
 
   /** IDを指定して曲データを一つ取得 */
-  async get(id: string): Promise<TrackUserData | undefined> {
-    const found = await this.prismaTransaction.trackUser.findUnique({
+  async get(id: string): Promise<UserTrack | undefined> {
+    const found = await this.prismaTransaction.userTrack.findUnique({
       include: {
         scores: {
           select: {
@@ -34,14 +34,14 @@ export default class TrackUserRepository {
   }
 
   /** 曲のユーザー編集データを保存 */
-  async save(track: TrackUserData): Promise<void> {
+  async save(track: UserTrack): Promise<void> {
     const fields = {
       like: track.like,
       isOpen: track.isOpen,
       memo: track.memo,
     };
 
-    await this.prismaTransaction.trackUser.upsert({
+    await this.prismaTransaction.userTrack.upsert({
       where: { id: track.id },
       create: {
         ...fields,
@@ -74,10 +74,10 @@ export default class TrackUserRepository {
 
 /** PrismaのModelからドメインモデルに変換 */
 function trackPrisma2Domain(
-  dto: PrismaClient.TrackUser & {
+  dto: PrismaClient.UserTrack & {
     scores: Omit<PrismaClient.UserScore, "trackId">[];
   },
-): TrackUserData {
+): UserTrack {
   const scores = Object.fromEntries(
     dto.scores.map((v): [Difficulty, UserScore] => [
       difficultyFromNum(v.difficulty),

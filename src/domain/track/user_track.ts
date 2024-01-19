@@ -7,7 +7,7 @@ import { Track } from "./track";
  *
  * 集約ルート
  */
-export type TrackUserData = Readonly<{
+export type UserTrack = Readonly<{
   /** 曲のID */
   id: string;
 
@@ -25,11 +25,11 @@ export type TrackUserData = Readonly<{
   memo: string;
 
   /** 曲の譜面 */
-  scores: TrackUserScores;
+  scores: UserTrackScores;
 }>;
 
 /** 曲の全譜面のユーザー編集データ */
-export type TrackUserScores = Readonly<{
+export type UserTrackScores = Readonly<{
   readonly [K in Difficulty]?: UserScore;
 }>;
 
@@ -88,9 +88,9 @@ export type UserScore = Readonly<{
 
 /**
  * @param track 初期値の元になるTrack
- * @return 初期状態のTrackUserData
+ * @return 初期状態の UserTrack
  */
-export function initialTrackUserData(track: Track): TrackUserData {
+export function initialUserTrack(track: Track): UserTrack {
   const scores = Object.fromEntries(
     [...Object.values(track.scores)].map((d): [Difficulty, UserScore] => [
       d.difficulty,
@@ -120,7 +120,7 @@ export function initialTrackUserData(track: Track): TrackUserData {
 }
 
 /**
- * TrackUserData.like が有効な値か確認
+ * UserTrack.like が有効な値か確認
  * @param like 確認するlikeの値
  * @return 有効な値ならtrueを返す
  */

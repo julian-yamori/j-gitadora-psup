@@ -6,11 +6,11 @@ import {
 } from "@/domain/track/difficulty";
 import { Track, Score, lvToString } from "@/domain/track/track";
 import {
-  TrackUserData,
+  UserTrack,
   UserScore,
   skillPointToDisplay,
   trackSkillPoint,
-} from "@/domain/track/track_user_data";
+} from "@/domain/track/user_track";
 import {
   Checkbox,
   Paper,
@@ -28,12 +28,12 @@ import AchievementInput from "./achievement_input";
 /** 曲詳細画面の、譜面毎のテーブル */
 export default function ScoresTable({
   track,
-  trackUser,
+  userTrack,
   onScoreChange,
   onAchievementValidChange,
 }: {
   track: Track;
-  trackUser: TrackUserData;
+  userTrack: UserTrack;
   onScoreChange: (d: UserScore) => unknown;
   onAchievementValidChange: (d: Difficulty, valid: boolean) => unknown;
 }) {
@@ -57,7 +57,7 @@ export default function ScoresTable({
               <ScoreRowExist
                 key={d}
                 score={td}
-                userScore={trackUser.scores[d]}
+                userScore={userTrack.scores[d]}
                 onValueChange={onScoreChange}
                 onAchievementValidChange={onAchievementValidChange}
               />

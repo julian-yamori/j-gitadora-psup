@@ -21,7 +21,7 @@ model Track {
   // 論理削除
   deleted Boolean
 
-  userData TrackUser?
+  userTrack UserTrack?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -38,7 +38,7 @@ model Score {
   @@unique([trackId, difficulty])
 }
 
-model TrackUser {
+model UserTrack {
   id String @id
   like Int?
   isOpen Boolean
@@ -67,7 +67,7 @@ model UserScore {
 
   movieURL String
 
-  trackUser TrackUser @relation(fields: [trackId], references: [id])
+  userTrack UserTrack @relation(fields: [trackId], references: [id])
   score Score @relation(fields: [trackId, difficulty], references: [trackId, difficulty])
 
   @@unique([trackId, difficulty])

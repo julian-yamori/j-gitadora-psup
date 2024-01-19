@@ -2,9 +2,9 @@ import createMetadata from "@/app/_util/create_metadata";
 import PageTitle from "@/components/page_title";
 import prismaClient from "@/db/prisma_client";
 import TrackRepository from "@/db/track_repository";
-import TrackUserRepository from "@/db/track_user_repository";
+import UserTrackRepository from "@/db/user_track_repository";
 import { INITIAL } from "@/domain/track/open_type";
-import { initialTrackUserData } from "@/domain/track/track_user_data";
+import { initialUserTrack } from "@/domain/track/user_track";
 import {
   HOT,
   OTHER,
@@ -19,9 +19,9 @@ export const dynamic = "force-dynamic";
 
 // track を generateMetadata と Home で共有するためのキャッシュ
 const getTrack = cache(async (id: string) => {
-  const [track, trackUser] = await Promise.all([
+  const [track, userTrack] = await Promise.all([
     new TrackRepository(prismaClient).get(id),
-    new TrackUserRepository(prismaClient).get(id),
+    new UserTrackRepository(prismaClient).get(id),
   ]);
 
   if (track === undefined) {
@@ -30,7 +30,7 @@ const getTrack = cache(async (id: string) => {
 
   return {
     track,
-    trackUser: trackUser ?? initialTrackUserData(track),
+    userTrack: userTrack ?? initialUserTrack(track),
   };
 });
 
@@ -43,7 +43,7 @@ export async function generateMetadata({ params }: Props) {
 
 /** 曲詳細ページ */
 export default async function Home({ params }: Props) {
-  const { track, trackUser } = await getTrack(params.id);
+  const { track, userTrack } = await getTrack(params.id);
 
   return (
     <main>
@@ -59,7 +59,7 @@ export default async function Home({ params }: Props) {
         ) : null}
       </Stack>
 
-      <TrackForm track={track} initialTrackUser={trackUser} />
+      <TrackForm track={track} initialUserTrack={userTrack} />
     </main>
   );
 }

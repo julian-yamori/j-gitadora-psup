@@ -1,16 +1,16 @@
 import { getFormCheckbox, getFormString } from "@/app/_util/form_convert";
 import prismaClient from "@/db/prisma_client";
 import TrackRepository from "@/db/track_repository";
-import TrackUserRepository from "@/db/track_user_repository";
+import UserTrackRepository from "@/db/user_track_repository";
 import { Difficulty } from "@/domain/track/difficulty";
 import { Track } from "@/domain/track/track";
 import {
   UserScore,
-  TrackUserScores,
+  UserTrackScores,
   trackSkillPoint,
-  initialTrackUserData,
+  initialUserTrack,
   validateTrackLike,
-} from "@/domain/track/track_user_data";
+} from "@/domain/track/user_track";
 import formKeyByScore from "../form_key";
 
 /** 曲詳細画面からの情報の更新 */
@@ -25,7 +25,7 @@ export async function POST(
 
   await prismaClient.$transaction(async (tx) => {
     const trackRepository = new TrackRepository(tx);
-    const trackUserRepository = new TrackUserRepository(tx);
+    const userTrackRepository = new UserTrackRepository(tx);
 
     const track = await trackRepository.get(trackId);
     if (track === undefined) {
@@ -33,7 +33,7 @@ export async function POST(
     }
 
     const oldUserData =
-      (await trackUserRepository.get(track.id)) ?? initialTrackUserData(track);
+      (await userTrackRepository.get(track.id)) ?? initialUserTrack(track);
 
     const newUserData = {
       ...oldUserData,
@@ -43,7 +43,7 @@ export async function POST(
       scores: buildNewScores(form, oldUserData.scores, track),
     };
 
-    await trackUserRepository.save(newUserData);
+    await userTrackRepository.save(newUserData);
   });
 
   return new Response();
@@ -74,9 +74,9 @@ function likeFromForm(form: FormData): number | undefined {
  */
 function buildNewScores(
   form: FormData,
-  oldScores: TrackUserScores,
+  oldScores: UserTrackScores,
   track: Track,
-): TrackUserScores {
+): UserTrackScores {
   return Object.fromEntries(
     [...Object.values(oldScores)].map((old): [Difficulty, UserScore] => [
       old.difficulty,

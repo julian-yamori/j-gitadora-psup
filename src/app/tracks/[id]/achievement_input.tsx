@@ -2,7 +2,7 @@
 
 import formKeyByScore from "@/app/api/tracks/form_key";
 import { Difficulty } from "@/domain/track/difficulty";
-import { achievementToPercent } from "@/domain/track/track_user_data";
+import { achievementToPercent } from "@/domain/track/user_track";
 import { InputAdornment, TextField } from "@mui/material";
 import React, { useEffect, useState } from "react";
 

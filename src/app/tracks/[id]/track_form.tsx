@@ -5,7 +5,7 @@ import getRefNonNull from "@/app/_util/get_ref_non_null";
 import { Difficulty } from "@/domain/track/difficulty";
 import { INITIAL, OpenType } from "@/domain/track/open_type";
 import { Track } from "@/domain/track/track";
-import { TrackUserData, UserScore } from "@/domain/track/track_user_data";
+import { UserTrack, UserScore } from "@/domain/track/user_track";
 import {
   Button,
   FormControlLabel,
@@ -22,13 +22,13 @@ import ScoresTable from "./scores_table";
 
 export default function TrackForm({
   track,
-  initialTrackUser,
+  initialUserTrack,
 }: {
   track: Track;
-  initialTrackUser: TrackUserData;
+  initialUserTrack: UserTrack;
 }) {
   const form = useRef<HTMLFormElement>(null);
-  const [trackUser, setTrackUser] = useState(initialTrackUser);
+  const [userTrack, setUserTrack] = useState(initialUserTrack);
 
   // 達成率に不正な値が入力されている難易度のリスト
   const [invalidAchievements, setInvalidAchievements] = useState<
@@ -36,7 +36,7 @@ export default function TrackForm({
   >(new Set());
 
   const handleScoreChanged = (newVal: UserScore) => {
-    setTrackUser((old) => ({
+    setUserTrack((old) => ({
       ...old,
       scores: { ...old.scores, [newVal.difficulty]: newVal },
     }));
@@ -82,17 +82,17 @@ export default function TrackForm({
           <FormGroup>
             <OpenSwitch
               openType={track.openType}
-              isOpen={trackUser.isOpen}
-              onChange={(v) => setTrackUser((old) => ({ ...old, isOpen: v }))}
+              isOpen={userTrack.isOpen}
+              onChange={(v) => setUserTrack((old) => ({ ...old, isOpen: v }))}
             />
 
             <Stack direction="row" spacing={1}>
               <Typography>好み</Typography>
               <Rating
                 name="like"
-                value={trackUser.like}
+                value={userTrack.like}
                 onChange={(_, v) =>
-                  setTrackUser((old) => ({ ...old, like: Number(v) }))
+                  setUserTrack((old) => ({ ...old, like: Number(v) }))
                 }
               />
             </Stack>
@@ -100,7 +100,7 @@ export default function TrackForm({
 
           <ScoresTable
             track={track}
-            trackUser={trackUser}
+            userTrack={userTrack}
             onScoreChange={handleScoreChanged}
             onAchievementValidChange={handleAchievementValidChanged}
           />

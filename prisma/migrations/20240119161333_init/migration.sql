@@ -20,7 +20,7 @@ CREATE TABLE "Score" (
 );
 
 -- CreateTable
-CREATE TABLE "TrackUser" (
+CREATE TABLE "UserTrack" (
     "id" TEXT NOT NULL,
     "like" INTEGER,
     "isOpen" BOOLEAN NOT NULL,
@@ -28,7 +28,7 @@ CREATE TABLE "TrackUser" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "TrackUser_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "UserTrack_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -103,10 +103,10 @@ CREATE UNIQUE INDEX "WikiLoadingNewScore_trackId_difficulty_key" ON "WikiLoading
 ALTER TABLE "Score" ADD CONSTRAINT "Score_trackId_fkey" FOREIGN KEY ("trackId") REFERENCES "Track"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "TrackUser" ADD CONSTRAINT "TrackUser_id_fkey" FOREIGN KEY ("id") REFERENCES "Track"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "UserTrack" ADD CONSTRAINT "UserTrack_id_fkey" FOREIGN KEY ("id") REFERENCES "Track"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "UserScore" ADD CONSTRAINT "UserScore_trackId_fkey" FOREIGN KEY ("trackId") REFERENCES "TrackUser"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "UserScore" ADD CONSTRAINT "UserScore_trackId_fkey" FOREIGN KEY ("trackId") REFERENCES "UserTrack"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "UserScore" ADD CONSTRAINT "UserScore_trackId_difficulty_fkey" FOREIGN KEY ("trackId", "difficulty") REFERENCES "Score"("trackId", "difficulty") ON DELETE RESTRICT ON UPDATE CASCADE;
