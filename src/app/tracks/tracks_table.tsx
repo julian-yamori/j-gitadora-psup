@@ -1,6 +1,6 @@
 // "use client";
 
-import { TrackListDto, TrackListDtoLvs } from "@/db/track_list_dto";
+import { TrackListDto, TrackListScoreDto } from "@/db/track_list_dto";
 import {
   ADVANCED,
   BASIC,
@@ -21,11 +21,11 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 
-function difficultyLvText(
-  difficulties: ReadonlyArray<TrackListDtoLvs>,
+function scoreLvText(
+  scores: ReadonlyArray<TrackListScoreDto>,
   difficulty: Difficulty,
 ): string {
-  const lvObj = difficulties.find((d) => d.difficulty === difficulty);
+  const lvObj = scores.find((d) => d.difficulty === difficulty);
   if (lvObj === undefined) return "---";
 
   return lvToString(lvObj.lv);
@@ -56,18 +56,10 @@ export default function TracksTable({
               <TableCell>
                 <Link href={`/tracks/${track.id}`}>{track.title}</Link>
               </TableCell>
-              <TableCell>
-                {difficultyLvText(track.difficulties, BASIC)}
-              </TableCell>
-              <TableCell>
-                {difficultyLvText(track.difficulties, ADVANCED)}
-              </TableCell>
-              <TableCell>
-                {difficultyLvText(track.difficulties, EXTREME)}
-              </TableCell>
-              <TableCell>
-                {difficultyLvText(track.difficulties, MASTER)}
-              </TableCell>
+              <TableCell>{scoreLvText(track.scores, BASIC)}</TableCell>
+              <TableCell>{scoreLvText(track.scores, ADVANCED)}</TableCell>
+              <TableCell>{scoreLvText(track.scores, EXTREME)}</TableCell>
+              <TableCell>{scoreLvText(track.scores, MASTER)}</TableCell>
               <TableCell>{track.long ? "LONG" : undefined}</TableCell>
               <TableCell>{openTypeToStr(track.openType)}</TableCell>
             </TableRow>

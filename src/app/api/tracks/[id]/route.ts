@@ -5,13 +5,13 @@ import TrackUserRepository from "@/db/track_user_repository";
 import { Difficulty } from "@/domain/track/difficulty";
 import { Track } from "@/domain/track/track";
 import {
-  TrackUserDataByDifficulty,
-  TrackUserDifficulties,
+  UserScore,
+  TrackUserScores,
   trackSkillPoint,
   initialTrackUserData,
   validateTrackLike,
 } from "@/domain/track/track_user_data";
-import formKeyByDifficulty from "../form_key";
+import formKeyByScore from "../form_key";
 
 /** 曲詳細画面からの情報の更新 */
 // eslint-disable-next-line import/prefer-default-export -- defaultにするとメソッド名を認識しなくなる
@@ -40,7 +40,7 @@ export async function POST(
       like: likeFromForm(form),
       isOpen: getFormCheckbox(form, "is_open"),
       memo: getFormString(form, "memo"),
-      difficulties: buildNewDifficulties(form, oldUserData.difficulties, track),
+      scores: buildNewScores(form, oldUserData.scores, track),
     };
 
     await trackUserRepository.save(newUserData);
@@ -66,41 +66,39 @@ function likeFromForm(form: FormData): number | undefined {
 }
 
 /**
- * 登録すべき難易度別情報を生成
+ * 登録すべき全ての譜面情報を生成
  * @param form リクエストのFormData
- * @param oldDifficulties 登録前の難易度毎情報
+ * @param oldScores 登録前の譜面情報
  * @param track 生成元の曲情報
- * @returns 難易度毎の登録する情報
+ * @returns 登録する全譜面の情報
  */
-function buildNewDifficulties(
+function buildNewScores(
   form: FormData,
-  oldDifficulties: TrackUserDifficulties,
+  oldScores: TrackUserScores,
   track: Track,
-): TrackUserDifficulties {
+): TrackUserScores {
   return Object.fromEntries(
-    [...Object.values(oldDifficulties)].map(
-      (old): [Difficulty, TrackUserDataByDifficulty] => [
-        old.difficulty,
-        buildNewDifficulty(form, old, track),
-      ],
-    ),
+    [...Object.values(oldScores)].map((old): [Difficulty, UserScore] => [
+      old.difficulty,
+      buildNewScore(form, old, track),
+    ]),
   );
 }
 
 /**
- * 登録すべき難易度別情報を一つ生成
+ * 登録すべき譜面情報を一つ生成
  * @param form リクエストのFormData
- * @param oldDifficulties 登録前の難易度毎情報
+ * @param old 登録前の譜面情報
  * @param track 生成元の曲情報
- * @returns 難易度一つについての登録する情報
+ * @returns 登録する譜面一つの情報
  */
-function buildNewDifficulty(
+function buildNewScore(
   form: FormData,
-  old: TrackUserDataByDifficulty,
+  old: UserScore,
   track: Track,
-): TrackUserDataByDifficulty {
-  const trackDifficulty = track.difficulties[old.difficulty];
-  if (trackDifficulty === undefined) {
+): UserScore {
+  const score = track.scores[old.difficulty];
+  if (score === undefined) {
     throw Error(
       `difficulty "${old.difficulty}" not found in track "${track.id}"`,
     );
@@ -108,19 +106,16 @@ function buildNewDifficulty(
 
   const failed = getFormCheckbox(
     form,
-    formKeyByDifficulty(old.difficulty, "failed"),
+    formKeyByScore(old.difficulty, "failed"),
   );
   const achievement = achievementFromForm(form, old.difficulty, failed);
 
   return {
     ...old,
     achievement,
-    skillPoint: trackSkillPoint(trackDifficulty.lv, achievement),
+    skillPoint: trackSkillPoint(score.lv, achievement),
     failed,
-    movieURL: getFormString(
-      form,
-      formKeyByDifficulty(old.difficulty, "movie_url"),
-    ),
+    movieURL: getFormString(form, formKeyByScore(old.difficulty, "movie_url")),
   };
 }
 
@@ -129,7 +124,7 @@ function achievementFromForm(
   difficulty: Difficulty,
   failed: boolean,
 ): number {
-  const formKey = formKeyByDifficulty(difficulty, "achievement");
+  const formKey = formKeyByScore(difficulty, "achievement");
 
   const strValue = form.get(formKey);
 

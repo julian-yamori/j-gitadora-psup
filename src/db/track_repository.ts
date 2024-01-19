@@ -13,7 +13,7 @@ export default class TrackRepository {
   async get(id: string): Promise<Track | undefined> {
     const found = await this.prismaTransaction.track.findUnique({
       include: {
-        difficulties: { select: { trackId: true, difficulty: true, lv: true } },
+        scores: { select: { trackId: true, difficulty: true, lv: true } },
       },
       where: { id },
     });
@@ -30,15 +30,15 @@ export default class TrackRepository {
         skillType: track.skillType,
         long: track.long,
         openType: track.openType,
-        difficulties: {
-          create: Object.values(track.difficulties).map((d) => ({
+        scores: {
+          create: Object.values(track.scores).map((d) => ({
             difficulty: d.difficulty,
             lv: d.lv,
           })),
         },
         deleted: false,
       },
-      include: { difficulties: true },
+      include: { scores: true },
     });
   }
 
@@ -53,14 +53,14 @@ export default class TrackRepository {
         openType: track.openType,
         // 一旦削除して追加しなおす
         // todo 外部依存あるとダメかも
-        difficulties: {
+        scores: {
           deleteMany: {},
         },
       },
-      include: { difficulties: true },
+      include: { scores: true },
     });
-    await this.prismaTransaction.trackByDifficulty.createMany({
-      data: Object.values(track.difficulties).map((d) => ({
+    await this.prismaTransaction.score.createMany({
+      data: Object.values(track.scores).map((d) => ({
         trackId: d.trackId,
         difficulty: d.difficulty,
         lv: d.lv,
@@ -80,13 +80,13 @@ export default class TrackRepository {
 /** PrismaのModelからドメインモデルに変換 */
 function trackPrisma2Domain(
   dto: PrismaClient.Track & {
-    difficulties: PrismaClient.TrackByDifficulty[];
+    scores: PrismaClient.Score[];
   },
 ): Track {
   if (dto.deleted) throw Error(`track ${dto.id} has been deleted`);
 
-  const difficulties = Object.fromEntries(
-    dto.difficulties.map((v) => [difficultyFromNum(v.difficulty), v]),
+  const scores = Object.fromEntries(
+    dto.scores.map((v) => [difficultyFromNum(v.difficulty), v]),
   );
 
   return {
@@ -95,6 +95,6 @@ function trackPrisma2Domain(
     skillType: skillTypeFromNum(dto.skillType),
     long: dto.long,
     openType: openTypeFromNum(dto.openType),
-    difficulties,
+    scores,
   };
 }

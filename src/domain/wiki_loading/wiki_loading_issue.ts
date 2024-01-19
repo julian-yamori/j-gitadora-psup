@@ -77,9 +77,9 @@ export type TrackDiffirence = {
   propertyName: string;
 
   /**
-   * データに齟齬が発生している難易度
+   * データに齟齬が発生している譜面の難易度
    *
-   * 難易度毎の値ではなくTrack自体の齟齬ならundefined
+   * 譜面の値ではなくTrack自体の齟齬ならundefined
    */
   difficulty: Difficulty | undefined;
 

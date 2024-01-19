@@ -191,11 +191,8 @@ function addIdToParsedTrack(track: ParsedTrack, id: string): Track {
   return {
     ...track,
     id,
-    difficulties: Object.fromEntries(
-      Object.entries(track.difficulties).map(([k, d]) => [
-        k,
-        { ...d, trackId: id },
-      ]),
+    scores: Object.fromEntries(
+      Object.entries(track.scores).map(([k, d]) => [k, { ...d, trackId: id }]),
     ),
   };
 }
@@ -253,8 +250,8 @@ function compareTrack(
   }
 
   for (const difficulty of ALL_DIFFICULTIES) {
-    const oldLv = oldTrack.difficulties[difficulty]?.lv;
-    const newLv = newTrack.difficulties[difficulty]?.lv;
+    const oldLv = oldTrack.scores[difficulty]?.lv;
+    const newLv = newTrack.scores[difficulty]?.lv;
 
     if (oldLv !== newLv) {
       diffs.push({

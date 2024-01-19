@@ -13,7 +13,7 @@ CREATE TABLE "Track" (
 );
 
 -- CreateTable
-CREATE TABLE "TrackByDifficulty" (
+CREATE TABLE "Score" (
     "trackId" TEXT NOT NULL,
     "difficulty" INTEGER NOT NULL,
     "lv" DOUBLE PRECISION NOT NULL
@@ -32,7 +32,7 @@ CREATE TABLE "TrackUser" (
 );
 
 -- CreateTable
-CREATE TABLE "TrackUserByDifficulty" (
+CREATE TABLE "UserScore" (
     "trackId" TEXT NOT NULL,
     "difficulty" INTEGER NOT NULL,
     "achievement" DOUBLE PRECISION NOT NULL,
@@ -69,7 +69,7 @@ CREATE TABLE "WikiLoadingNewTrack" (
 );
 
 -- CreateTable
-CREATE TABLE "WikiLoadingNewTrackByDifficulty" (
+CREATE TABLE "WikiLoadingNewScore" (
     "trackId" TEXT NOT NULL,
     "difficulty" INTEGER NOT NULL,
     "lv" DOUBLE PRECISION NOT NULL
@@ -91,31 +91,31 @@ CREATE TABLE "WikiLoadingDiffirence" (
 CREATE UNIQUE INDEX "Track_title_key" ON "Track"("title");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "TrackByDifficulty_trackId_difficulty_key" ON "TrackByDifficulty"("trackId", "difficulty");
+CREATE UNIQUE INDEX "Score_trackId_difficulty_key" ON "Score"("trackId", "difficulty");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "TrackUserByDifficulty_trackId_difficulty_key" ON "TrackUserByDifficulty"("trackId", "difficulty");
+CREATE UNIQUE INDEX "UserScore_trackId_difficulty_key" ON "UserScore"("trackId", "difficulty");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "WikiLoadingNewTrackByDifficulty_trackId_difficulty_key" ON "WikiLoadingNewTrackByDifficulty"("trackId", "difficulty");
+CREATE UNIQUE INDEX "WikiLoadingNewScore_trackId_difficulty_key" ON "WikiLoadingNewScore"("trackId", "difficulty");
 
 -- AddForeignKey
-ALTER TABLE "TrackByDifficulty" ADD CONSTRAINT "TrackByDifficulty_trackId_fkey" FOREIGN KEY ("trackId") REFERENCES "Track"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Score" ADD CONSTRAINT "Score_trackId_fkey" FOREIGN KEY ("trackId") REFERENCES "Track"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "TrackUser" ADD CONSTRAINT "TrackUser_id_fkey" FOREIGN KEY ("id") REFERENCES "Track"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "TrackUserByDifficulty" ADD CONSTRAINT "TrackUserByDifficulty_trackId_fkey" FOREIGN KEY ("trackId") REFERENCES "TrackUser"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "UserScore" ADD CONSTRAINT "UserScore_trackId_fkey" FOREIGN KEY ("trackId") REFERENCES "TrackUser"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "TrackUserByDifficulty" ADD CONSTRAINT "TrackUserByDifficulty_trackId_difficulty_fkey" FOREIGN KEY ("trackId", "difficulty") REFERENCES "TrackByDifficulty"("trackId", "difficulty") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "UserScore" ADD CONSTRAINT "UserScore_trackId_difficulty_fkey" FOREIGN KEY ("trackId", "difficulty") REFERENCES "Score"("trackId", "difficulty") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "WikiLoadingNewTrack" ADD CONSTRAINT "WikiLoadingNewTrack_id_fkey" FOREIGN KEY ("id") REFERENCES "WikiLoadingIssue"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "WikiLoadingNewTrackByDifficulty" ADD CONSTRAINT "WikiLoadingNewTrackByDifficulty_trackId_fkey" FOREIGN KEY ("trackId") REFERENCES "WikiLoadingNewTrack"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "WikiLoadingNewScore" ADD CONSTRAINT "WikiLoadingNewScore_trackId_fkey" FOREIGN KEY ("trackId") REFERENCES "WikiLoadingNewTrack"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "WikiLoadingDiffirence" ADD CONSTRAINT "WikiLoadingDiffirence_issueId_fkey" FOREIGN KEY ("issueId") REFERENCES "WikiLoadingIssue"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

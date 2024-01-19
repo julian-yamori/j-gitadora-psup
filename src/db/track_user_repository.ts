@@ -1,8 +1,5 @@
 import PrismaClient from "@prisma/client";
-import {
-  TrackUserData,
-  TrackUserDataByDifficulty,
-} from "@/domain/track/track_user_data";
+import { TrackUserData, UserScore } from "@/domain/track/track_user_data";
 import { Difficulty, difficultyFromNum } from "@/domain/track/difficulty";
 import { PrismaTransaction } from "./prisma_client";
 
@@ -14,7 +11,7 @@ export default class TrackUserRepository {
   async get(id: string): Promise<TrackUserData | undefined> {
     const found = await this.prismaTransaction.trackUser.findUnique({
       include: {
-        difficulties: {
+        scores: {
           select: {
             difficulty: true,
             achievement: true,
@@ -53,12 +50,12 @@ export default class TrackUserRepository {
       update: {
         ...fields,
         // 一旦削除して追加しなおす
-        difficulties: { deleteMany: {} },
+        scores: { deleteMany: {} },
       },
     });
 
-    await this.prismaTransaction.trackUserByDifficulty.createMany({
-      data: Object.values(track.difficulties).map((d) => ({
+    await this.prismaTransaction.userScore.createMany({
+      data: Object.values(track.scores).map((d) => ({
         trackId: d.trackId,
         difficulty: d.difficulty,
         achievement: d.achievement,
@@ -78,11 +75,11 @@ export default class TrackUserRepository {
 /** PrismaのModelからドメインモデルに変換 */
 function trackPrisma2Domain(
   dto: PrismaClient.TrackUser & {
-    difficulties: Omit<PrismaClient.TrackUserByDifficulty, "trackId">[];
+    scores: Omit<PrismaClient.UserScore, "trackId">[];
   },
 ): TrackUserData {
-  const difficulties = Object.fromEntries(
-    dto.difficulties.map((v): [Difficulty, TrackUserDataByDifficulty] => [
+  const scores = Object.fromEntries(
+    dto.scores.map((v): [Difficulty, UserScore] => [
       difficultyFromNum(v.difficulty),
       {
         trackId: dto.id,
@@ -105,6 +102,6 @@ function trackPrisma2Domain(
     like: dto.like === null ? undefined : dto.like,
     isOpen: dto.isOpen,
     memo: dto.memo,
-    difficulties,
+    scores,
   };
 }

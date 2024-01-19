@@ -1,6 +1,6 @@
 "use client";
 
-import formKeyByDifficulty from "@/app/api/tracks/form_key";
+import formKeyByScore from "@/app/api/tracks/form_key";
 import { Difficulty } from "@/domain/track/difficulty";
 import { achievementToPercent } from "@/domain/track/track_user_data";
 import { InputAdornment, TextField } from "@mui/material";
@@ -44,7 +44,7 @@ export default function AchievementInput({
 
   return (
     <TextField
-      name={formKeyByDifficulty(difficulty, "achievement")}
+      name={formKeyByScore(difficulty, "achievement")}
       value={strValue}
       onChange={handleOnChange}
       onBlur={submit}

@@ -5,10 +5,7 @@ import getRefNonNull from "@/app/_util/get_ref_non_null";
 import { Difficulty } from "@/domain/track/difficulty";
 import { INITIAL, OpenType } from "@/domain/track/open_type";
 import { Track } from "@/domain/track/track";
-import {
-  TrackUserData,
-  TrackUserDataByDifficulty,
-} from "@/domain/track/track_user_data";
+import { TrackUserData, UserScore } from "@/domain/track/track_user_data";
 import {
   Button,
   FormControlLabel,
@@ -21,7 +18,7 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useRef, useState } from "react";
-import DifficultiesTable from "./difficulties_table";
+import ScoresTable from "./scores_table";
 
 export default function TrackForm({
   track,
@@ -38,10 +35,10 @@ export default function TrackForm({
     ReadonlySet<Difficulty>
   >(new Set());
 
-  const handleByDifficultyChanged = (newVal: TrackUserDataByDifficulty) => {
+  const handleScoreChanged = (newVal: UserScore) => {
     setTrackUser((old) => ({
       ...old,
-      difficulties: { ...old.difficulties, [newVal.difficulty]: newVal },
+      scores: { ...old.scores, [newVal.difficulty]: newVal },
     }));
   };
 
@@ -101,11 +98,10 @@ export default function TrackForm({
             </Stack>
           </FormGroup>
 
-          {/* 難易度毎のtable */}
-          <DifficultiesTable
+          <ScoresTable
             track={track}
             trackUser={trackUser}
-            onDifficultyValueChange={handleByDifficultyChanged}
+            onScoreChange={handleScoreChanged}
             onAchievementValidChange={handleAchievementValidChanged}
           />
 

@@ -12,7 +12,7 @@ export default class TrackListQueryService {
     return (
       await this.prismaTransaction.track.findMany({
         where: { deleted: false },
-        include: { difficulties: { select: { difficulty: true, lv: true } } },
+        include: { scores: { select: { difficulty: true, lv: true } } },
       })
     ).map((dbModel) => ({
       id: dbModel.id,
@@ -20,7 +20,7 @@ export default class TrackListQueryService {
       skillType: skillTypeFromNum(dbModel.skillType),
       long: dbModel.long,
       openType: openTypeFromNum(dbModel.openType),
-      difficulties: dbModel.difficulties.map((d) => ({
+      scores: dbModel.scores.map((d) => ({
         difficulty: difficultyFromNum(d.difficulty),
         lv: d.lv,
       })),

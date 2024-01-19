@@ -16,8 +16,7 @@ export default class WikiLoadingIssueRepository {
     // 一括登録のために一旦配列にまとめる
     const dbIssues: PrismaClient.WikiLoadingIssue[] = [];
     const dbNewTracks: PrismaClient.WikiLoadingNewTrack[] = [];
-    const dbNewDifficulties: PrismaClient.WikiLoadingNewTrackByDifficulty[] =
-      [];
+    const dbNewScores: PrismaClient.WikiLoadingNewScore[] = [];
     const dbDiffirences: PrismaClient.WikiLoadingDiffirence[] = [];
 
     for (const issue of issues) {
@@ -32,7 +31,7 @@ export default class WikiLoadingIssueRepository {
           });
           const dbTrack = trackDomain2Prisma(issue.newTrack);
           dbNewTracks.push(dbTrack.track);
-          dbNewDifficulties.push(...dbTrack.difficulties);
+          dbNewScores.push(...dbTrack.scores);
           break;
         }
 
@@ -49,7 +48,7 @@ export default class WikiLoadingIssueRepository {
 
           const dbTrack = trackDomain2Prisma(issue.newTrack);
           dbNewTracks.push(dbTrack.track);
-          dbNewDifficulties.push(...dbTrack.difficulties);
+          dbNewScores.push(...dbTrack.scores);
 
           dbDiffirences.push(
             ...issue.diffirences.map((diff) => ({
@@ -97,8 +96,8 @@ export default class WikiLoadingIssueRepository {
     await this.prismaTransaction.wikiLoadingNewTrack.createMany({
       data: dbNewTracks,
     });
-    await this.prismaTransaction.wikiLoadingNewTrackByDifficulty.createMany({
-      data: dbNewDifficulties,
+    await this.prismaTransaction.wikiLoadingNewScore.createMany({
+      data: dbNewScores,
     });
     await this.prismaTransaction.wikiLoadingDiffirence.createMany({
       data: dbDiffirences,
@@ -107,7 +106,7 @@ export default class WikiLoadingIssueRepository {
 
   async deleteAll() {
     await this.prismaTransaction.wikiLoadingDiffirence.deleteMany();
-    await this.prismaTransaction.wikiLoadingNewTrackByDifficulty.deleteMany();
+    await this.prismaTransaction.wikiLoadingNewScore.deleteMany();
     await this.prismaTransaction.wikiLoadingNewTrack.deleteMany();
     await this.prismaTransaction.wikiLoadingIssue.deleteMany();
   }
@@ -124,7 +123,7 @@ function createDiffirenceId(): string {
 /** TrackのドメインモデルをPrismaのWikiLoadingNewTrackに変換 */
 function trackDomain2Prisma(model: Track): {
   track: PrismaClient.WikiLoadingNewTrack;
-  difficulties: PrismaClient.WikiLoadingNewTrackByDifficulty[];
+  scores: PrismaClient.WikiLoadingNewScore[];
 } {
   return {
     track: {
@@ -135,7 +134,7 @@ function trackDomain2Prisma(model: Track): {
       openType: model.openType,
     },
 
-    difficulties: Object.entries(model.difficulties).map(([, d]) => ({
+    scores: Object.entries(model.scores).map(([, d]) => ({
       trackId: model.id,
       difficulty: d.difficulty,
       lv: d.lv,

@@ -27,7 +27,7 @@ export default class RegisterQueryService {
     const found = await this.prismaTransaction.wikiLoadingIssue.findMany({
       include: {
         track: {
-          include: { difficulties: true },
+          include: { scores: true },
         },
       },
     });
@@ -64,11 +64,11 @@ export default class RegisterQueryService {
 /** PrismaのWikiLoadingNewTrackからドメインモデルのTrackに変換 */
 function trackPrisma2Domain(
   dto: PrismaClient.WikiLoadingNewTrack & {
-    difficulties: PrismaClient.TrackByDifficulty[];
+    scores: PrismaClient.Score[];
   },
 ): Track {
-  const difficulties = Object.fromEntries(
-    dto.difficulties.map((v) => [difficultyFromNum(v.difficulty), v]),
+  const scores = Object.fromEntries(
+    dto.scores.map((v) => [difficultyFromNum(v.difficulty), v]),
   );
 
   return {
@@ -77,6 +77,6 @@ function trackPrisma2Domain(
     skillType: skillTypeFromNum(dto.skillType),
     long: dto.long,
     openType: openTypeFromNum(dto.openType),
-    difficulties,
+    scores,
   };
 }

@@ -21,14 +21,14 @@ export type TrackListDto = Readonly<{
   /** 開放方法 */
   openType: OpenType;
 
-  /** 難易度ごとのLv */
-  difficulties: ReadonlyArray<TrackListDtoLvs>;
+  /** 全譜面情報 */
+  scores: ReadonlyArray<TrackListScoreDto>;
 }>;
 
 /**
- * 曲一覧画面に表示する曲の、難易度1つごとのDTO
+ * 曲一覧画面に表示する曲の、譜面ごとのDTO
  */
-export type TrackListDtoLvs = Readonly<{
+export type TrackListScoreDto = Readonly<{
   difficulty: Difficulty;
   lv: number;
 }>;

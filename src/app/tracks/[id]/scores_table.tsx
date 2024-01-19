@@ -1,13 +1,13 @@
-import formKeyByDifficulty from "@/app/api/tracks/form_key";
+import formKeyByScore from "@/app/api/tracks/form_key";
 import {
   ALL_DIFFICULTIES,
   Difficulty,
   difficultyToStr,
 } from "@/domain/track/difficulty";
-import { Track, TrackByDifficulty, lvToString } from "@/domain/track/track";
+import { Track, Score, lvToString } from "@/domain/track/track";
 import {
   TrackUserData,
-  TrackUserDataByDifficulty,
+  UserScore,
   skillPointToDisplay,
   trackSkillPoint,
 } from "@/domain/track/track_user_data";
@@ -25,16 +25,16 @@ import {
 import React from "react";
 import AchievementInput from "./achievement_input";
 
-/** 曲詳細画面の、難易度毎のテーブル */
-export default function DifficultiesTable({
+/** 曲詳細画面の、譜面毎のテーブル */
+export default function ScoresTable({
   track,
   trackUser,
-  onDifficultyValueChange,
+  onScoreChange,
   onAchievementValidChange,
 }: {
   track: Track;
   trackUser: TrackUserData;
-  onDifficultyValueChange: (d: TrackUserDataByDifficulty) => unknown;
+  onScoreChange: (d: UserScore) => unknown;
   onAchievementValidChange: (d: Difficulty, valid: boolean) => unknown;
 }) {
   return (
@@ -52,17 +52,17 @@ export default function DifficultiesTable({
         </TableHead>
         <TableBody>
           {ALL_DIFFICULTIES.map((d) => {
-            const td = track.difficulties[d];
+            const td = track.scores[d];
             return td ? (
-              <DifficultyRowExist
+              <ScoreRowExist
                 key={d}
-                difficulty={td}
-                userDifficulty={trackUser.difficulties[d]}
-                onValueChange={onDifficultyValueChange}
+                score={td}
+                userScore={trackUser.scores[d]}
+                onValueChange={onScoreChange}
                 onAchievementValidChange={onAchievementValidChange}
               />
             ) : (
-              <DifficultyRowEmpty key={d} difficulty={d} />
+              <ScoreRowEmpty key={d} difficulty={d} />
             );
           })}
         </TableBody>
@@ -71,7 +71,7 @@ export default function DifficultiesTable({
   );
 }
 
-function DifficultyRowEmpty({ difficulty }: { difficulty: Difficulty }) {
+function ScoreRowEmpty({ difficulty }: { difficulty: Difficulty }) {
   return (
     <TableRow>
       <TableCell>{difficultyToStr(difficulty)}</TableCell>
@@ -84,57 +84,51 @@ function DifficultyRowEmpty({ difficulty }: { difficulty: Difficulty }) {
   );
 }
 
-function DifficultyRowExist({
-  difficulty,
-  userDifficulty,
+function ScoreRowExist({
+  score,
+  userScore,
   onValueChange,
   onAchievementValidChange,
 }: {
-  difficulty: TrackByDifficulty;
-  userDifficulty: TrackUserDataByDifficulty | undefined;
-  onValueChange: (d: TrackUserDataByDifficulty) => unknown;
+  score: Score;
+  userScore: UserScore | undefined;
+  onValueChange: (d: UserScore) => unknown;
   onAchievementValidChange: (d: Difficulty, valid: boolean) => unknown;
 }) {
-  if (userDifficulty === undefined) {
-    throw Error(`user difficulty not found: ${difficulty.difficulty}`);
+  if (userScore === undefined) {
+    throw Error(`user difficulty not found: ${score.difficulty}`);
   }
 
   return (
     <TableRow>
-      <TableCell>{difficultyToStr(difficulty.difficulty)}</TableCell>
-      <TableCell align="right">{lvToString(difficulty.lv)}</TableCell>
+      <TableCell>{difficultyToStr(score.difficulty)}</TableCell>
+      <TableCell align="right">{lvToString(score.lv)}</TableCell>
       <TableCell>
         <AchievementInput
-          difficulty={difficulty.difficulty}
-          achievement={userDifficulty.achievement}
-          failed={userDifficulty.failed}
-          onValueChange={(v) =>
-            onValueChange({ ...userDifficulty, achievement: v })
-          }
-          onValidChange={(v) =>
-            onAchievementValidChange(difficulty.difficulty, v)
-          }
+          difficulty={score.difficulty}
+          achievement={userScore.achievement}
+          failed={userScore.failed}
+          onValueChange={(v) => onValueChange({ ...userScore, achievement: v })}
+          onValidChange={(v) => onAchievementValidChange(score.difficulty, v)}
         />
       </TableCell>
       <TableCell align="center">
         <FailedInput
-          difficulty={difficulty.difficulty}
-          achievement={userDifficulty.achievement}
-          failed={userDifficulty.failed}
-          onChange={(v) => onValueChange({ ...userDifficulty, failed: v })}
+          difficulty={score.difficulty}
+          achievement={userScore.achievement}
+          failed={userScore.failed}
+          onChange={(v) => onValueChange({ ...userScore, failed: v })}
         />
       </TableCell>
       <TableCell align="right">
-        {skillPointToDisplay(
-          trackSkillPoint(difficulty.lv, userDifficulty.achievement),
-        )}
+        {skillPointToDisplay(trackSkillPoint(score.lv, userScore.achievement))}
       </TableCell>
       <TableCell>
         <TextField
-          name={formKeyByDifficulty(difficulty.difficulty, "movie_url")}
-          value={userDifficulty.movieURL}
+          name={formKeyByScore(score.difficulty, "movie_url")}
+          value={userScore.movieURL}
           onChange={(e) =>
-            onValueChange({ ...userDifficulty, movieURL: e.target.value })
+            onValueChange({ ...userScore, movieURL: e.target.value })
           }
           size="small"
           inputProps={{
@@ -159,7 +153,7 @@ function FailedInput({
 }) {
   return (
     <Checkbox
-      name={formKeyByDifficulty(difficulty, "failed")}
+      name={formKeyByScore(difficulty, "failed")}
       checked={failed}
       onChange={(e) => {
         onChange(e.target.checked);

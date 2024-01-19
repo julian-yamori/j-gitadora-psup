@@ -16,7 +16,7 @@ model Track {
   skillType Int
   long Boolean
   openType Int
-  difficulties TrackByDifficulty[]
+  scores Score[]
 
   // 論理削除
   deleted Boolean
@@ -27,13 +27,13 @@ model Track {
   updatedAt DateTime @updatedAt
 }
 
-model TrackByDifficulty {
+model Score {
   trackId String
   difficulty Int
   lv Float
 
   track Track @relation(fields: [trackId], references: [id])
-  userDifficulty TrackUserByDifficulty?
+  userScore UserScore?
 
   @@unique([trackId, difficulty])
 }
@@ -43,7 +43,7 @@ model TrackUser {
   like Int?
   isOpen Boolean
   memo String
-  difficulties TrackUserByDifficulty[]
+  scores UserScore[]
 
   track Track @relation(fields: [id], references: [id])
 
@@ -51,7 +51,7 @@ model TrackUser {
   updatedAt DateTime @updatedAt
 }
 
-model TrackUserByDifficulty {
+model UserScore {
   trackId String
   difficulty Int
 
@@ -68,7 +68,7 @@ model TrackUserByDifficulty {
   movieURL String
 
   trackUser TrackUser @relation(fields: [trackId], references: [id])
-  trackDifficulty TrackByDifficulty @relation(fields: [trackId, difficulty], references: [trackId, difficulty])
+  score Score @relation(fields: [trackId, difficulty], references: [trackId, difficulty])
 
   @@unique([trackId, difficulty])
 }
@@ -102,11 +102,11 @@ model WikiLoadingNewTrack {
   skillType Int
   long Boolean
   openType Int
-  difficulties WikiLoadingNewTrackByDifficulty[]
+  scores WikiLoadingNewScore[]
 
   issue WikiLoadingIssue @relation(fields: [id], references: [id])
 }
-model WikiLoadingNewTrackByDifficulty {
+model WikiLoadingNewScore {
   trackId String
   difficulty Int
   lv Float

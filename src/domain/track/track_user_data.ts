@@ -24,17 +24,17 @@ export type TrackUserData = Readonly<{
   /** 曲ごとのメモ */
   memo: string;
 
-  /** 難易度毎の情報 */
-  difficulties: TrackUserDifficulties;
+  /** 曲の譜面 */
+  scores: TrackUserScores;
 }>;
 
-/** 曲の全難易度についての難易度別情報 */
-export type TrackUserDifficulties = Readonly<{
-  readonly [K in Difficulty]?: TrackUserDataByDifficulty;
+/** 曲の全譜面のユーザー編集データ */
+export type TrackUserScores = Readonly<{
+  readonly [K in Difficulty]?: UserScore;
 }>;
 
-/** 曲の難易度別のユーザー編集データ */
-export type TrackUserDataByDifficulty = Readonly<{
+/** 譜面のユーザー編集データ */
+export type UserScore = Readonly<{
   /** 曲のID (key) */
   trackId: string;
 
@@ -91,25 +91,23 @@ export type TrackUserDataByDifficulty = Readonly<{
  * @return 初期状態のTrackUserData
  */
 export function initialTrackUserData(track: Track): TrackUserData {
-  const difficulties = Object.fromEntries(
-    [...Object.values(track.difficulties)].map(
-      (d): [Difficulty, TrackUserDataByDifficulty] => [
-        d.difficulty,
-        {
-          trackId: d.trackId,
-          difficulty: d.difficulty,
-          achievement: 0,
-          skillPoint: 0,
-          failed: false,
-          wishPractice: false,
-          wishAchievement: false,
-          wishEvent: false,
-          wishNextPick: false,
-          wishPlayed: false,
-          movieURL: "",
-        },
-      ],
-    ),
+  const scores = Object.fromEntries(
+    [...Object.values(track.scores)].map((d): [Difficulty, UserScore] => [
+      d.difficulty,
+      {
+        trackId: d.trackId,
+        difficulty: d.difficulty,
+        achievement: 0,
+        skillPoint: 0,
+        failed: false,
+        wishPractice: false,
+        wishAchievement: false,
+        wishEvent: false,
+        wishNextPick: false,
+        wishPlayed: false,
+        movieURL: "",
+      },
+    ]),
   );
 
   return {
@@ -117,7 +115,7 @@ export function initialTrackUserData(track: Track): TrackUserData {
     like: undefined,
     isOpen: isOpenTypeInitialOpen(track.openType),
     memo: "",
-    difficulties,
+    scores,
   };
 }
 

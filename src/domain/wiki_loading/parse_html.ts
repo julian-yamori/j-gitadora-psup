@@ -6,11 +6,7 @@ import { WikiLoadingSource } from "./wiki_loading_source";
 import { WikiLoadingIssueError } from "./wiki_loading_issue";
 import convertBunrui from "./convert_bunrui";
 import splitRowspan from "./split_rowspan";
-import {
-  ParsedDifficulties,
-  ParsedDifficulty,
-  ParsedTrack,
-} from "./parsed_track";
+import { ParsedScores, ParsedScore, ParsedTrack } from "./parsed_track";
 
 // 想定している列数
 const COL_COUNT = 17;
@@ -117,11 +113,11 @@ function parseRow(
     };
   }
 
-  const difficultiesR = parseDifficultiesFromCell(cells.slice(5, 9));
-  if (difficultiesR.isErr()) {
+  const scoresR = parseScoresFromCell(cells.slice(5, 9));
+  if (scoresR.isErr()) {
     return {
       type: "error",
-      error: { type: "error", source, rowNo, message: difficultiesR.error },
+      error: { type: "error", source, rowNo, message: scoresR.error },
     };
   }
 
@@ -131,24 +127,24 @@ function parseRow(
       ...bunruiResult.value,
       title,
       skillType: source === "new" ? HOT : OTHER,
-      difficulties: difficultiesR.value,
+      scores: scoresR.value,
       source,
       rowNo,
     },
   };
 }
 
-/** Lv表記の4つのCellをTrackByDifficultyに変換 */
-function parseDifficultiesFromCell(
+/** Lv表記の4つのCellをScoreに変換 */
+function parseScoresFromCell(
   cells: ReadonlyArray<HTMLElement>,
-): Result<ParsedDifficulties, string> {
-  function makeErr(): Err<ParsedDifficulties, string> {
+): Result<ParsedScores, string> {
+  function makeErr(): Err<ParsedScores, string> {
     return new Err("難易度の値が不正です");
   }
 
-  // mutable ParsedDifficulties
+  // mutable ParsedScores
   const results: {
-    [K in Difficulty]?: ParsedDifficulty;
+    [K in Difficulty]?: ParsedScore;
   } = {};
 
   for (const [i, difficulty] of ALL_DIFFICULTIES.entries()) {

@@ -23,17 +23,17 @@ export type Track = Readonly<{
   /** 開放方法 */
   openType: OpenType;
 
-  /** 難易度毎の情報 */
-  difficulties: TrackDifficulties;
+  /** 曲の譜面 */
+  scores: TrackScores;
 }>;
 
-/** 曲の全難易度についての難易度別情報 */
-export type TrackDifficulties = {
-  readonly [K in Difficulty]?: TrackByDifficulty;
+/** 曲の全譜面の情報 */
+export type TrackScores = {
+  readonly [K in Difficulty]?: Score;
 };
 
-/** 曲の難易度別の情報 */
-export type TrackByDifficulty = Readonly<{
+/** 譜面の情報 */
+export type Score = Readonly<{
   /** 曲のID */
   trackId: string;
 
