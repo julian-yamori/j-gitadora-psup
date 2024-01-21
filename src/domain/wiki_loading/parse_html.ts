@@ -88,37 +88,33 @@ function parseRow(
     return { type: "ignore" };
   }
 
+  const makeErr = (message: string): ParseRowResultError => ({
+    type: "error",
+    error: { type: "error", source, rowNo, message },
+  });
+
   if (cells.length !== COL_COUNT) {
-    return { type: "error", error: errorInvalidColumnCount(source, rowNo) };
+    return makeErr("列の数が不正です");
   }
 
   const bunruiResult = convertBunrui(cells[0]);
   if (bunruiResult.isErr()) {
-    return {
-      type: "error",
-      error: { type: "error", source, rowNo, message: bunruiResult.error },
-    };
+    return makeErr(bunruiResult.error);
   }
 
   const title = getTdText(cells[1]);
   if (title === undefined) {
-    return {
-      type: "error",
-      error: {
-        type: "error",
-        source,
-        rowNo,
-        message: ERROR_MSG_EMPTY_TITLE,
-      },
-    };
+    return makeErr("曲名が空です");
+  }
+
+  const artist = getTdText(cells[2]);
+  if (artist === undefined) {
+    return makeErr("アーティストが空です");
   }
 
   const scoresR = parseScoresFromCell(cells.slice(5, 9));
   if (scoresR.isErr()) {
-    return {
-      type: "error",
-      error: { type: "error", source, rowNo, message: scoresR.error },
-    };
+    return makeErr(scoresR.error);
   }
 
   return {
@@ -126,6 +122,7 @@ function parseRow(
     track: {
       ...bunruiResult.value,
       title,
+      artist,
       skillType: source === "new" ? HOT : OTHER,
       scores: scoresR.value,
       source,
@@ -202,18 +199,3 @@ function errorNoRows(source: WikiLoadingSource): WikiLoadingIssueError {
     message: "曲データがありません",
   };
 }
-
-/** テーブル行の列数が不正だったときのエラーを作成 */
-function errorInvalidColumnCount(
-  source: WikiLoadingSource,
-  rowNo: number,
-): WikiLoadingIssueError {
-  return {
-    type: "error",
-    source,
-    rowNo,
-    message: "列の数が不正です",
-  };
-}
-
-const ERROR_MSG_EMPTY_TITLE = "曲名が空です";

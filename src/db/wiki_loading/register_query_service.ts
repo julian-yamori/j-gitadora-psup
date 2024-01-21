@@ -74,6 +74,7 @@ function trackPrisma2Domain(
   return {
     id: dto.id,
     title: dto.title,
+    artist: dto.artist,
     skillType: skillTypeFromNum(dto.skillType),
     long: dto.long,
     openType: openTypeFromNum(dto.openType),

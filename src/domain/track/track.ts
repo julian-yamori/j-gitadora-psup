@@ -14,6 +14,9 @@ export type Track = Readonly<{
   /** 曲名 */
   title: string;
 
+  /** アーティスト */
+  artist: string;
+
   /** スキル枠区分 (HOT/OTHER) */
   skillType: SkillType;
 

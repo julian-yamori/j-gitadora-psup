@@ -27,6 +27,7 @@ export default class TrackRepository {
       data: {
         id: track.id,
         title: track.title,
+        artist: track.artist,
         skillType: track.skillType,
         long: track.long,
         openType: track.openType,
@@ -36,6 +37,10 @@ export default class TrackRepository {
             lv: d.lv,
           })),
         },
+
+        // UI 上からは編集せず、 DB を直接操作する想定
+        sortTitle: null,
+
         deleted: false,
       },
       include: { scores: true },
@@ -48,6 +53,7 @@ export default class TrackRepository {
       data: {
         id: track.id,
         title: track.title,
+        artist: track.artist,
         skillType: track.skillType,
         long: track.long,
         openType: track.openType,
@@ -92,6 +98,7 @@ function trackPrisma2Domain(
   return {
     id: dto.id,
     title: dto.title,
+    artist: dto.artist,
     skillType: skillTypeFromNum(dto.skillType),
     long: dto.long,
     openType: openTypeFromNum(dto.openType),

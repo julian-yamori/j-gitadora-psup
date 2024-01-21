@@ -129,6 +129,7 @@ function trackDomain2Prisma(model: Track): {
     track: {
       id: model.id,
       title: model.title,
+      artist: model.artist,
       skillType: model.skillType,
       long: model.long,
       openType: model.openType,

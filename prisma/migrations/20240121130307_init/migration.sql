@@ -2,9 +2,11 @@
 CREATE TABLE "Track" (
     "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
+    "artist" TEXT NOT NULL,
     "skillType" INTEGER NOT NULL,
     "long" BOOLEAN NOT NULL,
     "openType" INTEGER NOT NULL,
+    "sortTitle" TEXT,
     "deleted" BOOLEAN NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -61,6 +63,7 @@ CREATE TABLE "WikiLoadingIssue" (
 CREATE TABLE "WikiLoadingNewTrack" (
     "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
+    "artist" TEXT NOT NULL,
     "skillType" INTEGER NOT NULL,
     "long" BOOLEAN NOT NULL,
     "openType" INTEGER NOT NULL,

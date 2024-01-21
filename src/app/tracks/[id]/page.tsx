@@ -12,7 +12,7 @@ import {
   skillTypeToStr,
 } from "@/domain/track/skill_type";
 import { cache } from "react";
-import { Paper, Stack } from "@mui/material";
+import { Paper, Stack, Typography } from "@mui/material";
 import TrackForm from "./track_form";
 
 export const dynamic = "force-dynamic";
@@ -48,6 +48,8 @@ export default async function Home({ params }: Props) {
   return (
     <main>
       <PageTitle title={track.title} />
+
+      <Typography>{track.artist}</Typography>
 
       <Stack direction="row" spacing={1} sx={{ marginBottom: 1 }}>
         <SkillTypePaper skillType={track.skillType} />

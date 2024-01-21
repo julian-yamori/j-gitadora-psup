@@ -219,6 +219,16 @@ function compareTrack(
     });
   }
 
+  if (oldTrack.artist !== newTrack.artist) {
+    diffs.push({
+      trackId: oldTrack.id,
+      propertyName: "artist",
+      difficulty: undefined,
+      oldValue: oldTrack.artist,
+      newValue: newTrack.artist,
+    });
+  }
+
   if (oldTrack.skillType !== newTrack.skillType) {
     diffs.push({
       trackId: oldTrack.id,
