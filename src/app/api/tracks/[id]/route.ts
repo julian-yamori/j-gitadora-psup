@@ -1,7 +1,7 @@
 import { getFormCheckbox, getFormString } from "@/app/_util/form_convert";
 import prismaClient from "@/db/prisma_client";
-import TrackRepository from "@/db/track_repository";
-import UserTrackRepository from "@/db/user_track_repository";
+import TrackRepository from "@/db/track/track_repository";
+import UserTrackRepository from "@/db/track/user_track_repository";
 import { Difficulty } from "@/domain/track/difficulty";
 import { Track } from "@/domain/track/track";
 import {

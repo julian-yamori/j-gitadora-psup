@@ -3,7 +3,7 @@ import { Track } from "@/domain/track/track";
 import { skillTypeFromNum } from "@/domain/track/skill_type";
 import { openTypeFromNum } from "@/domain/track/open_type";
 import { difficultyFromNum } from "@/domain/track/difficulty";
-import { PrismaTransaction } from "./prisma_client";
+import { PrismaTransaction } from "../prisma_client";
 
 /** 曲データのリポジトリ */
 export default class TrackRepository {

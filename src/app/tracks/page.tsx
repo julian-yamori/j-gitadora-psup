@@ -1,6 +1,6 @@
 import PageTitle from "@/components/page_title";
 import prismaClient from "@/db/prisma_client";
-import TrackListQueryService from "@/db/track_list_query_service";
+import TrackListQueryService from "@/db/track_list/track_list_query_service";
 import TracksTable from "./tracks_table";
 import createMetadata from "../_util/create_metadata";
 

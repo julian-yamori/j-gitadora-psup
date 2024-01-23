@@ -1,6 +1,9 @@
 // "use client";
 
-import { TrackListDto, TrackListScoreDto } from "@/db/track_list_dto";
+import {
+  TrackListDto,
+  TrackListScoreDto,
+} from "@/db/track_list/track_list_dto";
 import {
   ADVANCED,
   BASIC,

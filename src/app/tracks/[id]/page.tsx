@@ -1,8 +1,8 @@
 import createMetadata from "@/app/_util/create_metadata";
 import PageTitle from "@/components/page_title";
 import prismaClient from "@/db/prisma_client";
-import TrackRepository from "@/db/track_repository";
-import UserTrackRepository from "@/db/user_track_repository";
+import TrackRepository from "@/db/track/track_repository";
+import UserTrackRepository from "@/db/track/user_track_repository";
 import { INITIAL } from "@/domain/track/open_type";
 import { initialUserTrack } from "@/domain/track/user_track";
 import {

@@ -1,6 +1,6 @@
 import { getFormString } from "@/app/_util/form_convert";
 import prismaClient from "@/db/prisma_client";
-import TrackRepository from "@/db/track_repository";
+import TrackRepository from "@/db/track/track_repository";
 import LoadWikiHtmlQueryService from "@/db/wiki_loading/load_wiki_html_query_service";
 import WikiLoadingIssueRepository from "@/db/wiki_loading/wiki_loading_issue_repository";
 import loadWikiHTML from "@/domain/wiki_loading/load_wiki_html";

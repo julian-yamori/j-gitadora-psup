@@ -1,5 +1,5 @@
 import prismaClient from "@/db/prisma_client";
-import TrackRepository from "@/db/track_repository";
+import TrackRepository from "@/db/track/track_repository";
 import RegisterQueryService from "@/db/wiki_loading/register_query_service";
 import WikiLoadingIssueRepository from "@/db/wiki_loading/wiki_loading_issue_repository";
 import registerFromIssues from "@/domain/wiki_loading/register_from_issues";

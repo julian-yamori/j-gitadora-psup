@@ -1,7 +1,7 @@
 import PrismaClient from "@prisma/client";
 import { UserTrack, UserScore } from "@/domain/track/user_track";
 import { Difficulty, difficultyFromNum } from "@/domain/track/difficulty";
-import { PrismaTransaction } from "./prisma_client";
+import { PrismaTransaction } from "../prisma_client";
 
 /** 曲のユーザー編集データのリポジトリ */
 export default class UserTrackRepository {

@@ -1,5 +1,5 @@
 import LoadWikiHtmlQueryService from "@/db/wiki_loading/load_wiki_html_query_service";
-import TrackRepository from "@/db/track_repository";
+import TrackRepository from "@/db/track/track_repository";
 import {
   TrackDiffirence,
   WikiLoadingIssue,
