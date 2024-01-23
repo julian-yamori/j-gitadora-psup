@@ -23,7 +23,7 @@ export function useSaveSuccessSnackbarState(): SaveSuccessSnackbarState {
       },
       setOpen,
     }),
-    [isOpen, setOpen],
+    [isOpen],
   );
 
   return state;
