@@ -19,6 +19,10 @@ import {
 } from "@mui/material";
 import React, { useRef, useState } from "react";
 import ScoresTable from "./scores_table";
+import {
+  SaveSuccessSnackbar,
+  useSaveSuccessSnackbarState,
+} from "@/components/save_success_snackbar";
 
 export default function TrackForm({
   track,
@@ -29,6 +33,7 @@ export default function TrackForm({
 }) {
   const form = useRef<HTMLFormElement>(null);
   const [userTrack, setUserTrack] = useState(initialUserTrack);
+  const snackbarState = useSaveSuccessSnackbarState();
 
   // 達成率に不正な値が入力されている難易度のリスト
   const [invalidAchievements, setInvalidAchievements] = useState<
@@ -70,7 +75,7 @@ export default function TrackForm({
       }),
     );
 
-    window.alert("ok");
+    snackbarState.show();
   };
 
   const valid = invalidAchievements.size === 0;
@@ -121,6 +126,7 @@ export default function TrackForm({
           </Button>
         </Stack>
       </form>
+      <SaveSuccessSnackbar state={snackbarState} />
     </Paper>
   );
 }
