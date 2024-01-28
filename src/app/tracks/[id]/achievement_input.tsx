@@ -1,9 +1,9 @@
 "use client";
 
 import formKeyByScore from "@/app/api/tracks/form_key";
+import AchievementInputView from "@/components/controls/achievement_input_view";
 import { Difficulty } from "@/domain/track/difficulty";
 import { achievementToPercent } from "@/domain/track/user_track";
-import { InputAdornment, TextField } from "@mui/material";
 import React, { useEffect, useState } from "react";
 
 /** 達成率のテキストボックス */
@@ -43,20 +43,12 @@ export default function AchievementInput({
   };
 
   return (
-    <TextField
+    <AchievementInputView
       name={formKeyByScore(difficulty, "achievement")}
       value={strValue}
       onChange={handleOnChange}
       onBlur={submit}
       disabled={failed}
-      size="small"
-      inputProps={{
-        size: 5,
-      }}
-      // eslint-disable-next-line react/jsx-no-duplicate-props -- iとIの両方に指定すべきものがある
-      InputProps={{
-        endAdornment: <InputAdornment position="end">%</InputAdornment>,
-      }}
       error={!valid}
     />
   );

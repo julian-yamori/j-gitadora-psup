@@ -1,4 +1,8 @@
-import { getFormCheckbox, getFormString } from "@/app/_util/form_convert";
+import {
+  getFormCheckbox,
+  getFormRating,
+  getFormString,
+} from "@/app/_util/form_convert";
 import prismaClient from "@/db/prisma_client";
 import TrackRepository from "@/db/track/track_repository";
 import UserTrackRepository from "@/db/track/user_track_repository";
@@ -50,18 +54,16 @@ export async function POST(
 }
 
 function likeFromForm(form: FormData): number | undefined {
-  // 0 と null は、undefined扱いの有効値とする
+  const num = getFormRating(form, "like");
 
-  function throwErr() {
+  if (num === undefined || num === 0) {
+    return undefined;
+  }
+
+  if (!validateTrackLike(num)) {
     throw Error('form value "like" is invalid');
   }
 
-  const value = form.get("like");
-  if (value === null) return undefined;
-
-  const num = Number(value);
-  if (num === 0) return undefined;
-  if (!validateTrackLike(num)) throwErr();
   return num;
 }
 
