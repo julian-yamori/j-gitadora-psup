@@ -1,8 +1,12 @@
 import PrismaClient from "@prisma/client";
-import { Track } from "@/domain/track/track";
+import { Score, Track } from "@/domain/track/track";
 import { skillTypeFromNum } from "@/domain/track/skill_type";
 import { openTypeFromNum } from "@/domain/track/open_type";
-import { difficultyFromNum } from "@/domain/track/difficulty";
+import {
+  ALL_DIFFICULTIES,
+  Difficulty,
+  difficultyFromNum,
+} from "@/domain/track/difficulty";
 import { PrismaTransaction } from "../prisma_client";
 
 /** 曲データのリポジトリ */
@@ -48,30 +52,20 @@ export default class TrackRepository {
   }
 
   async update(track: Track) {
-    await this.prismaTransaction.track.update({
-      where: { id: track.id },
-      data: {
-        id: track.id,
-        title: track.title,
-        artist: track.artist,
-        skillType: track.skillType,
-        long: track.long,
-        openType: track.openType,
-        // 一旦削除して追加しなおす
-        // todo 外部依存あるとダメかも
-        scores: {
-          deleteMany: {},
-        },
-      },
-      include: { scores: true },
-    });
-    await this.prismaTransaction.score.createMany({
-      data: Object.values(track.scores).map((d) => ({
-        trackId: d.trackId,
-        difficulty: d.difficulty,
-        lv: d.lv,
-      })),
-    });
+    // update Track
+    await updateTrackRecord(this.prismaTransaction, track);
+
+    // update Scores
+    for (const difficulty of ALL_DIFFICULTIES) {
+      const score = track.scores[difficulty];
+      if (score !== undefined) {
+        // eslint-disable-next-line no-await-in-loop -- DB操作は直列化した方がいいかも？
+        await upsertScoreRecord(this.prismaTransaction, score);
+      } else {
+        // eslint-disable-next-line no-await-in-loop -- DB操作は直列化した方がいいかも？
+        await deleteScoreRecord(this.prismaTransaction, track.id, difficulty);
+      }
+    }
   }
 
   async delete(id: string) {
@@ -81,6 +75,56 @@ export default class TrackRepository {
       data: { deleted: true },
     });
   }
+}
+
+async function updateTrackRecord(
+  tx: PrismaTransaction,
+  track: Track,
+): Promise<void> {
+  await tx.track.update({
+    where: { id: track.id },
+    data: {
+      id: track.id,
+      title: track.title,
+      artist: track.artist,
+      skillType: track.skillType,
+      long: track.long,
+      openType: track.openType,
+    },
+    include: { scores: true },
+  });
+}
+
+async function upsertScoreRecord(
+  tx: PrismaTransaction,
+  score: Score,
+): Promise<void> {
+  await tx.score.upsert({
+    where: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention -- Prisma では _ で指定する必要がある
+      trackId_difficulty: {
+        trackId: score.trackId,
+        difficulty: score.difficulty,
+      },
+    },
+    create: {
+      trackId: score.trackId,
+      difficulty: score.difficulty,
+      lv: score.lv,
+    },
+    update: { lv: score.lv },
+  });
+}
+
+async function deleteScoreRecord(
+  tx: PrismaTransaction,
+  trackId: string,
+  difficulty: Difficulty,
+): Promise<void> {
+  await tx.score.delete({
+    // eslint-disable-next-line @typescript-eslint/naming-convention -- Prisma では _ で指定する必要がある
+    where: { trackId_difficulty: { trackId, difficulty } },
+  });
 }
 
 /** PrismaのModelからドメインモデルに変換 */
