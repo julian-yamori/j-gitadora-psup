@@ -16,7 +16,7 @@ export default function RegisterButton({ disabled }: { disabled: boolean }) {
       }),
     );
 
-    await router.push("/tracks");
+    await router.push("/");
   };
 
   return (
