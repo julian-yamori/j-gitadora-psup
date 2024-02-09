@@ -12,6 +12,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import NavigationMenu from "./navigation_menu";
+import SearchTrackInput from "./search_track_input";
 
 export default function AppBar() {
   const [drawerOpened, setDrawerOpened] = useState(false);
@@ -40,6 +41,8 @@ export default function AppBar() {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             j GITADORA psup
           </Typography>
+
+          <SearchTrackInput />
 
           <Drawer open={drawerOpened} onClose={() => setDrawerOpened(false)}>
             <NavigationMenu />
