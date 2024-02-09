@@ -6,11 +6,14 @@ import { RegisterIssueDto } from "@/db/wiki_loading/register_query_service";
 /**
  * wikiから読み込みの、一旦保存した問題点からの登録を実行
  * @param issues 発生していた問題点リスト
+ * @returns 更新した曲の ID のリスト
  */
 export default async function registerFromIssues(
   issues: ReadonlyArray<RegisterIssueDto>,
   trackRepository: TrackRepository,
-) {
+): Promise<string[]> {
+  const updatedTrackIds: string[] = [];
+
   for (const issue of issues) {
     switch (issue.type) {
       case "new":
@@ -18,10 +21,13 @@ export default async function registerFromIssues(
         break;
       case "diff":
         await trackRepository.update(issue.newTrack);
+        updatedTrackIds.push(issue.newTrack.id);
         break;
       case "delete":
         await trackRepository.delete(issue.trackId);
         break;
     }
   }
+
+  return updatedTrackIds;
 }
