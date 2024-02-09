@@ -72,14 +72,14 @@ export function getFormRating(
   form: FormData,
   name: string,
 ): number | undefined {
-  // 0 と null は、undefined扱いの有効値とする
-  // todo 未入力は 0 か null か、要確認
-
   const value = form.get(name);
   if (value === null) return undefined;
+
   if (typeof value !== "string") {
     throw Error(`form value "${name}" is not number`);
   }
+
+  if (value === "") return undefined;
 
   const num = Number(value);
   if (Number.isNaN(num)) {
