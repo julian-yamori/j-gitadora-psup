@@ -1,6 +1,6 @@
 import PageTitle from "@/components/page_title";
 import prismaClient from "@/db/prisma_client";
-import TrackListQueryService from "@/db/track_list/track_list_query_service";
+import { queryAllTracks } from "@/db/track_list/track_list_query_service";
 import TracksTable from "./tracks_table";
 import createMetadata from "../_util/create_metadata";
 
@@ -11,8 +11,7 @@ export const metadata = createMetadata(PAGE_TITLE);
 
 /** 曲リストページ */
 export default async function Home() {
-  const tracksQueryService = new TrackListQueryService(prismaClient);
-  const tracks = await tracksQueryService.allTracks();
+  const tracks = await queryAllTracks(prismaClient);
 
   return (
     <main>
