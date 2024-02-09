@@ -36,7 +36,7 @@ export default class UserTrackRepository {
   /** 曲のユーザー編集データを保存 */
   async save(track: UserTrack): Promise<void> {
     const fields = {
-      like: track.like,
+      like: track.like ?? null,
       isOpen: track.isOpen,
       memo: track.memo,
     };
