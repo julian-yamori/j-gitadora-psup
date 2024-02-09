@@ -3,6 +3,7 @@
 import { IconButton, InputBase, styled } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 // eslint-disable-next-line @typescript-eslint/naming-convention -- component
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
@@ -12,15 +13,16 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function SearchTrackInput() {
+  const router = useRouter();
   const [value, setValue] = useState("");
 
-  const doSearch = () => {
-    window.alert(value);
+  const doSearch = async () => {
+    await router.push(searchUrl(value));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    doSearch();
+    await doSearch();
   };
 
   return (
@@ -35,4 +37,9 @@ export default function SearchTrackInput() {
       </IconButton>
     </form>
   );
+}
+
+function searchUrl(query: string): string {
+  const searchParams = new URLSearchParams({ query });
+  return `/tracks?${searchParams.toString()}`;
 }
