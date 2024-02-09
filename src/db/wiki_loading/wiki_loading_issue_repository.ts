@@ -1,5 +1,3 @@
-/* eslint-disable no-await-in-loop -- DBへのINSERT処理は直列化したい */
-
 import PrismaClient from "@prisma/client";
 import { WikiLoadingIssue } from "@/domain/wiki_loading/wiki_loading_issue";
 import { Track } from "@/domain/track/track";

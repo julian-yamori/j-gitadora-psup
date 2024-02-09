@@ -54,7 +54,7 @@ export default async function loadWikiHTML({
 
   // HTMLから取得した曲データをIssueに変換
   for (const row of parsedRows) {
-    // eslint-disable-next-line no-await-in-loop -- DB読み込みは直列化したい
+    // eslint-disable-next-line no-await-in-loop -- 手続き的な処理のリファクタが面倒なので、一旦 await-in-loop で……
     const issue = await parsedRowToIssue(
       row,
       existingTrackMap,

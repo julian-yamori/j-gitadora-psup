@@ -1,4 +1,4 @@
-/* eslint-disable no-await-in-loop -- DB操作は直列化したい */
+/* eslint-disable no-await-in-loop -- updatedTrackIds の処理は手続き的な for ループの方が読みやすそうなので、一旦これで…… */
 
 import TrackRepository from "@/db/track/track_repository";
 import { RegisterIssueDto } from "@/db/wiki_loading/register_query_service";

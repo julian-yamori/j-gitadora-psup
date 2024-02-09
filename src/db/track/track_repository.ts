@@ -53,19 +53,19 @@ export default class TrackRepository {
 
   async update(track: Track) {
     // update Track
-    await updateTrackRecord(this.prismaTransaction, track);
+    const trackPromise = updateTrackRecord(this.prismaTransaction, track);
 
     // update Scores
-    for (const difficulty of ALL_DIFFICULTIES) {
+    const scorePromises = ALL_DIFFICULTIES.map((difficulty) => {
       const score = track.scores[difficulty];
       if (score !== undefined) {
-        // eslint-disable-next-line no-await-in-loop -- DB操作は直列化した方がいいかも？
-        await upsertScoreRecord(this.prismaTransaction, score);
+        return upsertScoreRecord(this.prismaTransaction, score);
       } else {
-        // eslint-disable-next-line no-await-in-loop -- DB操作は直列化した方がいいかも？
-        await deleteScoreRecord(this.prismaTransaction, track.id, difficulty);
+        return deleteScoreRecord(this.prismaTransaction, track.id, difficulty);
       }
-    }
+    });
+
+    await Promise.all([trackPromise, ...scorePromises]);
   }
 
   async delete(id: string) {
