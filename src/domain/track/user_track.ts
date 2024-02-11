@@ -1,6 +1,16 @@
+import { z } from "zod";
 import { Difficulty } from "./difficulty";
 import { isOpenTypeInitialOpen } from "./open_type";
 import { Track } from "./track";
+
+// 曲の好み度
+export const likeSchema = z.number().int().min(1).max(5);
+
+// 達成率 (0〜1のfloat)
+export const achievementSchema = z.number().nonnegative().max(1);
+
+// 獲得スキルポイント
+export const skillPointSchema = z.number().nonnegative();
 
 /**
  * 曲のユーザー編集データ

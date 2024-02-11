@@ -1,5 +1,11 @@
-import { Difficulty, difficultySchema } from "@/domain/track/difficulty";
-import { SkillType, skillTypeSchema } from "@/domain/track/skill_type";
+import { difficultySchema } from "@/domain/track/difficulty";
+import { skillTypeSchema } from "@/domain/track/skill_type";
+import { lvSchema, trackTitleSchema } from "@/domain/track/track";
+import {
+  achievementSchema,
+  likeSchema,
+  skillPointSchema,
+} from "@/domain/track/user_track";
 import {
   verifyBoolFromUnknown,
   verifyNumFromUnknown,
@@ -7,21 +13,23 @@ import {
   verifyObjectFromUnknown,
   verifyStrFromUnknown,
 } from "@/utils/varify_from_unknown";
+import { z } from "zod";
 
-export type ScoreListDto = Readonly<{
-  trackId: string;
-  title: string;
-  skillType: SkillType;
-  long: boolean;
+export const scoreListDtoSchema = z.object({
+  trackId: z.string(),
+  title: trackTitleSchema,
+  skillType: skillTypeSchema,
+  long: z.boolean(),
 
-  difficulty: Difficulty;
-  lv: number;
+  difficulty: difficultySchema,
+  lv: lvSchema,
 
-  like: number | undefined;
+  like: likeSchema.optional(),
 
-  achievement: number | undefined;
-  skillPoint: number | undefined;
-}>;
+  achievement: achievementSchema.optional(),
+  skillPoint: skillPointSchema.optional(),
+});
+export type ScoreListDto = Readonly<z.infer<typeof scoreListDtoSchema>>;
 
 export function verifyScoreListDtoFromUnknown(value: unknown): ScoreListDto {
   const obj = verifyObjectFromUnknown(value);

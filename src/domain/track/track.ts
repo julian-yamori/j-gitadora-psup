@@ -1,6 +1,12 @@
+import { z } from "zod";
 import { Difficulty } from "./difficulty";
 import { OpenType } from "./open_type";
 import { SkillType } from "./skill_type";
+
+// 曲名
+export const trackTitleSchema = z.string().min(1);
+
+export const lvSchema = z.number().gt(0).lt(10);
 
 /**
  * 曲の情報
