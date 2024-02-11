@@ -58,7 +58,7 @@ export type FilterRangeNumberNull = Readonly<
   z.infer<typeof filterRangeNumberNullSchema>
 >;
 
-const filterRangeNumberSchema = z.discriminatedUnion("rangeType", [
+const filterRangeNumberSchema = z.union([
   filterRangeNumberOneValueSchema,
   filterRangeNumberMinMaxSchema,
   filterRangeNumberNullSchema,
@@ -92,7 +92,7 @@ export type FilterNodeGroup = Readonly<
 
 const filterNodeGroupSchema: z.ZodType<FilterNodeGroup> =
   baseFilterNodeGroupSchema.extend({
-    nodes: z.lazy(() => filterNodeSchema.array().readonly()),
+    nodes: z.lazy(() => filterNodeSchema.array().nonempty().readonly()),
   });
 
 const filterNodeSchema = z.union([

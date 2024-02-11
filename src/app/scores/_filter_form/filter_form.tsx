@@ -34,6 +34,7 @@ import {
   minMaxNumberChangeHandler,
   useFilterItemState,
 } from "./filter_item_state";
+import scoreFilterFromForm from "./score_filter_from_form";
 
 const responseSchema = z.array(scoreListDtoSchema);
 
@@ -54,23 +55,16 @@ export default function FilterForm({
     const formCurrent = getRefNonNull(form);
     if (!formCurrent.reportValidity()) return;
 
-    const filtered = anyFiltered(
-      skillTypeState,
-      lvState,
-      likeState,
-      achievementState,
-      isOpenState,
-    );
-
-    if (!filtered) {
-      snackbarState.show("有効な検索条件が入力されていません。");
+    const scoreFilter = scoreFilterFromForm(new FormData(formCurrent));
+    if (scoreFilter.isErr()) {
+      snackbarState.show(scoreFilter.error);
       return;
     }
 
     const response = assertResponseOk(
       await fetch("api/scores", {
         method: "POST",
-        body: new FormData(formCurrent),
+        body: JSON.stringify(scoreFilter.value),
       }),
     );
 
@@ -266,38 +260,4 @@ function IsOpenControl({ state }: { state: FilterItemState<boolean> }) {
       label={label}
     />
   );
-}
-
-function anyFiltered(
-  skillTypeState: FilterItemState<SkillType>,
-  lvState: FilterItemState<[string, string]>,
-  likeState: FilterItemState<number | undefined>,
-  achievementState: FilterItemState<[string, string]>,
-  isOpenState: FilterItemState<boolean>,
-): boolean {
-  if (skillTypeState.enabled) {
-    return true;
-  }
-
-  if (isRangeFiltered(lvState)) {
-    return true;
-  }
-
-  if (likeState.enabled) {
-    return true;
-  }
-
-  if (isRangeFiltered(achievementState)) {
-    return true;
-  }
-
-  if (isOpenState.enabled) {
-    return true;
-  }
-
-  return false;
-}
-
-function isRangeFiltered(state: FilterItemState<[string, string]>): boolean {
-  return state.enabled && (state.value[0] !== "" || state.value[1] !== "");
 }
