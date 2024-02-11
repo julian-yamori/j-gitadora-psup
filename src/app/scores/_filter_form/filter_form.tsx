@@ -14,7 +14,7 @@ import {
   HOT,
   OTHER,
   SkillType,
-  skillTypeFromNum,
+  skillTypeSchema,
 } from "@/domain/track/skill_type";
 import {
   Button,
@@ -149,7 +149,7 @@ function FilterItem<V>({
 
 function SkillTypeControl({ state }: { state: FilterItemState<SkillType> }) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const v = skillTypeFromNum(Number(e.target.value));
+    const v = skillTypeSchema.parse(Number(e.target.value));
     state.setValue(v);
   };
 

@@ -6,7 +6,7 @@ import {
   FilterTargetNumber,
   ScoreFilter,
 } from "@/domain/score_query/score_filter";
-import { skillTypeFromNum } from "@/domain/track/skill_type";
+import { skillTypeSchema } from "@/domain/track/skill_type";
 import { difficultyFromNum } from "@/domain/track/difficulty";
 import { PrismaTransaction } from "../prisma_client";
 import { ScoreListDto } from "./score_list_dto";
@@ -28,7 +28,7 @@ export default async function queryScoreList(
   return found.map((f) => ({
     trackId: f.trackId,
     title: f.track.title,
-    skillType: skillTypeFromNum(f.track.skillType),
+    skillType: skillTypeSchema.parse(f.track.skillType),
     long: f.track.long,
     difficulty: difficultyFromNum(f.difficulty),
     lv: f.lv,

@@ -1,6 +1,6 @@
 import PrismaClient from "@prisma/client";
 import { Score, Track } from "@/domain/track/track";
-import { skillTypeFromNum } from "@/domain/track/skill_type";
+import { skillTypeSchema } from "@/domain/track/skill_type";
 import { openTypeFromNum } from "@/domain/track/open_type";
 import {
   ALL_DIFFICULTIES,
@@ -143,7 +143,7 @@ function trackPrisma2Domain(
     id: dto.id,
     title: dto.title,
     artist: dto.artist,
-    skillType: skillTypeFromNum(dto.skillType),
+    skillType: skillTypeSchema.parse(dto.skillType),
     long: dto.long,
     openType: openTypeFromNum(dto.openType),
     scores,

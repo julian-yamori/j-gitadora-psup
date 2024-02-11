@@ -5,7 +5,7 @@ import {
   WikiLoadingIssueNew,
 } from "@/domain/wiki_loading/wiki_loading_issue";
 import { Track } from "@/domain/track/track";
-import { skillTypeFromNum } from "@/domain/track/skill_type";
+import { skillTypeSchema } from "@/domain/track/skill_type";
 import { openTypeFromNum } from "@/domain/track/open_type";
 import { difficultyFromNum } from "@/domain/track/difficulty";
 import { PrismaTransaction } from "../prisma_client";
@@ -75,7 +75,7 @@ function trackPrisma2Domain(
     id: dto.id,
     title: dto.title,
     artist: dto.artist,
-    skillType: skillTypeFromNum(dto.skillType),
+    skillType: skillTypeSchema.parse(dto.skillType),
     long: dto.long,
     openType: openTypeFromNum(dto.openType),
     scores,

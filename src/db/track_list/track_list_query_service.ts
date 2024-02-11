@@ -1,4 +1,4 @@
-import { skillTypeFromNum } from "@/domain/track/skill_type";
+import { skillTypeSchema } from "@/domain/track/skill_type";
 import { openTypeFromNum } from "@/domain/track/open_type";
 import { difficultyFromNum } from "@/domain/track/difficulty";
 import PrismaClient from "@prisma/client";
@@ -39,7 +39,7 @@ function dbModelToDto(dbModel: DbTrack): TrackListDto {
   return {
     id: dbModel.id,
     title: dbModel.title,
-    skillType: skillTypeFromNum(dbModel.skillType),
+    skillType: skillTypeSchema.parse(dbModel.skillType),
     long: dbModel.long,
     openType: openTypeFromNum(dbModel.openType),
     scores: dbModel.scores.map((d) => ({
