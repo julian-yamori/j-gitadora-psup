@@ -1,4 +1,3 @@
-import assertResponseOk from "@/app/_util/assert_response_ok";
 import getRefNonNull from "@/app/_util/get_ref_non_null";
 import AchievementInputView from "@/components/controls/achievement_input_view";
 import LvInputView from "@/components/controls/lv_input_view";
@@ -6,10 +5,7 @@ import {
   FailedSnackbar,
   useFailedSnackbarState,
 } from "@/components/snackbar/failed_snackbar";
-import {
-  ScoreListDto,
-  scoreListDtoSchema,
-} from "@/db/score_list/score_list_dto";
+import { ScoreFilter } from "@/domain/score_query/score_filter";
 import {
   HOT,
   OTHER,
@@ -28,7 +24,6 @@ import {
   Switch,
 } from "@mui/material";
 import { ReactNode, useRef } from "react";
-import { z } from "zod";
 import {
   FilterItemState,
   minMaxNumberChangeHandler,
@@ -36,12 +31,10 @@ import {
 } from "./filter_item_state";
 import scoreFilterFromForm from "./score_filter_from_form";
 
-const responseSchema = z.array(scoreListDtoSchema);
-
 export default function FilterForm({
-  onSearched,
+  onSubmit,
 }: {
-  onSearched: (scores: ReadonlyArray<ScoreListDto>) => unknown;
+  onSubmit: (filter: ScoreFilter) => unknown;
 }) {
   const form = useRef<HTMLFormElement>(null);
   const skillTypeState = useFilterItemState<SkillType>(HOT);
@@ -61,16 +54,7 @@ export default function FilterForm({
       return;
     }
 
-    const response = assertResponseOk(
-      await fetch("api/scores", {
-        method: "POST",
-        body: JSON.stringify(scoreFilter.value),
-      }),
-    );
-
-    const json = await response.text();
-    const scores = responseSchema.parse(JSON.parse(json));
-    onSearched(scores);
+    onSubmit(scoreFilter.value);
   };
 
   return (
