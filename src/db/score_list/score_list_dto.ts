@@ -24,7 +24,7 @@ export type ScoreListDto = Readonly<{
 }>;
 
 export function verifyScoreListDtoFromUnknown(value: unknown): ScoreListDto {
-  const obj = verifyObjectFromUnknown(value) as any;
+  const obj = verifyObjectFromUnknown(value);
 
   return {
     trackId: verifyStrFromUnknown(obj.trackId),

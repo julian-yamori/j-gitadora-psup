@@ -34,10 +34,12 @@ export function verifyBoolOptFromUnknown(value: unknown): boolean | undefined {
   return verifyBoolFromUnknown(value);
 }
 
-export function verifyObjectFromUnknown(value: unknown): object {
+export function verifyObjectFromUnknown(
+  value: unknown,
+): Record<string, unknown> {
   if (value === null || typeof value !== "object") {
     throw Error("faield to verify object");
   }
 
-  return value;
+  return value as Record<string, unknown>;
 }
