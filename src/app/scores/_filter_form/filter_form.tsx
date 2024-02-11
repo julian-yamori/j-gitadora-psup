@@ -8,7 +8,7 @@ import {
 } from "@/components/snackbar/failed_snackbar";
 import {
   ScoreListDto,
-  verifyScoreListDtoFromUnknown,
+  scoreListDtoSchema,
 } from "@/db/score_list/score_list_dto";
 import {
   HOT,
@@ -28,11 +28,14 @@ import {
   Switch,
 } from "@mui/material";
 import { ReactNode, useRef } from "react";
+import { z } from "zod";
 import {
   FilterItemState,
   minMaxNumberChangeHandler,
   useFilterItemState,
 } from "./filter_item_state";
+
+const responseSchema = z.array(scoreListDtoSchema);
 
 export default function FilterForm({
   onSearched,
@@ -72,7 +75,7 @@ export default function FilterForm({
     );
 
     const json = await response.text();
-    const scores = verifyResponse(JSON.parse(json));
+    const scores = responseSchema.parse(JSON.parse(json));
     onSearched(scores);
   };
 
@@ -297,12 +300,4 @@ function anyFiltered(
 
 function isRangeFiltered(state: FilterItemState<[string, string]>): boolean {
   return state.enabled && (state.value[0] !== "" || state.value[1] !== "");
-}
-
-function verifyResponse(value: unknown): ScoreListDto[] {
-  if (!(value instanceof Array)) {
-    throw Error("response is not array");
-  }
-
-  return value.map(verifyScoreListDtoFromUnknown);
 }
