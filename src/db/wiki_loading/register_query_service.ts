@@ -7,7 +7,7 @@ import {
 import { Track } from "@/domain/track/track";
 import { skillTypeSchema } from "@/domain/track/skill_type";
 import { openTypeFromNum } from "@/domain/track/open_type";
-import { difficultyFromNum } from "@/domain/track/difficulty";
+import { difficultySchema } from "@/domain/track/difficulty";
 import { PrismaTransaction } from "../prisma_client";
 
 /** wikiから読み込み機能の、画面上チェック用の、問題点1つのDTO */
@@ -68,7 +68,7 @@ function trackPrisma2Domain(
   },
 ): Track {
   const scores = Object.fromEntries(
-    dto.scores.map((v) => [difficultyFromNum(v.difficulty), v]),
+    dto.scores.map((v) => [difficultySchema.parse(v.difficulty), v]),
   );
 
   return {

@@ -8,7 +8,7 @@ import {
   WikiLoadingSource,
   validateWikiLoadingSource,
 } from "@/domain/wiki_loading/wiki_loading_source";
-import { difficultyFromNum } from "@/domain/track/difficulty";
+import { difficultySchema } from "@/domain/track/difficulty";
 import { PrismaTransaction } from "../prisma_client";
 
 /** wikiから読み込み機能の、画面上チェック用の、問題点1つのDTO */
@@ -85,7 +85,7 @@ export default class CheckViewQueryService {
                 propertyName: d.propertyName,
                 difficulty:
                   d.difficulty !== null
-                    ? difficultyFromNum(d.difficulty)
+                    ? difficultySchema.parse(d.difficulty)
                     : undefined,
                 oldValue: d.oldValue ?? undefined,
                 newValue: d.newValue ?? undefined,

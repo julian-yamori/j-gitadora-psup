@@ -1,6 +1,6 @@
 import { skillTypeSchema } from "@/domain/track/skill_type";
 import { openTypeFromNum } from "@/domain/track/open_type";
-import { difficultyFromNum } from "@/domain/track/difficulty";
+import { difficultySchema } from "@/domain/track/difficulty";
 import PrismaClient from "@prisma/client";
 import { PrismaTransaction } from "../prisma_client";
 import { TrackListDto } from "./track_list_dto";
@@ -43,7 +43,7 @@ function dbModelToDto(dbModel: DbTrack): TrackListDto {
     long: dbModel.long,
     openType: openTypeFromNum(dbModel.openType),
     scores: dbModel.scores.map((d) => ({
-      difficulty: difficultyFromNum(d.difficulty),
+      difficulty: difficultySchema.parse(d.difficulty),
       lv: d.lv,
     })),
   };

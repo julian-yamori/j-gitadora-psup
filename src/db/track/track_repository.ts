@@ -5,7 +5,7 @@ import { openTypeFromNum } from "@/domain/track/open_type";
 import {
   ALL_DIFFICULTIES,
   Difficulty,
-  difficultyFromNum,
+  difficultySchema,
 } from "@/domain/track/difficulty";
 import { PrismaTransaction } from "../prisma_client";
 
@@ -136,7 +136,7 @@ function trackPrisma2Domain(
   if (dto.deleted) throw Error(`track ${dto.id} has been deleted`);
 
   const scores = Object.fromEntries(
-    dto.scores.map((v) => [difficultyFromNum(v.difficulty), v]),
+    dto.scores.map((v) => [difficultySchema.parse(v.difficulty), v]),
   );
 
   return {

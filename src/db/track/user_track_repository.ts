@@ -1,6 +1,6 @@
 import PrismaClient from "@prisma/client";
 import { UserTrack, UserScore } from "@/domain/track/user_track";
-import { Difficulty, difficultyFromNum } from "@/domain/track/difficulty";
+import { Difficulty, difficultySchema } from "@/domain/track/difficulty";
 import { PrismaTransaction } from "../prisma_client";
 
 /** 曲のユーザー編集データのリポジトリ */
@@ -79,22 +79,26 @@ function trackPrisma2Domain(
   },
 ): UserTrack {
   const scores = Object.fromEntries(
-    dto.scores.map((v): [Difficulty, UserScore] => [
-      difficultyFromNum(v.difficulty),
-      {
-        trackId: dto.id,
-        difficulty: difficultyFromNum(v.difficulty),
-        achievement: v.achievement,
-        skillPoint: v.skillPoint,
-        failed: v.failed,
-        wishPractice: v.wishPractice,
-        wishAchievement: v.wishAchievement,
-        wishEvent: v.wishEvent,
-        wishNextPick: v.wishNextPick,
-        wishPlayed: v.wishPlayed,
-        movieURL: v.movieURL,
-      },
-    ]),
+    dto.scores.map((v): [Difficulty, UserScore] => {
+      const difficulty = difficultySchema.parse(v.difficulty);
+
+      return [
+        difficulty,
+        {
+          trackId: dto.id,
+          difficulty,
+          achievement: v.achievement,
+          skillPoint: v.skillPoint,
+          failed: v.failed,
+          wishPractice: v.wishPractice,
+          wishAchievement: v.wishAchievement,
+          wishEvent: v.wishEvent,
+          wishNextPick: v.wishNextPick,
+          wishPlayed: v.wishPlayed,
+          movieURL: v.movieURL,
+        },
+      ];
+    }),
   );
 
   return {

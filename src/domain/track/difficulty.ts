@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 /** 曲の難易度 : BASIC */
 export const BASIC = 1;
 /** 曲の難易度 : ADVANCED */
@@ -7,12 +9,14 @@ export const EXTREME = 3;
 /** 曲の難易度 : MASTER */
 export const MASTER = 4;
 
+export const difficultySchema = z.union([
+  z.literal(BASIC),
+  z.literal(ADVANCED),
+  z.literal(EXTREME),
+  z.literal(MASTER),
+]);
 /** 曲の難易度 */
-export type Difficulty =
-  | typeof BASIC
-  | typeof ADVANCED
-  | typeof EXTREME
-  | typeof MASTER;
+export type Difficulty = z.infer<typeof difficultySchema>;
 
 export const ALL_DIFFICULTIES: ReadonlyArray<Difficulty> = [
   BASIC,
@@ -21,20 +25,7 @@ export const ALL_DIFFICULTIES: ReadonlyArray<Difficulty> = [
   MASTER,
 ];
 
-/** OpenTypeをnumber型から変換 */
-export function difficultyFromNum(value: number): Difficulty {
-  switch (value) {
-    case BASIC:
-    case ADVANCED:
-    case EXTREME:
-    case MASTER:
-      return value;
-    default:
-      throw Error(`invalid Difficulty : ${value}`);
-  }
-}
-
-/** OpenTypeを表示用の文字列に変換 */
+/** Difficulty を表示用の文字列に変換 */
 export function difficultyToStr(value: Difficulty): string {
   switch (value) {
     case BASIC:

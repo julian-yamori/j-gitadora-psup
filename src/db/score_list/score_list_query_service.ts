@@ -7,7 +7,7 @@ import {
   ScoreFilter,
 } from "@/domain/score_query/score_filter";
 import { skillTypeSchema } from "@/domain/track/skill_type";
-import { difficultyFromNum } from "@/domain/track/difficulty";
+import { difficultySchema } from "@/domain/track/difficulty";
 import { PrismaTransaction } from "../prisma_client";
 import { ScoreListDto } from "./score_list_dto";
 
@@ -30,7 +30,7 @@ export default async function queryScoreList(
     title: f.track.title,
     skillType: skillTypeSchema.parse(f.track.skillType),
     long: f.track.long,
-    difficulty: difficultyFromNum(f.difficulty),
+    difficulty: difficultySchema.parse(f.difficulty),
     lv: f.lv,
     like: f.track.userTrack?.like ?? undefined,
     achievement: f.userScore?.achievement,

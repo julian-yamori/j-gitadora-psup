@@ -1,4 +1,4 @@
-import { Difficulty, difficultyFromNum } from "@/domain/track/difficulty";
+import { Difficulty, difficultySchema } from "@/domain/track/difficulty";
 import { SkillType, skillTypeSchema } from "@/domain/track/skill_type";
 import {
   verifyBoolFromUnknown,
@@ -31,7 +31,7 @@ export function verifyScoreListDtoFromUnknown(value: unknown): ScoreListDto {
     title: verifyStrFromUnknown(obj.title),
     skillType: skillTypeSchema.parse(obj.skillType),
     long: verifyBoolFromUnknown(obj.long),
-    difficulty: difficultyFromNum(verifyNumFromUnknown(obj.difficulty)),
+    difficulty: difficultySchema.parse(obj.difficulty),
     lv: verifyNumFromUnknown(obj.lv),
     like: verifyNumOptFromUnknown(obj.like),
     achievement: verifyNumOptFromUnknown(obj.achievement),
