@@ -5,7 +5,7 @@ import {
   FilterNodeNumber,
   FilterTargetNumber,
   ScoreFilter,
-} from "@/domain/score_query";
+} from "@/domain/score_query/score_filter";
 import { skillTypeFromNum } from "@/domain/track/skill_type";
 import { difficultyFromNum } from "@/domain/track/difficulty";
 import { PrismaTransaction } from "../prisma_client";

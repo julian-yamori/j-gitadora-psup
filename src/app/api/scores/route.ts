@@ -9,7 +9,7 @@ import {
   FilterNode,
   FilterRangeNumber,
   ScoreFilter,
-} from "@/domain/score_query";
+} from "@/domain/score_query/score_filter";
 
 /** 譜面クエリ画面の検索条件フォームからのリクエストを受け付けて、譜面リストを返す */
 // eslint-disable-next-line import/prefer-default-export -- defaultにするとメソッド名を認識しなくなる

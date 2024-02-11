@@ -3,7 +3,7 @@ import {
   OrderDirection,
   ScoreOrder,
   ScoreOrderTarget,
-} from "@/domain/score_query";
+} from "@/domain/score_query/score_order";
 import { Difficulty, difficultyToStr } from "@/domain/track/difficulty";
 import { skillTypeToStr } from "@/domain/track/skill_type";
 import { lvToString } from "@/domain/track/track";

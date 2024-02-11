@@ -1,7 +1,7 @@
 "use client";
 
 import { ScoreListDto } from "@/db/score_list/score_list_dto";
-import { ScoreOrder } from "@/domain/score_query";
+import { ScoreOrder } from "@/domain/score_query/score_order";
 import { Stack } from "@mui/material";
 import { useState } from "react";
 import FilterForm from "./_filter_form/filter_form";
