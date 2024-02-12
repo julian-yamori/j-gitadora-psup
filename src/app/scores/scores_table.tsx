@@ -2,7 +2,10 @@ import { ScoreListDto } from "@/db/score_list/score_list_dto";
 import {
   OrderDirection,
   ScoreOrder,
+  ScoreOrderItem,
   ScoreOrderTarget,
+  primaryScoreOrder,
+  scoreOrderSetItem,
 } from "@/domain/score_query/score_order";
 import { Difficulty, difficultyToStr } from "@/domain/track/difficulty";
 import { skillTypeToStr } from "@/domain/track/skill_type";
@@ -29,12 +32,19 @@ export default function ScoresTable({
   onOrderChange,
 }: {
   scores: ReadonlyArray<ScoreListDto>;
-  order: ScoreOrder | undefined;
+  order: ScoreOrder;
   onOrderChange: (order: ScoreOrder) => unknown;
 }) {
   if (scores.length === 0) {
     return null;
   }
+
+  const primaryOrder = primaryScoreOrder(order);
+
+  const handleOrderItemChange = (orderItem: ScoreOrderItem) => {
+    const newOrder = scoreOrderSetItem(order, orderItem);
+    onOrderChange(newOrder);
+  };
 
   return (
     <TableContainer component={Paper}>
@@ -44,50 +54,50 @@ export default function ScoresTable({
             <ScoreTableHeaderCell
               target="title"
               label="曲名"
-              order={order}
-              onChange={onOrderChange}
+              primaryOrder={primaryOrder}
+              onChange={handleOrderItemChange}
             />
             <ScoreTableHeaderCell
               target="skillType"
               label="区分"
-              order={order}
-              onChange={onOrderChange}
+              primaryOrder={primaryOrder}
+              onChange={handleOrderItemChange}
             />
             <ScoreTableHeaderCell
               target="long"
               label="LONG"
-              order={order}
-              onChange={onOrderChange}
+              primaryOrder={primaryOrder}
+              onChange={handleOrderItemChange}
             />
             <ScoreTableHeaderCell
               target="difficulty"
               label="難易度"
-              order={order}
-              onChange={onOrderChange}
+              primaryOrder={primaryOrder}
+              onChange={handleOrderItemChange}
             />
             <ScoreTableHeaderCell
               target="lv"
               label="Lv"
-              order={order}
-              onChange={onOrderChange}
+              primaryOrder={primaryOrder}
+              onChange={handleOrderItemChange}
             />
             <ScoreTableHeaderCell
               target="like"
               label="好み"
-              order={order}
-              onChange={onOrderChange}
+              primaryOrder={primaryOrder}
+              onChange={handleOrderItemChange}
             />
             <ScoreTableHeaderCell
               target="achievement"
               label="達成率"
-              order={order}
-              onChange={onOrderChange}
+              primaryOrder={primaryOrder}
+              onChange={handleOrderItemChange}
             />
             <ScoreTableHeaderCell
               target="skillPoint"
               label="Skill Point"
-              order={order}
-              onChange={onOrderChange}
+              primaryOrder={primaryOrder}
+              onChange={handleOrderItemChange}
             />
           </TableRow>
         </TableHead>
@@ -115,15 +125,15 @@ export default function ScoresTable({
 function ScoreTableHeaderCell({
   target,
   label,
-  order,
+  primaryOrder,
   onChange,
 }: {
   target: ScoreOrderTarget;
   label: string;
-  order: ScoreOrder | undefined;
-  onChange: (order: ScoreOrder) => unknown;
+  primaryOrder: ScoreOrderItem | undefined;
+  onChange: (orderItem: ScoreOrderItem) => unknown;
 }) {
-  const myOrder = order?.target === target ? order : undefined;
+  const myOrder = primaryOrder?.target === target ? primaryOrder : undefined;
 
   const handleClick = () => {
     onChange({

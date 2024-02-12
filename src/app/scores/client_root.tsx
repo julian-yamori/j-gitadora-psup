@@ -16,7 +16,7 @@ import assertResponseOk from "../_util/assert_response_ok";
 /** 譜面クエリ画面の最上位クライアントコンポーネント */
 export default function ClientRoot() {
   const [scores, setScores] = useState<ReadonlyArray<ScoreListDto>>([]);
-  const [order, setOrder] = useState<ScoreOrder>();
+  const [order, setOrder] = useState<ScoreOrder>([]);
 
   const handleFormSubmit = async (f: ScoreFilter) => {
     setScores(await fetchSearch(f));
