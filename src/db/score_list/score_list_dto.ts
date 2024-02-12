@@ -8,7 +8,7 @@ import {
 } from "@/domain/track/user_track";
 import { z } from "zod";
 
-export const scoreListDtoSchema = z
+const scoreListDtoRowSchema = z
   .object({
     trackId: z.string(),
     title: trackTitleSchema,
@@ -22,6 +22,14 @@ export const scoreListDtoSchema = z
 
     achievement: achievementSchema.optional(),
     skillPoint: skillPointSchema.optional(),
+  })
+  .readonly();
+export type ScoreListDtoRow = z.infer<typeof scoreListDtoRowSchema>;
+
+export const scoreListDtoSchema = z
+  .object({
+    rows: z.array(scoreListDtoRowSchema).readonly(),
+    count: z.number().int().gte(0),
   })
   .readonly();
 export type ScoreListDto = z.infer<typeof scoreListDtoSchema>;

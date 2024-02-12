@@ -6,28 +6,37 @@ import {
 } from "@/db/score_list/score_list_dto";
 import { ScoreFilter } from "@/domain/score_query/score_filter";
 import { ScoreOrder } from "@/domain/score_query/score_order";
-import { ScoreQuery } from "@/domain/score_query/score_query";
 import { Stack } from "@mui/material";
 import { useState } from "react";
-import { z } from "zod";
 import FilterForm from "./_filter_form/filter_form";
 import ScoresTable from "./scores_table";
 import assertResponseOk from "../_util/assert_response_ok";
 
+const PAGE_SIZE = 50;
+
 /** 譜面クエリ画面の最上位クライアントコンポーネント */
 export default function ClientRoot() {
-  const [scores, setScores] = useState<ReadonlyArray<ScoreListDto>>([]);
+  const [scoresDto, setScoresDto] = useState<ScoreListDto>();
   const [filter, setFilter] = useState<ScoreFilter>();
   const [order, setOrder] = useState<ScoreOrder>([]);
+  const [pageIndex, setPageIndex] = useState(0);
 
   const handleFormSubmit = async (newFilter: ScoreFilter) => {
     setFilter(newFilter);
-    setScores(await fetchSearch({ filter: newFilter, order }));
+    setPageIndex(0);
+    setScoresDto(await fetchSearch(newFilter, order, 0));
   };
   const handleOrderChanged = async (newOrder: ScoreOrder) => {
     setOrder(newOrder);
+    setPageIndex(0);
     if (filter) {
-      setScores(await fetchSearch({ filter, order: newOrder }));
+      setScoresDto(await fetchSearch(filter, newOrder, 0));
+    }
+  };
+  const handlePageChanged = async (newPageIndex: number) => {
+    setPageIndex(newPageIndex);
+    if (filter) {
+      setScoresDto(await fetchSearch(filter, order, newPageIndex));
     }
   };
 
@@ -35,17 +44,28 @@ export default function ClientRoot() {
     <Stack spacing={2}>
       <FilterForm onSubmit={handleFormSubmit} />
       <ScoresTable
-        scores={scores}
+        scoresDto={scoresDto}
         order={order}
+        pageIndex={pageIndex}
+        rowsPerPage={PAGE_SIZE}
         onOrderChange={handleOrderChanged}
+        onPageChange={handlePageChanged}
       />
     </Stack>
   );
 }
 
-const responseSchema = z.array(scoreListDtoSchema);
+async function fetchSearch(
+  filter: ScoreFilter,
+  order: ScoreOrder,
+  pageIndex: number,
+): Promise<ScoreListDto> {
+  const query = {
+    filter,
+    order,
+    paging: { skip: pageIndex * PAGE_SIZE, take: PAGE_SIZE },
+  };
 
-async function fetchSearch(query: ScoreQuery): Promise<ScoreListDto[]> {
   const response = assertResponseOk(
     await fetch("api/scores", {
       method: "POST",
@@ -54,5 +74,5 @@ async function fetchSearch(query: ScoreQuery): Promise<ScoreListDto[]> {
   );
 
   const json = await response.text();
-  return responseSchema.parse(JSON.parse(json));
+  return scoreListDtoSchema.parse(JSON.parse(json));
 }

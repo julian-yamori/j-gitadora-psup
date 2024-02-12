@@ -10,29 +10,41 @@ import scoreFilterToWhere from "./score_filter_to_where";
 export default async function queryScoreList(
   prismaTransaction: PrismaTransaction,
   scoreQuery: ScoreQuery,
-): Promise<ScoreListDto[]> {
-  const found = await prismaTransaction.score.findMany({
+): Promise<ScoreListDto> {
+  const where = scoreFilterToWhere(scoreQuery.filter);
+
+  // filter に一致するレコード数の取得
+  const count = await prismaTransaction.score.count({ where });
+
+  // レコード自体の検索
+  const { skip, take } = scoreQuery.paging;
+  const rows = await prismaTransaction.score.findMany({
     include: {
       track: {
         select: { title: true, skillType: true, long: true, userTrack: true },
       },
       userScore: true,
     },
-    where: scoreFilterToWhere(scoreQuery.filter),
+    where,
     orderBy: orderDomainToPrisma(scoreQuery.order),
+    skip,
+    take,
   });
 
-  return found.map((f) => ({
-    trackId: f.trackId,
-    title: f.track.title,
-    skillType: skillTypeSchema.parse(f.track.skillType),
-    long: f.track.long,
-    difficulty: difficultySchema.parse(f.difficulty),
-    lv: f.lv,
-    like: f.track.userTrack?.like ?? undefined,
-    achievement: f.userScore?.achievement,
-    skillPoint: f.userScore?.skillPoint,
-  }));
+  return {
+    rows: rows.map((f) => ({
+      trackId: f.trackId,
+      title: f.track.title,
+      skillType: skillTypeSchema.parse(f.track.skillType),
+      long: f.track.long,
+      difficulty: difficultySchema.parse(f.difficulty),
+      lv: f.lv,
+      like: f.track.userTrack?.like ?? undefined,
+      achievement: f.userScore?.achievement,
+      skillPoint: f.userScore?.skillPoint,
+    })),
+    count,
+  };
 }
 
 // ScoreOrder を Prisma の orderBy に変換

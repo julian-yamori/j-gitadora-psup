@@ -22,23 +22,32 @@ import {
   TableCell,
   TableContainer,
   TableHead,
+  TablePagination,
   TableRow,
   TableSortLabel,
 } from "@mui/material";
 import Link from "next/link";
 
 export default function ScoresTable({
-  scores,
+  scoresDto,
   order,
+  pageIndex,
+  rowsPerPage,
   onOrderChange,
+  onPageChange,
 }: {
-  scores: ReadonlyArray<ScoreListDto>;
+  scoresDto: ScoreListDto | undefined;
   order: ScoreOrder;
+  pageIndex: number;
+  rowsPerPage: number;
   onOrderChange: (order: ScoreOrder) => unknown;
+  onPageChange: (pageIndex: number) => unknown;
 }) {
-  if (scores.length === 0) {
+  if (scoresDto === undefined) {
     return null;
   }
+
+  const { rows: scores, count: scoreCount } = scoresDto;
 
   const primaryOrder = primaryScoreOrder(order);
 
@@ -47,79 +56,93 @@ export default function ScoresTable({
     onOrderChange(newOrder);
   };
 
+  const handlePageChange = (_e: unknown, newPage: number) => {
+    onPageChange(newPage);
+  };
+
   return (
-    <TableContainer component={Paper}>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <ScoreTableHeaderCell
-              target="title"
-              label="曲名"
-              primaryOrder={primaryOrder}
-              onChange={handleOrderItemChange}
-            />
-            <ScoreTableHeaderCell
-              target="skillType"
-              label="区分"
-              primaryOrder={primaryOrder}
-              onChange={handleOrderItemChange}
-            />
-            <ScoreTableHeaderCell
-              target="long"
-              label="LONG"
-              primaryOrder={primaryOrder}
-              onChange={handleOrderItemChange}
-            />
-            <ScoreTableHeaderCell
-              target="difficulty"
-              label="難易度"
-              primaryOrder={primaryOrder}
-              onChange={handleOrderItemChange}
-            />
-            <ScoreTableHeaderCell
-              target="lv"
-              label="Lv"
-              primaryOrder={primaryOrder}
-              onChange={handleOrderItemChange}
-            />
-            <ScoreTableHeaderCell
-              target="like"
-              label="好み"
-              primaryOrder={primaryOrder}
-              onChange={handleOrderItemChange}
-            />
-            <ScoreTableHeaderCell
-              target="achievement"
-              label="達成率"
-              primaryOrder={primaryOrder}
-              onChange={handleOrderItemChange}
-            />
-            <ScoreTableHeaderCell
-              target="skillPoint"
-              label="Skill Point"
-              primaryOrder={primaryOrder}
-              onChange={handleOrderItemChange}
-            />
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {scores.map((score) => (
-            <TableRow key={rowKey(score)}>
-              <TableCell>
-                <Link href={`/tracks/${score.trackId}`}>{score.title}</Link>
-              </TableCell>
-              <TableCell>{skillTypeToStr(score.skillType)}</TableCell>
-              <TableCell>{score.long ? "LONG" : undefined}</TableCell>
-              <TableCell>{difficultyToStr(score.difficulty)}</TableCell>
-              <TableCell>{lvToString(score.lv)}</TableCell>
-              <TableCell>{likeView(score.like)}</TableCell>
-              <TableCell>{achievementView(score.achievement)}</TableCell>
-              <TableCell>{skillPointView(score.skillPoint)}</TableCell>
+    <Paper>
+      <TableContainer>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <ScoreTableHeaderCell
+                target="title"
+                label="曲名"
+                primaryOrder={primaryOrder}
+                onChange={handleOrderItemChange}
+              />
+              <ScoreTableHeaderCell
+                target="skillType"
+                label="区分"
+                primaryOrder={primaryOrder}
+                onChange={handleOrderItemChange}
+              />
+              <ScoreTableHeaderCell
+                target="long"
+                label="LONG"
+                primaryOrder={primaryOrder}
+                onChange={handleOrderItemChange}
+              />
+              <ScoreTableHeaderCell
+                target="difficulty"
+                label="難易度"
+                primaryOrder={primaryOrder}
+                onChange={handleOrderItemChange}
+              />
+              <ScoreTableHeaderCell
+                target="lv"
+                label="Lv"
+                primaryOrder={primaryOrder}
+                onChange={handleOrderItemChange}
+              />
+              <ScoreTableHeaderCell
+                target="like"
+                label="好み"
+                primaryOrder={primaryOrder}
+                onChange={handleOrderItemChange}
+              />
+              <ScoreTableHeaderCell
+                target="achievement"
+                label="達成率"
+                primaryOrder={primaryOrder}
+                onChange={handleOrderItemChange}
+              />
+              <ScoreTableHeaderCell
+                target="skillPoint"
+                label="Skill Point"
+                primaryOrder={primaryOrder}
+                onChange={handleOrderItemChange}
+              />
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+          </TableHead>
+          <TableBody>
+            {scores.map((score) => (
+              <TableRow key={rowKey(score)}>
+                <TableCell>
+                  <Link href={`/tracks/${score.trackId}`}>{score.title}</Link>
+                </TableCell>
+                <TableCell>{skillTypeToStr(score.skillType)}</TableCell>
+                <TableCell>{score.long ? "LONG" : undefined}</TableCell>
+                <TableCell>{difficultyToStr(score.difficulty)}</TableCell>
+                <TableCell>{lvToString(score.lv)}</TableCell>
+                <TableCell>{likeView(score.like)}</TableCell>
+                <TableCell>{achievementView(score.achievement)}</TableCell>
+                <TableCell>{skillPointView(score.skillPoint)}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <TablePagination
+        component="div"
+        count={scoreCount}
+        rowsPerPage={rowsPerPage}
+        rowsPerPageOptions={[rowsPerPage]}
+        page={pageIndex}
+        onPageChange={handlePageChange}
+      />
+    </Paper>
   );
 }
 
