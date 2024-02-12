@@ -1,13 +1,15 @@
-import { ScoreFilter } from "@/domain/score_query/score_filter";
+import { ScoreQuery } from "@/domain/score_query/score_query";
 import { skillTypeSchema } from "@/domain/track/skill_type";
 import { difficultySchema } from "@/domain/track/difficulty";
+import { ScoreOrder } from "@/domain/score_query/score_order";
+import neverError from "@/utils/never_error";
 import { PrismaTransaction } from "../prisma_client";
 import { ScoreListDto } from "./score_list_dto";
 import scoreFilterToWhere from "./score_filter_to_where";
 
 export default async function queryScoreList(
   prismaTransaction: PrismaTransaction,
-  scoreFilter: ScoreFilter,
+  scoreQuery: ScoreQuery,
 ): Promise<ScoreListDto[]> {
   const found = await prismaTransaction.score.findMany({
     include: {
@@ -16,7 +18,8 @@ export default async function queryScoreList(
       },
       userScore: true,
     },
-    where: scoreFilterToWhere(scoreFilter),
+    where: scoreFilterToWhere(scoreQuery.filter),
+    orderBy: orderDomainToPrisma(scoreQuery.order),
   });
 
   return found.map((f) => ({
@@ -30,4 +33,34 @@ export default async function queryScoreList(
     achievement: f.userScore?.achievement,
     skillPoint: f.userScore?.skillPoint,
   }));
+}
+
+// ScoreOrder を Prisma の orderBy に変換
+function orderDomainToPrisma(order: ScoreOrder) {
+  return order.map(({ target, direction }) => {
+    switch (target) {
+      // Track
+      case "title":
+      case "skillType":
+      case "long":
+        return { track: { [target]: direction } };
+
+      // Score
+      case "difficulty":
+      case "lv":
+        return { [target]: direction };
+
+      // UserTrack
+      case "like":
+        return { track: { userTrack: { [target]: direction } } };
+
+      // userScore
+      case "achievement":
+      case "skillPoint":
+        return { userScore: { [target]: direction } };
+
+      default:
+        throw neverError(target);
+    }
+  });
 }
