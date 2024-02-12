@@ -7,7 +7,7 @@ import {
 import { ScoreFilter } from "@/domain/score_query/score_filter";
 import { ScoreOrder } from "@/domain/score_query/score_order";
 import { Stack } from "@mui/material";
-import { useState } from "react";
+import React, { useRef, useState } from "react";
 import FilterForm from "./_filter_form/filter_form";
 import ScoresTable from "./scores_table";
 import assertResponseOk from "../_util/assert_response_ok";
@@ -20,6 +20,8 @@ export default function ClientRoot() {
   const [filter, setFilter] = useState<ScoreFilter>();
   const [order, setOrder] = useState<ScoreOrder>([]);
   const [pageIndex, setPageIndex] = useState(0);
+
+  const tableTopRef = useRef<HTMLDivElement>(null);
 
   const handleFormSubmit = async (newFilter: ScoreFilter) => {
     setFilter(newFilter);
@@ -37,12 +39,14 @@ export default function ClientRoot() {
     setPageIndex(newPageIndex);
     if (filter) {
       setScoresDto(await fetchSearch(filter, order, newPageIndex));
+      scrollToTableTop(tableTopRef);
     }
   };
 
   return (
     <Stack spacing={2}>
       <FilterForm onSubmit={handleFormSubmit} />
+      <div ref={tableTopRef} />
       <ScoresTable
         scoresDto={scoresDto}
         order={order}
@@ -75,4 +79,11 @@ async function fetchSearch(
 
   const json = await response.text();
   return scoreListDtoSchema.parse(JSON.parse(json));
+}
+
+function scrollToTableTop(tableTopRef: React.RefObject<HTMLDivElement>) {
+  const refCurrent = tableTopRef.current;
+  if (refCurrent) {
+    refCurrent.scrollIntoView();
+  }
 }
