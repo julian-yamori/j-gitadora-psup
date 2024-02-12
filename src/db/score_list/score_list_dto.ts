@@ -8,18 +8,20 @@ import {
 } from "@/domain/track/user_track";
 import { z } from "zod";
 
-export const scoreListDtoSchema = z.object({
-  trackId: z.string(),
-  title: trackTitleSchema,
-  skillType: skillTypeSchema,
-  long: z.boolean(),
+export const scoreListDtoSchema = z
+  .object({
+    trackId: z.string(),
+    title: trackTitleSchema,
+    skillType: skillTypeSchema,
+    long: z.boolean(),
 
-  difficulty: difficultySchema,
-  lv: lvSchema,
+    difficulty: difficultySchema,
+    lv: lvSchema,
 
-  like: likeSchema.optional(),
+    like: likeSchema.optional(),
 
-  achievement: achievementSchema.optional(),
-  skillPoint: skillPointSchema.optional(),
-});
-export type ScoreListDto = Readonly<z.infer<typeof scoreListDtoSchema>>;
+    achievement: achievementSchema.optional(),
+    skillPoint: skillPointSchema.optional(),
+  })
+  .readonly();
+export type ScoreListDto = z.infer<typeof scoreListDtoSchema>;

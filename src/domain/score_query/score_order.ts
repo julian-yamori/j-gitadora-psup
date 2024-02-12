@@ -15,11 +15,13 @@ export type ScoreOrderTarget = z.infer<typeof scoreOrderTargetSchema>;
 const orderDirectionSchema = z.union([z.literal("asc"), z.literal("desc")]);
 export type OrderDirection = z.infer<typeof orderDirectionSchema>;
 
-export const scoreOrderItemSchema = z.object({
-  target: scoreOrderTargetSchema,
-  direction: orderDirectionSchema,
-});
-export type ScoreOrderItem = Readonly<z.infer<typeof scoreOrderItemSchema>>;
+export const scoreOrderItemSchema = z
+  .object({
+    target: scoreOrderTargetSchema,
+    direction: orderDirectionSchema,
+  })
+  .readonly();
+export type ScoreOrderItem = z.infer<typeof scoreOrderItemSchema>;
 
 // 譜面のソート順定義
 // 先頭の ScoreOrderItem ほど優先
