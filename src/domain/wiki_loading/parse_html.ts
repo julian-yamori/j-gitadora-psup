@@ -1,6 +1,7 @@
 import { parse, HTMLElement } from "node-html-parser";
 import { HOT, OTHER } from "@/domain/track/skill_type";
 import { ALL_DIFFICULTIES, Difficulty } from "@/domain/track/difficulty";
+import neverError from "@/utils/never_error";
 import { Err, Ok, Result } from "@/utils/result";
 import { WikiLoadingSource } from "./wiki_loading_source";
 import { WikiLoadingIssueError } from "./wiki_loading_issue";
@@ -26,7 +27,9 @@ export default function parseHTML(
 
   for (const [i, r] of tableCells.entries()) {
     const result = parseRow(source, i, r);
-    switch (result.type) {
+
+    const { type } = result;
+    switch (type) {
       case "track":
         results.push(result.track);
         break;
@@ -37,6 +40,9 @@ export default function parseHTML(
 
       case "ignore":
         break;
+
+      default:
+        throw neverError(type);
     }
   }
 

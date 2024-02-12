@@ -2,6 +2,7 @@
 
 import TrackRepository from "@/db/track/track_repository";
 import { RegisterIssueDto } from "@/db/wiki_loading/register_query_service";
+import neverError from "@/utils/never_error";
 
 /**
  * wikiから読み込みの、一旦保存した問題点からの登録を実行
@@ -15,7 +16,8 @@ export default async function registerFromIssues(
   const updatedTrackIds: string[] = [];
 
   for (const issue of issues) {
-    switch (issue.type) {
+    const { type } = issue;
+    switch (type) {
       case "new":
         await trackRepository.create(issue.newTrack);
         break;
@@ -26,6 +28,9 @@ export default async function registerFromIssues(
       case "delete":
         await trackRepository.delete(issue.trackId);
         break;
+
+      default:
+        throw neverError(type);
     }
   }
 

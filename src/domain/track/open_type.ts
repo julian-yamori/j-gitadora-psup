@@ -1,3 +1,5 @@
+import neverError from "@/utils/never_error";
+
 /** 曲の開放方法の種別 : 初期開放 */
 export const INITIAL = 0;
 /** 曲の開放方法の種別 : ENCORE */
@@ -50,6 +52,8 @@ export function openTypeToStr(value: OpenType): string {
       return "ライブハウス";
     case DX:
       return "DX解禁チャレンジ";
+    default:
+      throw neverError(value);
   }
 }
 
@@ -65,5 +69,8 @@ export function isOpenTypeInitialOpen(value: OpenType): boolean {
     case LIVE_HOUSE:
     case DX:
       return false;
+
+    default:
+      throw neverError(value);
   }
 }

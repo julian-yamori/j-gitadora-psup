@@ -14,6 +14,7 @@ import {
   achievementToPercent,
   skillPointToDisplay,
 } from "@/domain/track/user_track";
+import neverError from "@/utils/never_error";
 import {
   Paper,
   Table,
@@ -165,6 +166,9 @@ function newOrderDirection(
     case "desc":
     case undefined:
       return "asc";
+
+    default:
+      throw neverError(oldDirection);
   }
 }
 

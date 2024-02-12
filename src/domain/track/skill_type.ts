@@ -1,3 +1,4 @@
+import neverError from "@/utils/never_error";
 import { z } from "zod";
 
 /** SkillPointの枠区分 : HOT */
@@ -17,5 +18,7 @@ export function skillTypeToStr(value: SkillType): string {
       return "HOT";
     case OTHER:
       return "OTHER";
+    default:
+      throw neverError(value);
   }
 }

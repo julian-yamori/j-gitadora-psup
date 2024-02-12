@@ -6,19 +6,25 @@ import {
   FilterTargetNumber,
   ScoreFilter,
 } from "@/domain/score_query/score_filter";
+import neverError from "@/utils/never_error";
 
 export default function scoreFilterToWhere(scoreFilter: ScoreFilter) {
   return nodeGroupToWhere(scoreFilter);
 }
 
 function nodeToWhere(node: FilterNode): any {
-  switch (node.nodeType) {
+  const { nodeType } = node;
+
+  switch (nodeType) {
     case "Group":
       return nodeGroupToWhere(node);
     case "Number":
       return nodeNumberToWhere(node);
     case "Bool":
       return nodeBoolToWhere(node);
+
+    default:
+      throw neverError(nodeType);
   }
 }
 
@@ -30,8 +36,9 @@ function nodeGroupToWhere(node: FilterNodeGroup) {
 
 function nodeNumberToWhere(node: FilterNodeNumber) {
   const { target, range } = node;
+  const { rangeType } = range;
 
-  switch (range.rangeType) {
+  switch (rangeType) {
     case "Eq":
       return fieldFilterNumber(target, range.value);
     case "Min":
@@ -48,6 +55,9 @@ function nodeNumberToWhere(node: FilterNodeNumber) {
       };
     case "Null":
       return fieldFilterNumber(target, null);
+
+    default:
+      throw neverError(rangeType);
   }
 }
 
@@ -61,6 +71,8 @@ function fieldFilterNumber(target: FilterTargetNumber, condition: any) {
       return { track: { userTrack: { [target]: condition } } };
     case "achievement":
       return { userScore: { [target]: condition } };
+    default:
+      throw neverError(target);
   }
 }
 
@@ -70,6 +82,8 @@ function nodeBoolToWhere(node: FilterNodeBool) {
   switch (target) {
     case "isOpen":
       return { track: { userTrack: { [target]: value } } };
+    default:
+      throw neverError(target);
   }
 }
 
@@ -79,5 +93,7 @@ function groupLogicToPrisma(logic: "and" | "or") {
       return "AND";
     case "or":
       return "OR";
+    default:
+      throw neverError(logic);
   }
 }

@@ -11,6 +11,7 @@ import {
   SkillType,
   skillTypeToStr,
 } from "@/domain/track/skill_type";
+import neverError from "@/utils/never_error";
 import { cache } from "react";
 import { Paper, Stack, Typography } from "@mui/material";
 import TrackForm from "./track_form";
@@ -89,5 +90,7 @@ function SkillTypePaper({ skillType }: { skillType: SkillType }) {
       return <TagPaper text={text} bgcolor="#e00000" textColor="#ffff00" />;
     case OTHER:
       return <TagPaper text={text} bgcolor="#00c000" textColor="#ff0" />;
+    default:
+      throw neverError(skillType);
   }
 }

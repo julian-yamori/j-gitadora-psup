@@ -1,3 +1,4 @@
+import neverError from "@/utils/never_error";
 import { z } from "zod";
 
 /** 曲の難易度 : BASIC */
@@ -36,5 +37,7 @@ export function difficultyToStr(value: Difficulty): string {
       return "EXTREME";
     case MASTER:
       return "MASTER";
+    default:
+      throw neverError(value);
   }
 }

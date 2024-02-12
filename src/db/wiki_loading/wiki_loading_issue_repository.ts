@@ -1,6 +1,7 @@
 import PrismaClient from "@prisma/client";
 import { WikiLoadingIssue } from "@/domain/wiki_loading/wiki_loading_issue";
 import { Track } from "@/domain/track/track";
+import neverError from "@/utils/never_error";
 import { PrismaTransaction } from "../prisma_client";
 
 /** Wikiからの曲情報の取り込み時問題のリポジトリ */
@@ -18,7 +19,8 @@ export default class WikiLoadingIssueRepository {
     const dbDiffirences: PrismaClient.WikiLoadingDiffirence[] = [];
 
     for (const issue of issues) {
-      switch (issue.type) {
+      const { type: issueType } = issue;
+      switch (issueType) {
         case "new": {
           dbIssues.push({
             id: issue.newTrack.id,
@@ -83,6 +85,9 @@ export default class WikiLoadingIssueRepository {
           });
           break;
         }
+
+        default:
+          throw neverError(issueType);
       }
     }
 

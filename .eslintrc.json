@@ -39,10 +39,6 @@
       }
     ],
 
-    // 型で分岐を網羅できてるときでもエラーになるのでoffにする。TypeScriptのチェックに任せる。
-    "consistent-return": "off",
-    // case句だけで型の全ての分岐を網羅しててもエラーになるのでoff。
-    "default-case": "off",
     // exportするものを上側に、そこから参照されるexportしないものを下側に書きたい
     "@typescript-eslint/no-use-before-define": "off",
     // airbnbの設定から for-of 禁止のみ無効化

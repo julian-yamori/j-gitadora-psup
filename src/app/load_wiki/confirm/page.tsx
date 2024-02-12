@@ -8,6 +8,7 @@ import CheckViewQueryService, {
   CheckViewIssueDtoNew,
 } from "@/db/wiki_loading/check_view_query_service";
 import { WikiLoadingSource } from "@/domain/wiki_loading/wiki_loading_source";
+import neverError from "@/utils/never_error";
 import RegisterButton from "./register_button";
 
 export const dynamic = "force-dynamic";
@@ -36,7 +37,9 @@ export default async function Home() {
 }
 
 function IssueView({ issue }: { issue: CheckViewIssueDto }) {
-  switch (issue.type) {
+  const { type } = issue;
+
+  switch (type) {
     case "new":
       return <IssueViewNew issue={issue} />;
     case "diff":
@@ -45,6 +48,8 @@ function IssueView({ issue }: { issue: CheckViewIssueDto }) {
       return <IssueViewDelete issue={issue} />;
     case "error":
       return <IssueViewError issue={issue} />;
+    default:
+      throw neverError(type);
   }
 }
 
@@ -119,5 +124,7 @@ function sourceToViewText(source: WikiLoadingSource): string {
       return "旧曲リスト 初代〜XG3";
     case "old_GD":
       return "旧曲リスト GITADORA";
+    default:
+      throw neverError(source);
   }
 }
