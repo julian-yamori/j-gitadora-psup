@@ -7,7 +7,6 @@ export default function NavigationMenu() {
   return (
     <MenuList>
       <Item text="譜面クエリ" href="/scores" />
-      <Item text="wikiの曲情報読み込み" href="/load_wiki" />
     </MenuList>
   );
 }
