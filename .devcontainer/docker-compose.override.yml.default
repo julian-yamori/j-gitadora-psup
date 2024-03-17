@@ -1,0 +1,12 @@
+services:
+  app:
+    environment:
+      POSTGRES_PRISMA_URL: postgresql://db-user:password@db:5432/jgdps?schema=public
+      POSTGRES_URL_NON_POOLING: postgresql://db-user:password@db:5432/jgdps?schema=public
+      USERNAME: basic-user
+      PASSWORD: password
+
+  db:
+    environment:
+      POSTGRES_USER: db-user
+      POSTGRES_PASSWORD: password

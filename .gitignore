@@ -36,5 +36,3 @@ next-env.d.ts
 
 # jest
 coverage
-
-.env
