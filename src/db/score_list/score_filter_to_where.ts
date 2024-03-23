@@ -5,8 +5,8 @@ import {
   FilterNodeNumber,
   FilterTargetNumber,
   ScoreFilter,
-} from "@/domain/score_query/score_filter";
-import neverError from "@/utils/never_error";
+} from "../../domain/score_query/score_filter";
+import neverError from "../../utils/never_error";
 
 export default function scoreFilterToWhere(scoreFilter: ScoreFilter) {
   return nodeGroupToWhere(scoreFilter);

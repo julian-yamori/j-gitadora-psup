@@ -1,5 +1,5 @@
-import neverError from "@/utils/never_error";
 import { z } from "zod";
+import neverError from "../../utils/never_error";
 
 /** SkillPointの枠区分 : HOT */
 export const HOT = 1;

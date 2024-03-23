@@ -1,12 +1,12 @@
 import PrismaClient from "@prisma/client";
-import { Score, Track } from "@/domain/track/track";
-import { skillTypeSchema } from "@/domain/track/skill_type";
-import { openTypeFromNum } from "@/domain/track/open_type";
+import { Score, Track } from "../../domain/track/track";
+import { skillTypeSchema } from "../../domain/track/skill_type";
+import { openTypeFromNum } from "../../domain/track/open_type";
 import {
   ALL_DIFFICULTIES,
   Difficulty,
   difficultySchema,
-} from "@/domain/track/difficulty";
+} from "../../domain/track/difficulty";
 import { PrismaTransaction } from "../prisma_client";
 
 /** 曲データのリポジトリ */

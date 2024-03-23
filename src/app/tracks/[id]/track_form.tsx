@@ -1,15 +1,5 @@
 "use client";
 
-import assertResponseOk from "@/app/_util/assert_response_ok";
-import getRefNonNull from "@/app/_util/get_ref_non_null";
-import {
-  SaveSuccessSnackbar,
-  useSaveSuccessSnackbarState,
-} from "@/components/snackbar/save_success_snackbar";
-import { Difficulty } from "@/domain/track/difficulty";
-import { INITIAL, OpenType } from "@/domain/track/open_type";
-import { Track } from "@/domain/track/track";
-import { UserTrack, UserScore } from "@/domain/track/user_track";
 import {
   Button,
   FormControlLabel,
@@ -22,6 +12,16 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useRef, useState } from "react";
+import assertResponseOk from "../../_util/assert_response_ok";
+import getRefNonNull from "../../_util/get_ref_non_null";
+import {
+  SaveSuccessSnackbar,
+  useSaveSuccessSnackbarState,
+} from "../../../components/snackbar/save_success_snackbar";
+import { Difficulty } from "../../../domain/track/difficulty";
+import { INITIAL, OpenType } from "../../../domain/track/open_type";
+import { Track } from "../../../domain/track/track";
+import { UserTrack, UserScore } from "../../../domain/track/user_track";
 import ScoresTable from "./scores_table";
 
 export default function TrackForm({

@@ -1,7 +1,7 @@
-import PageTitle from "@/components/page_title";
-import prismaClient from "@/db/prisma_client";
-import { TrackListDto } from "@/db/track_list/track_list_dto";
-import { searchTracksByTitle } from "@/db/track_list/track_list_query_service";
+import PageTitle from "../../components/page_title";
+import prismaClient from "../../db/prisma_client";
+import { TrackListDto } from "../../db/track_list/track_list_dto";
+import { searchTracksByTitle } from "../../db/track_list/track_list_query_service";
 import TracksTable from "./tracks_table";
 import createMetadata from "../_util/create_metadata";
 

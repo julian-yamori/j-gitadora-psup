@@ -2,19 +2,19 @@ import {
   getFormCheckbox,
   getFormRating,
   getFormString,
-} from "@/app/_util/form_convert";
-import prismaClient from "@/db/prisma_client";
-import TrackRepository from "@/db/track/track_repository";
-import UserTrackRepository from "@/db/track/user_track_repository";
-import { Difficulty } from "@/domain/track/difficulty";
-import { Track } from "@/domain/track/track";
+} from "../../../_util/form_convert";
+import prismaClient from "../../../../db/prisma_client";
+import TrackRepository from "../../../../db/track/track_repository";
+import UserTrackRepository from "../../../../db/track/user_track_repository";
+import { Difficulty } from "../../../../domain/track/difficulty";
+import { Track } from "../../../../domain/track/track";
 import {
   UserScore,
   UserTrackScores,
   trackSkillPoint,
   initialUserTrack,
   validateTrackLike,
-} from "@/domain/track/user_track";
+} from "../../../../domain/track/user_track";
 import formKeyByScore from "../form_key";
 
 /** 曲詳細画面からの情報の更新 */

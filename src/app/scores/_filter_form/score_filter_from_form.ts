@@ -2,13 +2,13 @@ import {
   getFormCheckbox,
   getFormNumberText,
   getFormRating,
-} from "@/app/_util/form_convert";
+} from "../../_util/form_convert";
 import {
   FilterNode,
   FilterRangeNumber,
   ScoreFilter,
-} from "@/domain/score_query/score_filter";
-import { Err, Ok, Result } from "@/utils/result";
+} from "../../../domain/score_query/score_filter";
+import { Err, Ok, Result } from "../../../utils/result";
 
 export default function scoreFilterFromForm(
   form: FormData,

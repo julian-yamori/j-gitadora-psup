@@ -1,20 +1,3 @@
-import { ScoreListDto } from "@/db/score_list/score_list_dto";
-import {
-  OrderDirection,
-  ScoreOrder,
-  ScoreOrderItem,
-  ScoreOrderTarget,
-  primaryScoreOrder,
-  scoreOrderSetItem,
-} from "@/domain/score_query/score_order";
-import { Difficulty, difficultyToStr } from "@/domain/track/difficulty";
-import { skillTypeToStr } from "@/domain/track/skill_type";
-import { lvToString } from "@/domain/track/track";
-import {
-  achievementToPercent,
-  skillPointToDisplay,
-} from "@/domain/track/user_track";
-import neverError from "@/utils/never_error";
 import {
   Paper,
   Table,
@@ -27,6 +10,23 @@ import {
   TableSortLabel,
 } from "@mui/material";
 import Link from "next/link";
+import { ScoreListDto } from "../../db/score_list/score_list_dto";
+import {
+  OrderDirection,
+  ScoreOrder,
+  ScoreOrderItem,
+  ScoreOrderTarget,
+  primaryScoreOrder,
+  scoreOrderSetItem,
+} from "../../domain/score_query/score_order";
+import { Difficulty, difficultyToStr } from "../../domain/track/difficulty";
+import { skillTypeToStr } from "../../domain/track/skill_type";
+import { lvToString } from "../../domain/track/track";
+import {
+  achievementToPercent,
+  skillPointToDisplay,
+} from "../../domain/track/user_track";
+import neverError from "../../utils/never_error";
 
 export default function ScoresTable({
   scoresDto,

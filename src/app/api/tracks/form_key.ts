@@ -1,4 +1,4 @@
-import { Difficulty } from "@/domain/track/difficulty";
+import { Difficulty } from "../../../domain/track/difficulty";
 
 /**
  * 譜面毎のフォーム項目のnameを生成

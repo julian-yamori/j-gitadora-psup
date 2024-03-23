@@ -1,4 +1,4 @@
-import { trackSkillPoint } from "@/domain/track/user_track";
+import { trackSkillPoint } from "../../domain/track/user_track";
 import { PrismaTransaction } from "../prisma_client";
 
 /**

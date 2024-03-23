@@ -1,5 +1,5 @@
-import neverError from "@/utils/never_error";
 import { z } from "zod";
+import neverError from "../../utils/never_error";
 
 /** 曲の難易度 : BASIC */
 export const BASIC = 1;

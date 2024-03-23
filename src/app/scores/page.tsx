@@ -1,4 +1,4 @@
-import PageTitle from "@/components/page_title";
+import PageTitle from "../../components/page_title";
 import createMetadata from "../_util/create_metadata";
 import ClientRoot from "./client_root";
 

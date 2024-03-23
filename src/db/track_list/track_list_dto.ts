@@ -1,6 +1,6 @@
-import { Difficulty } from "@/domain/track/difficulty";
-import { OpenType } from "@/domain/track/open_type";
-import { SkillType } from "@/domain/track/skill_type";
+import { Difficulty } from "../../domain/track/difficulty";
+import { OpenType } from "../../domain/track/open_type";
+import { SkillType } from "../../domain/track/skill_type";
 
 /**
  * 曲一覧画面に表示するためのDTO

@@ -1,17 +1,3 @@
-import getRefNonNull from "@/app/_util/get_ref_non_null";
-import AchievementInputView from "@/components/controls/achievement_input_view";
-import LvInputView from "@/components/controls/lv_input_view";
-import {
-  FailedSnackbar,
-  useFailedSnackbarState,
-} from "@/components/snackbar/failed_snackbar";
-import { ScoreFilter } from "@/domain/score_query/score_filter";
-import {
-  HOT,
-  OTHER,
-  SkillType,
-  skillTypeSchema,
-} from "@/domain/track/skill_type";
 import {
   Button,
   Checkbox,
@@ -24,6 +10,20 @@ import {
   Switch,
 } from "@mui/material";
 import { ReactNode, useRef } from "react";
+import getRefNonNull from "../../_util/get_ref_non_null";
+import AchievementInputView from "../../../components/controls/achievement_input_view";
+import LvInputView from "../../../components/controls/lv_input_view";
+import {
+  FailedSnackbar,
+  useFailedSnackbarState,
+} from "../../../components/snackbar/failed_snackbar";
+import { ScoreFilter } from "../../../domain/score_query/score_filter";
+import {
+  HOT,
+  OTHER,
+  SkillType,
+  skillTypeSchema,
+} from "../../../domain/track/skill_type";
 import {
   FilterItemState,
   minMaxNumberChangeHandler,

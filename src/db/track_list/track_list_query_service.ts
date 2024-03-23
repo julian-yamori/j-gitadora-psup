@@ -1,7 +1,7 @@
-import { skillTypeSchema } from "@/domain/track/skill_type";
-import { openTypeFromNum } from "@/domain/track/open_type";
-import { difficultySchema } from "@/domain/track/difficulty";
 import PrismaClient from "@prisma/client";
+import { skillTypeSchema } from "../../domain/track/skill_type";
+import { openTypeFromNum } from "../../domain/track/open_type";
+import { difficultySchema } from "../../domain/track/difficulty";
 import { PrismaTransaction } from "../prisma_client";
 import { TrackListDto } from "./track_list_dto";
 

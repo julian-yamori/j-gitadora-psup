@@ -1,8 +1,8 @@
-import { ScoreQuery } from "@/domain/score_query/score_query";
-import { skillTypeSchema } from "@/domain/track/skill_type";
-import { difficultySchema } from "@/domain/track/difficulty";
-import { ScoreOrder } from "@/domain/score_query/score_order";
-import neverError from "@/utils/never_error";
+import { ScoreQuery } from "../../domain/score_query/score_query";
+import { skillTypeSchema } from "../../domain/track/skill_type";
+import { difficultySchema } from "../../domain/track/difficulty";
+import { ScoreOrder } from "../../domain/score_query/score_order";
+import neverError from "../../utils/never_error";
 import { PrismaTransaction } from "../prisma_client";
 import { ScoreListDto } from "./score_list_dto";
 import scoreFilterToWhere from "./score_filter_to_where";

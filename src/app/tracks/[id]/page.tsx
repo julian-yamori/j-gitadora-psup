@@ -1,19 +1,19 @@
-import createMetadata from "@/app/_util/create_metadata";
-import PageTitle from "@/components/page_title";
-import prismaClient from "@/db/prisma_client";
-import TrackRepository from "@/db/track/track_repository";
-import UserTrackRepository from "@/db/track/user_track_repository";
-import { INITIAL } from "@/domain/track/open_type";
-import { initialUserTrack } from "@/domain/track/user_track";
+import { cache } from "react";
+import { Paper, Stack, Typography } from "@mui/material";
+import createMetadata from "../../_util/create_metadata";
+import PageTitle from "../../../components/page_title";
+import prismaClient from "../../../db/prisma_client";
+import TrackRepository from "../../../db/track/track_repository";
+import UserTrackRepository from "../../../db/track/user_track_repository";
+import { INITIAL } from "../../../domain/track/open_type";
+import { initialUserTrack } from "../../../domain/track/user_track";
 import {
   HOT,
   OTHER,
   SkillType,
   skillTypeToStr,
-} from "@/domain/track/skill_type";
-import neverError from "@/utils/never_error";
-import { cache } from "react";
-import { Paper, Stack, Typography } from "@mui/material";
+} from "../../../domain/track/skill_type";
+import neverError from "../../../utils/never_error";
 import TrackForm from "./track_form";
 
 export const dynamic = "force-dynamic";

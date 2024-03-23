@@ -1,4 +1,4 @@
-import neverError from "@/utils/never_error";
+import neverError from "../../utils/never_error";
 
 /** 曲の開放方法の種別 : 初期開放 */
 export const INITIAL = 0;

@@ -1,19 +1,6 @@
 // "use client";
 
 import {
-  TrackListDto,
-  TrackListScoreDto,
-} from "@/db/track_list/track_list_dto";
-import {
-  ADVANCED,
-  BASIC,
-  Difficulty,
-  EXTREME,
-  MASTER,
-} from "@/domain/track/difficulty";
-import { openTypeToStr } from "@/domain/track/open_type";
-import { lvToString } from "@/domain/track/track";
-import {
   Paper,
   Table,
   TableBody,
@@ -23,6 +10,19 @@ import {
   TableRow,
 } from "@mui/material";
 import Link from "next/link";
+import {
+  TrackListDto,
+  TrackListScoreDto,
+} from "../../db/track_list/track_list_dto";
+import {
+  ADVANCED,
+  BASIC,
+  Difficulty,
+  EXTREME,
+  MASTER,
+} from "../../domain/track/difficulty";
+import { openTypeToStr } from "../../domain/track/open_type";
+import { lvToString } from "../../domain/track/track";
 
 function scoreLvText(
   scores: ReadonlyArray<TrackListScoreDto>,

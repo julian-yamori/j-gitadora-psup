@@ -1,13 +1,13 @@
 "use client";
 
+import { Stack } from "@mui/material";
+import React, { useRef, useState } from "react";
 import {
   ScoreListDto,
   scoreListDtoSchema,
-} from "@/db/score_list/score_list_dto";
-import { ScoreFilter } from "@/domain/score_query/score_filter";
-import { ScoreOrder } from "@/domain/score_query/score_order";
-import { Stack } from "@mui/material";
-import React, { useRef, useState } from "react";
+} from "../../db/score_list/score_list_dto";
+import { ScoreFilter } from "../../domain/score_query/score_filter";
+import { ScoreOrder } from "../../domain/score_query/score_order";
 import FilterForm from "./_filter_form/filter_form";
 import ScoresTable from "./scores_table";
 import assertResponseOk from "../_util/assert_response_ok";

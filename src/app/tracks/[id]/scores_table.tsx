@@ -1,16 +1,3 @@
-import formKeyByScore from "@/app/api/tracks/form_key";
-import {
-  ALL_DIFFICULTIES,
-  Difficulty,
-  difficultyToStr,
-} from "@/domain/track/difficulty";
-import { Track, Score, lvToString } from "@/domain/track/track";
-import {
-  UserTrack,
-  UserScore,
-  skillPointToDisplay,
-  trackSkillPoint,
-} from "@/domain/track/user_track";
 import {
   Checkbox,
   Paper,
@@ -23,6 +10,19 @@ import {
   TextField,
 } from "@mui/material";
 import React from "react";
+import formKeyByScore from "../../api/tracks/form_key";
+import {
+  ALL_DIFFICULTIES,
+  Difficulty,
+  difficultyToStr,
+} from "../../../domain/track/difficulty";
+import { Track, Score, lvToString } from "../../../domain/track/track";
+import {
+  UserTrack,
+  UserScore,
+  skillPointToDisplay,
+  trackSkillPoint,
+} from "../../../domain/track/user_track";
 import AchievementInput from "./achievement_input";
 
 /** 曲詳細画面の、譜面毎のテーブル */
