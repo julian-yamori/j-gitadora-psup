@@ -1,13 +1,18 @@
 "use client";
 
-import { ListItemText, MenuItem, MenuList } from "@mui/material";
+import { Divider, ListItemText, MenuItem, MenuList } from "@mui/material";
 import Link from "next/link";
+import SearchTrackInput from "./search_track_input";
 
 export default function NavigationMenu() {
   return (
-    <MenuList>
-      <Item text="譜面クエリ" href="/scores" />
-    </MenuList>
+    <>
+      <SearchTrackInput />
+      <Divider />
+      <MenuList>
+        <Item text="譜面クエリ" href="/scores" />
+      </MenuList>
+    </>
   );
 }
 

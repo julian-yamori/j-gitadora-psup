@@ -1,16 +1,9 @@
 "use client";
 
-import { IconButton, InputBase, styled } from "@mui/material";
+import { Box, IconButton, TextField } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-
-// eslint-disable-next-line @typescript-eslint/naming-convention -- component
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  backgroundColor: theme.palette.background.default,
-  padding: theme.spacing(0.5),
-  borderRadius: theme.shape.borderRadius,
-}));
 
 export default function SearchTrackInput() {
   const router = useRouter();
@@ -27,14 +20,17 @@ export default function SearchTrackInput() {
 
   return (
     <form onSubmit={handleSubmit}>
-      <StyledInputBase
-        placeholder="曲を検索..."
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-      />
-      <IconButton onClick={doSearch} color="inherit">
-        <SearchIcon />
-      </IconButton>
+      <Box padding={1}>
+        <TextField
+          placeholder="曲を検索..."
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          size="small"
+        />
+        <IconButton onClick={doSearch} color="inherit">
+          <SearchIcon />
+        </IconButton>
+      </Box>
     </form>
   );
 }
