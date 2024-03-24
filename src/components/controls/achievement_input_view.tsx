@@ -25,10 +25,7 @@ export default function AchievementInputView({
       onBlur={onBlur}
       disabled={disabled}
       size="small"
-      inputProps={{
-        size: 5,
-      }}
-      // eslint-disable-next-line react/jsx-no-duplicate-props -- iとIの両方に指定すべきものがある
+      style={{ width: "6.5rem" }}
       InputProps={{
         endAdornment: <InputAdornment position="end">%</InputAdornment>,
       }}
