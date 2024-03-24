@@ -121,9 +121,8 @@ async function deleteScoreRecord(
   trackId: string,
   difficulty: Difficulty,
 ): Promise<void> {
-  await tx.score.delete({
-    // eslint-disable-next-line @typescript-eslint/naming-convention -- Prisma では _ で指定する必要がある
-    where: { trackId_difficulty: { trackId, difficulty } },
+  await tx.score.deleteMany({
+    where: { trackId, difficulty },
   });
 }
 
