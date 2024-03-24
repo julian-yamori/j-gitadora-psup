@@ -26,6 +26,7 @@ export default function SearchTrackInput() {
           value={value}
           onChange={(e) => setValue(e.target.value)}
           size="small"
+          inputProps={{ enterKeyHint: "search" }}
         />
         <IconButton onClick={doSearch} color="inherit">
           <SearchIcon />

@@ -125,6 +125,7 @@ function ScoreRowExist({
       </TableCell>
       <TableCell>
         <TextField
+          type="url"
           name={formKeyByScore(score.difficulty, "movie_url")}
           value={userScore.movieURL}
           onChange={(e) =>

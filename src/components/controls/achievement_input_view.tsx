@@ -26,6 +26,10 @@ export default function AchievementInputView({
       disabled={disabled}
       size="small"
       style={{ width: "6.5rem" }}
+      inputProps={{
+        inputMode: "decimal",
+      }}
+      // eslint-disable-next-line react/jsx-no-duplicate-props -- iとIの両方に指定すべきものがある
       InputProps={{
         endAdornment: <InputAdornment position="end">%</InputAdornment>,
       }}
