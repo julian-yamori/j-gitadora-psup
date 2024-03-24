@@ -2,7 +2,6 @@
 
 import {
   AppBar as MuiAppBar,
-  Box,
   IconButton,
   Toolbar,
   Typography,
@@ -24,28 +23,26 @@ export default function AppBar() {
   }, [pathname, searchParams]);
 
   return (
-    <Box sx={{ flexGrow: 1, marginBottom: 1 }}>
-      <MuiAppBar position="static">
-        <Toolbar>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
-            onClick={() => setDrawerOpened(true)}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            j GITADORA psup
-          </Typography>
+    <MuiAppBar position="sticky">
+      <Toolbar>
+        <IconButton
+          size="large"
+          edge="start"
+          color="inherit"
+          aria-label="menu"
+          sx={{ mr: 2 }}
+          onClick={() => setDrawerOpened(true)}
+        >
+          <MenuIcon />
+        </IconButton>
+        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          j GITADORA psup
+        </Typography>
 
-          <Drawer open={drawerOpened} onClose={() => setDrawerOpened(false)}>
-            <NavigationMenu />
-          </Drawer>
-        </Toolbar>
-      </MuiAppBar>
-    </Box>
+        <Drawer open={drawerOpened} onClose={() => setDrawerOpened(false)}>
+          <NavigationMenu />
+        </Drawer>
+      </Toolbar>
+    </MuiAppBar>
   );
 }
