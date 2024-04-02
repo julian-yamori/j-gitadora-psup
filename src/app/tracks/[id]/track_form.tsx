@@ -23,6 +23,7 @@ import { INITIAL, OpenType } from "../../../domain/track/open_type";
 import { Track } from "../../../domain/track/track";
 import { UserTrack, UserScore } from "../../../domain/track/user_track";
 import ScoresTable from "./scores_table";
+import { useShowLoadingScreen } from "../../../components/loading_screen";
 
 export default function TrackForm({
   track,
@@ -34,6 +35,7 @@ export default function TrackForm({
   const form = useRef<HTMLFormElement>(null);
   const [userTrack, setUserTrack] = useState(initialUserTrack);
   const snackbarState = useSaveSuccessSnackbarState();
+  const showLoadingScreen = useShowLoadingScreen();
 
   // 達成率に不正な値が入力されている難易度のリスト
   const [invalidAchievements, setInvalidAchievements] = useState<
@@ -63,19 +65,23 @@ export default function TrackForm({
     });
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     const formCurrent = getRefNonNull(form);
     if (!formCurrent.reportValidity()) return;
 
-    // API呼び出しfetch
-    assertResponseOk(
-      await fetch(`/api/tracks/${track.id}`, {
-        method: "POST",
-        body: new FormData(formCurrent),
-      }),
-    );
+    showLoadingScreen(
+      (async () => {
+        // API呼び出しfetch
+        assertResponseOk(
+          await fetch(`/api/tracks/${track.id}`, {
+            method: "POST",
+            body: new FormData(formCurrent),
+          }),
+        );
 
-    snackbarState.show();
+        snackbarState.show();
+      })(),
+    );
   };
 
   const valid = invalidAchievements.size === 0;

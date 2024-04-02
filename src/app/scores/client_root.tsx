@@ -11,6 +11,7 @@ import { ScoreOrder } from "../../domain/score_query/score_order";
 import FilterForm from "./_filter_form/filter_form";
 import ScoresTable from "./scores_table";
 import assertResponseOk from "../_util/assert_response_ok";
+import { useShowLoadingScreen } from "../../components/loading_screen";
 
 const PAGE_SIZE = 50;
 
@@ -22,24 +23,38 @@ export default function ClientRoot() {
   const [pageIndex, setPageIndex] = useState(0);
 
   const tableTopRef = useRef<HTMLDivElement>(null);
+  const showLoadingScreen = useShowLoadingScreen();
 
   const handleFormSubmit = async (newFilter: ScoreFilter) => {
     setFilter(newFilter);
     setPageIndex(0);
-    setScoresDto(await fetchSearch(newFilter, order, 0));
+
+    showLoadingScreen(
+      (async () => {
+        setScoresDto(await fetchSearch(newFilter, order, 0));
+      })(),
+    );
   };
   const handleOrderChanged = async (newOrder: ScoreOrder) => {
     setOrder(newOrder);
     setPageIndex(0);
     if (filter) {
-      setScoresDto(await fetchSearch(filter, newOrder, 0));
+      showLoadingScreen(
+        (async () => {
+          setScoresDto(await fetchSearch(filter, newOrder, 0));
+        })(),
+      );
     }
   };
-  const handlePageChanged = async (newPageIndex: number) => {
+  const handlePageChanged = (newPageIndex: number) => {
     setPageIndex(newPageIndex);
     if (filter) {
-      setScoresDto(await fetchSearch(filter, order, newPageIndex));
-      scrollToTableTop(tableTopRef);
+      showLoadingScreen(
+        (async () => {
+          setScoresDto(await fetchSearch(filter, order, newPageIndex));
+          scrollToTableTop(tableTopRef);
+        })(),
+      );
     }
   };
 

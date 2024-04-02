@@ -5,6 +5,10 @@ import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import AppBar from "../components/app_bar/app_bar";
 import createMetadata from "./_util/create_metadata";
+import {
+  LoadingScreen,
+  LoadingScreenProvider,
+} from "../components/loading_screen";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,8 +22,11 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body className={inter.className} style={{ margin: 0 }}>
-        <AppBar />
-        <div style={{ margin: 8 }}>{children}</div>
+        <LoadingScreenProvider>
+          <AppBar />
+          <div style={{ margin: 8 }}>{children}</div>
+          <LoadingScreen />
+        </LoadingScreenProvider>
       </body>
     </html>
   );
