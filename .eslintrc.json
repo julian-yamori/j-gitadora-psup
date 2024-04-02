@@ -14,30 +14,6 @@
       "error",
       { "checksVoidReturn": { "attributes": false } }
     ],
-    "@typescript-eslint/naming-convention": [
-      "warn",
-      {
-        "selector": "default",
-        "format": ["camelCase"],
-        "leadingUnderscore": "allow",
-        "trailingUnderscore": "allow"
-      },
-      {
-        "selector": "variable",
-        "format": ["camelCase", "UPPER_CASE"],
-        "leadingUnderscore": "allow",
-        "trailingUnderscore": "allow"
-      },
-      {
-        "selector": "typeLike",
-        "format": ["PascalCase"]
-      },
-      // for React Component
-      {
-        "selector": "function",
-        "format": ["camelCase", "PascalCase"]
-      }
-    ],
 
     // exportするものを上側に、そこから参照されるexportしないものを下側に書きたい
     "@typescript-eslint/no-use-before-define": "off",
