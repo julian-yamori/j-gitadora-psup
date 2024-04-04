@@ -3,6 +3,7 @@ import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
+import { Suspense } from "react";
 import AppBar from "../components/app_bar/app_bar";
 import createMetadata from "./_util/create_metadata";
 import {
@@ -23,8 +24,10 @@ export default function RootLayout({
     <html lang="ja">
       <body className={inter.className} style={{ margin: 0 }}>
         <LoadingScreenProvider>
-          <AppBar />
-          <div style={{ margin: 8 }}>{children}</div>
+          <Suspense>
+            <AppBar />
+            <div style={{ margin: 8 }}>{children}</div>
+          </Suspense>
           <LoadingScreen />
         </LoadingScreenProvider>
       </body>
