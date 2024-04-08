@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:load_ohp_history": "swc ./src/load_ohp_history/main.ts -o ./public/js/load_ohp_history.js",
     "start": "next start",
     "lint": "run-p -l -c --aggregate-output lint:*",
     "lint:tsc": "tsc --noEmit",
@@ -32,6 +33,8 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@swc/cli": "^0.3.12",
+    "@swc/core": "1.4.12",
     "@types/jest": "^29.5.4",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-airbnb-typescript": "^18.0.0",
