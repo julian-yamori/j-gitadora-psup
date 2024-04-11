@@ -1,10 +1,16 @@
 {
   "$schema": "https://json.schemastore.org/swcrc",
   "jsc": {
-    "target": "es5",
+    "target": "es2022",
     "minify": {
-      "compress": true,
+      "compress": {
+        // eval で渡すための関数リテラル直書きを消さないようにする
+        "unused": false
+      },
       "mangle": true
+    },
+    "parser": {
+      "syntax": "typescript"
     }
   },
   "minify": true
