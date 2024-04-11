@@ -2,10 +2,16 @@ import { NextRequest, NextResponse } from "next/server";
 
 // eslint-disable-next-line import/prefer-default-export
 export function middleware(req: NextRequest) {
-  const basicAuth = req.headers.get("Authorization");
+  // .js への CORS のプリフライトリクエストで Basic 認証情報が削除される対策で、
+  // OPTIONS だけ無条件で通す
+  if (req.method === "OPTIONS") {
+    return new NextResponse(null, { status: 200 });
+  }
 
-  if (basicAuth) {
-    const authValue = basicAuth.split(" ")[1];
+  const authHeader = req.headers.get("Authorization");
+
+  if (authHeader) {
+    const authValue = authHeader.split(" ")[1];
     const [user, pwd] = Buffer.from(authValue, "base64").toString().split(":");
 
     if (user === process.env.USERNAME && pwd === process.env.PASSWORD) {
