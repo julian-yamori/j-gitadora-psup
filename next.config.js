@@ -4,18 +4,20 @@ const nextConfig = {
   async headers() {
     return [
       {
-        source: "/js/:path*",
+        source: "/js/load_ohp_history.js",
         headers: [
           { key: "Access-Control-Allow-Credentials", value: "true" },
-          { key: "Access-Control-Allow-Origin", value: "*" },
+          {
+            key: "Access-Control-Allow-Origin",
+            value: "https://p.eagate.573.jp",
+          },
           {
             key: "Access-Control-Allow-Methods",
-            value: "GET,OPTIONS,PATCH,DELETE,POST,PUT",
+            value: "GET,OPTIONS",
           },
           {
             key: "Access-Control-Allow-Headers",
-            value:
-              "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, authorization",
+            value: "authorization",
           },
         ],
       },
