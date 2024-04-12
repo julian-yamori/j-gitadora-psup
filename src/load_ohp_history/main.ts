@@ -1,43 +1,23 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+import readDocument from "./read_document";
+
+/**
+ * ブックマークレットから呼び出される eval で渡す関数
+ * @param urlPrefix j-gitadora-psup の URL のプリフィクス
+ * @param auth j-gitadora-psup へのリクエストの Authorization ヘッダの値
+ */
+// eslint-disable-next-line @typescript-eslint/no-unused-expressions -- eval の結果としてこの関数式を渡す
 async (urlPrefix: string, auth: string) => {
-  function readTrackElement(trackElement: Element) {
-    return [
-      elemGetText(trackElement.querySelector(".title")),
-      elemGetText(
-        trackElement.querySelector(
-          ".sr_data_score_tb tr:nth-child(10) .score_data",
-        ),
-      ),
-    ];
-  }
-
-  function elemGetText(element: Element | null): string {
-    if (element === null) {
-      throw new Error("element is null");
-    }
-
-    const text = element?.textContent;
-    if (text === null) {
-      throw new Error("text is null");
-    }
-
-    return text.trim();
-  }
-
   let success = "0";
 
   try {
-    const trackElements = document.querySelectorAll(".sr_list_tb");
-    if (trackElements.length === 0) {
-      throw Error("history not found");
-    }
+    // 表示中の公式 HP からプレイ履歴を読み込む
+    const histories = readDocument();
 
-    const info = [...trackElements.values()].map(readTrackElement);
-
+    // j-gitadora-psup へプレイ履歴情報を登録
     const postUrl = new URL("api/load_ohp_history", urlPrefix);
     await fetch(postUrl, {
       method: "POST",
-      body: JSON.stringify(info),
+      body: JSON.stringify(histories),
       headers: {
         Authorization: auth,
       },
@@ -45,6 +25,7 @@ async (urlPrefix: string, auth: string) => {
 
     success = "1";
   } finally {
+    // 読み込み結果ページに遷移
     const resultSearchParams = new URLSearchParams({ success });
     const resultUrl = new URL(
       `load_ohp_history/result?${resultSearchParams.toString()}`,

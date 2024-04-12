@@ -27,7 +27,8 @@ model Track {
   // 論理削除
   deleted Boolean
 
-  userTrack UserTrack?
+  userTrack             UserTrack?
+  loadOhpHistoryResults LoadOhpHistoryResult[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -38,8 +39,9 @@ model Score {
   difficulty Int
   lv         Float
 
-  track     Track      @relation(fields: [trackId], references: [id])
-  userScore UserScore?
+  track                 Track                  @relation(fields: [trackId], references: [id])
+  userScore             UserScore?
+  loadOhpHistoryResults LoadOhpHistoryResult[]
 
   @@unique([trackId, difficulty])
 }
@@ -77,6 +79,23 @@ model UserScore {
   score     Score     @relation(fields: [trackId, difficulty], references: [trackId, difficulty])
 
   @@unique([trackId, difficulty])
+}
+
+model LoadOhpHistoryResult {
+  index Int @id
+
+  // 成功時用
+  trackId           String?
+  difficulty        Int?
+  submitAchievement Float? // 登録しようとした達成率
+  oldAchievement    Float? // 元々登録されていた達成率
+  newAchievement    Float? // 登録後の達成率
+
+  // 失敗時用
+  error String?
+
+  track Track? @relation(fields: [trackId], references: [id])
+  score Score? @relation(fields: [trackId, difficulty], references: [trackId, difficulty])
 }
 
 model WikiLoadingIssue {
