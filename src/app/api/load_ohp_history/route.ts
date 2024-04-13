@@ -7,7 +7,6 @@ import {
   difficultyToStr,
 } from "../../../domain/track/difficulty";
 import { achievementSchema } from "../../../domain/track/user_track";
-import { PlayHistory } from "../../../load_ohp_history/play_history";
 import prismaClient, { PrismaTransaction } from "../../../db/prisma_client";
 import {
   LoadOhpHistoryResult,
