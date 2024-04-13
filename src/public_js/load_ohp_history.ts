@@ -104,13 +104,17 @@ async (urlPrefix: string, auth: string) => {
   /** j-gitadora-psup へプレイ履歴情報を登録 */
   async function postJgdps(histories: ReadonlyArray<PlayHistory>) {
     const postUrl = new URL("api/load_ohp_history", urlPrefix);
-    await fetch(postUrl, {
+    const response = await fetch(postUrl, {
       method: "POST",
       body: JSON.stringify(histories),
       headers: {
         Authorization: auth,
       },
     });
+
+    if (!response.ok) {
+      throw new Error(`failed to post history.`);
+    }
   }
 
   /** 読み込み結果ページに遷移 */
