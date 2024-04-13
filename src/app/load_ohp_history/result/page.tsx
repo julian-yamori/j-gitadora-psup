@@ -1,4 +1,4 @@
-import { Box, Card } from "@mui/material";
+import { Box, Paper, Stack, Typography } from "@mui/material";
 import Link from "next/link";
 import createMetadata from "../../_util/create_metadata";
 import {
@@ -11,10 +11,11 @@ import neverError from "../../../utils/never_error";
 import prismaClient from "../../../db/prisma_client";
 import { difficultyToStr } from "../../../domain/track/difficulty";
 import { achievementToPercent } from "../../../domain/track/user_track";
+import PageTitle from "../../../components/page_title";
 
 export const dynamic = "force-dynamic";
 
-const PAGE_TITLE = "プレイ履歴の取得完了";
+const PAGE_TITLE = "プレイ履歴の取得結果";
 export const metadata = createMetadata(PAGE_TITLE);
 
 /** プレイ履歴の取得完了ページ */
@@ -33,9 +34,15 @@ export default async function Home({
 
   return (
     <main>
-      {results.map((result) => (
-        <ResultCard key={result.index} result={result} />
-      ))}
+      <PageTitle title={PAGE_TITLE} />
+
+      <Stack spacing={2}>
+        {results.map((result) => (
+          <Paper key={result.index} elevation={2} sx={{ padding: 1 }}>
+            <ResultSwitch result={result} />
+          </Paper>
+        ))}
+      </Stack>
     </main>
   );
 }
@@ -44,19 +51,19 @@ function FailedPage() {
   return <main>プレイ履歴の取得に失敗しました。</main>;
 }
 
-function ResultCard({ result }: { result: LoadOhpHistoryResult }) {
+function ResultSwitch({ result }: { result: LoadOhpHistoryResult }) {
   const { type } = result;
   switch (type) {
     case "success":
-      return <SuccessCard result={result} />;
+      return <SuccessContent result={result} />;
     case "error":
-      return <FailedCard result={result} />;
+      return <FailedCotnent result={result} />;
     default:
       throw neverError(type);
   }
 }
 
-function SuccessCard({ result }: { result: LoadOhpHistorySuccess }) {
+function SuccessContent({ result }: { result: LoadOhpHistorySuccess }) {
   const {
     trackId,
     title,
@@ -67,15 +74,15 @@ function SuccessCard({ result }: { result: LoadOhpHistorySuccess }) {
   } = result;
 
   return (
-    <Card>
-      <Link href={`/trucks/${trackId}`}>{title}</Link>
+    <>
+      <Link href={`/tracks/${trackId}`}>{title}</Link>
       <Box>{difficultyToStr(difficulty)}</Box>
       <AchievementView
         submitAchievement={submitAchievement}
         oldAchievement={oldAchievement}
         newAchievement={newAchievement}
       />
-    </Card>
+    </>
   );
 }
 
@@ -116,7 +123,12 @@ function AchievementViewChanged({
     oldAchievement !== undefined ? achievementToPercent(oldAchievement) : "--";
   const newView = achievementToPercent(newAchievement);
 
-  return `${oldView}% -> ${newView}% Updated!`;
+  return (
+    <Stack direction="row" spacing={1}>
+      <Typography>{`${oldView}% -> ${newView}%`}</Typography>
+      <Typography color="green"> Updated!</Typography>
+    </Stack>
+  );
 }
 
 function AchievementViewNoChanged({
@@ -129,9 +141,9 @@ function AchievementViewNoChanged({
   const submitView = achievementToPercent(submitAchievement);
   const newView = achievementToPercent(newAchievement);
 
-  return `${submitView}% (前回: ${newView}%)`;
+  return <Typography>{`${submitView}% (前回: ${newView}%)`}</Typography>;
 }
 
-function FailedCard({ result }: { result: LoadOhpHistoryError }) {
-  return <Card>{result.message}</Card>;
+function FailedCotnent({ result }: { result: LoadOhpHistoryError }) {
+  return <Typography color="red">{result.message}</Typography>;
 }
