@@ -87,6 +87,9 @@ async function saveAchievement(
     await tx.userScore.update({
       data: {
         achievement: submitAchievement,
+
+        // クリア済みのはずなので failed は下ろす
+        failed: false,
       },
       where: { trackId_difficulty: { trackId, difficulty } },
     });
