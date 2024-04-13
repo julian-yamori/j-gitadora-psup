@@ -43,9 +43,15 @@ function queryToString(query: SearchParamValue): string | undefined {
 async function searchTracks(
   query: string | undefined,
 ): Promise<TrackListDto[]> {
-  if (query === undefined || query === "") {
+  if (query === undefined) {
     return [];
   }
 
-  return searchTracksByTitle(prismaClient, query);
+  const trimmed = query.trim();
+
+  if (trimmed === "") {
+    return [];
+  }
+
+  return searchTracksByTitle(prismaClient, trimmed);
 }
