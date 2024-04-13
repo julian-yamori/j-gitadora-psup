@@ -22,6 +22,7 @@ import {
   UserScore,
   skillPointToDisplay,
   trackSkillPoint,
+  initialUserScore,
 } from "../../../domain/track/user_track";
 import AchievementInput from "./achievement_input";
 
@@ -95,9 +96,8 @@ function ScoreRowExist({
   onValueChange: (d: UserScore) => unknown;
   onAchievementValidChange: (d: Difficulty, valid: boolean) => unknown;
 }) {
-  if (userScore === undefined) {
-    throw Error(`user difficulty not found: ${score.difficulty}`);
-  }
+  // UserScore が未定義なら初期値で代替
+  const nonNullUserScore = userScore ?? initialUserScore(score);
 
   return (
     <TableRow>
@@ -106,30 +106,34 @@ function ScoreRowExist({
       <TableCell>
         <AchievementInput
           difficulty={score.difficulty}
-          achievement={userScore.achievement}
-          failed={userScore.failed}
-          onValueChange={(v) => onValueChange({ ...userScore, achievement: v })}
+          achievement={nonNullUserScore.achievement}
+          failed={nonNullUserScore.failed}
+          onValueChange={(v) =>
+            onValueChange({ ...nonNullUserScore, achievement: v })
+          }
           onValidChange={(v) => onAchievementValidChange(score.difficulty, v)}
         />
       </TableCell>
       <TableCell align="center">
         <FailedInput
           difficulty={score.difficulty}
-          achievement={userScore.achievement}
-          failed={userScore.failed}
-          onChange={(v) => onValueChange({ ...userScore, failed: v })}
+          achievement={nonNullUserScore.achievement}
+          failed={nonNullUserScore.failed}
+          onChange={(v) => onValueChange({ ...nonNullUserScore, failed: v })}
         />
       </TableCell>
       <TableCell align="right">
-        {skillPointToDisplay(trackSkillPoint(score.lv, userScore.achievement))}
+        {skillPointToDisplay(
+          trackSkillPoint(score.lv, nonNullUserScore.achievement),
+        )}
       </TableCell>
       <TableCell>
         <TextField
           type="url"
           name={formKeyByScore(score.difficulty, "movie_url")}
-          value={userScore.movieURL}
+          value={nonNullUserScore.movieURL}
           onChange={(e) =>
-            onValueChange({ ...userScore, movieURL: e.target.value })
+            onValueChange({ ...nonNullUserScore, movieURL: e.target.value })
           }
           size="small"
           inputProps={{

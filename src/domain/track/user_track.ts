@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { Difficulty } from "./difficulty";
 import { isOpenTypeInitialOpen } from "./open_type";
-import { Track } from "./track";
+import { Score, Track } from "./track";
 
 // 曲の好み度
 export const likeSchema = z.number().int().min(1).max(5);
@@ -100,21 +100,9 @@ export type UserScore = Readonly<{
  */
 export function initialUserTrack(track: Track): UserTrack {
   const scores = Object.fromEntries(
-    [...Object.values(track.scores)].map((d): [Difficulty, UserScore] => [
-      d.difficulty,
-      {
-        trackId: d.trackId,
-        difficulty: d.difficulty,
-        achievement: 0,
-        skillPoint: 0,
-        failed: false,
-        wishPractice: false,
-        wishAchievement: false,
-        wishEvent: false,
-        wishNextPick: false,
-        wishPlayed: false,
-        movieURL: "",
-      },
+    [...Object.values(track.scores)].map((score): [Difficulty, UserScore] => [
+      score.difficulty,
+      initialUserScore(score),
     ]),
   );
 
@@ -124,6 +112,27 @@ export function initialUserTrack(track: Track): UserTrack {
     isOpen: isOpenTypeInitialOpen(track.openType),
     memo: "",
     scores,
+  };
+}
+
+/**
+ *
+ * @param score 初期値の元になる Score
+ * @return 初期状態の UserScore
+ */
+export function initialUserScore(score: Score): UserScore {
+  return {
+    trackId: score.trackId,
+    difficulty: score.difficulty,
+    achievement: 0,
+    skillPoint: 0,
+    failed: false,
+    wishPractice: false,
+    wishAchievement: false,
+    wishEvent: false,
+    wishNextPick: false,
+    wishPlayed: false,
+    movieURL: "",
   };
 }
 

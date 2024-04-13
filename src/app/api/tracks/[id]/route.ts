@@ -7,13 +7,14 @@ import prismaClient from "../../../../db/prisma_client";
 import TrackRepository from "../../../../db/track/track_repository";
 import UserTrackRepository from "../../../../db/track/user_track_repository";
 import { Difficulty } from "../../../../domain/track/difficulty";
-import { Track } from "../../../../domain/track/track";
+import { Score, Track } from "../../../../domain/track/track";
 import {
   UserScore,
   UserTrackScores,
   trackSkillPoint,
   initialUserTrack,
   validateTrackLike,
+  initialUserScore,
 } from "../../../../domain/track/user_track";
 import formKeyByScore from "../form_key";
 
@@ -80,10 +81,11 @@ function buildNewScores(
   track: Track,
 ): UserTrackScores {
   return Object.fromEntries(
-    [...Object.values(oldScores)].map((old): [Difficulty, UserScore] => [
-      old.difficulty,
-      buildNewScore(form, old, track),
-    ]),
+    [...Object.values(track.scores)].map((score): [Difficulty, UserScore] => {
+      const oldUserScore =
+        oldScores[score.difficulty] ?? initialUserScore(score);
+      return [score.difficulty, buildNewScore(form, oldUserScore, score)];
+    }),
   );
 }
 
@@ -91,21 +93,14 @@ function buildNewScores(
  * 登録すべき譜面情報を一つ生成
  * @param form リクエストのFormData
  * @param old 登録前の譜面情報
- * @param track 生成元の曲情報
+ * @param score 生成元の譜面情報
  * @returns 登録する譜面一つの情報
  */
 function buildNewScore(
   form: FormData,
   old: UserScore,
-  track: Track,
+  score: Score,
 ): UserScore {
-  const score = track.scores[old.difficulty];
-  if (score === undefined) {
-    throw Error(
-      `difficulty "${old.difficulty}" not found in track "${track.id}"`,
-    );
-  }
-
   const failed = getFormCheckbox(
     form,
     formKeyByScore(old.difficulty, "failed"),
