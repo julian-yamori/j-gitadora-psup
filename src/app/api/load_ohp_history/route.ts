@@ -66,15 +66,11 @@ async function saveAchievement(
   // DB から該当する譜面を検索
   const track = await trackRepository.getByTitle(title);
   if (track === undefined) {
-    return makeError(history, index, `曲データが見つかりません: ${title}`);
+    return makeError(history, index, `曲データが見つかりません`);
   }
   const score = track.scores[difficulty];
   if (score === undefined) {
-    return makeError(
-      history,
-      index,
-      `難易度 "${difficultyToStr(difficulty)}" の譜面がありません: ${title}`,
-    );
+    return makeError(history, index, `譜面データが見つかりません`);
   }
 
   const trackId = track.id;
