@@ -49,8 +49,8 @@ export async function loadResults(
       newAchievement,
       error,
     }) => {
-      if (error !== "") {
-        return { type: "error", index, message: error ?? "" };
+      if (error !== null) {
+        return { type: "error", index, message: error };
       }
 
       if (
