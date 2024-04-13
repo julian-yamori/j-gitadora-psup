@@ -1,19 +1,27 @@
 /** 公式HP のプレイ履歴を登録 */
 
 import { z } from "zod";
+import { produce } from "immer";
 import { trackTitleSchema } from "../../../domain/track/track";
 import {
   difficultySchema,
   difficultyToStr,
 } from "../../../domain/track/difficulty";
-import { achievementSchema } from "../../../domain/track/user_track";
+import {
+  achievementSchema,
+  initialUserScore,
+  initialUserTrack,
+  trackSkillPoint,
+} from "../../../domain/track/user_track";
 import prismaClient, { PrismaTransaction } from "../../../db/prisma_client";
 import {
   LoadOhpHistoryResult,
   LoadOhpHistoryError,
   saveResults,
+  LoadOhpHistorySuccess,
 } from "../../../db/load_ohp_history/load_result";
-import updateSkillPoint from "../../../db/track/update_skill_point";
+import TrackRepository from "../../../db/track/track_repository";
+import UserTrackRepository from "../../../db/track/user_track_repository";
 
 // eslint-disable-next-line import/prefer-default-export -- defaultにするとメソッド名を認識しなくなる
 export async function POST(request: Request): Promise<Response> {
@@ -52,72 +60,61 @@ async function saveAchievement(
 ): Promise<LoadOhpHistoryResult> {
   const { title, difficulty, achievement: submitAchievement } = history;
 
+  const trackRepository = new TrackRepository(tx);
+  const userTrackRepository = new UserTrackRepository(tx);
+
   // DB から該当する譜面を検索
-  const dbScores = await tx.score.findMany({
-    where: {
-      track: {
-        deleted: false,
-        title,
-      },
-      difficulty,
-    },
-    select: {
-      trackId: true,
-      userScore: { select: { achievement: true } },
-    },
-  });
-  if (dbScores.length === 0) {
-    return makeError(history, index, "譜面が見つかりませんでした");
+  const track = await trackRepository.getByTitle(title);
+  if (track === undefined) {
+    return makeError(history, index, `曲データが見つかりません: ${title}`);
   }
-  if (dbScores.length > 1) {
+  const score = track.scores[difficulty];
+  if (score === undefined) {
     return makeError(
       history,
       index,
-      `譜面の検索結果が ${dbScores.length} 件あります`,
+      `難易度 "${difficultyToStr(difficulty)}" の譜面がありません: ${title}`,
     );
   }
 
-  const dbScore = dbScores[0];
-  const { trackId } = dbScore;
-  const oldAchievement = dbScore.userScore?.achievement;
+  const trackId = track.id;
 
-  // 元々の記録より高ければ登録
-  if (oldAchievement === undefined || oldAchievement < submitAchievement) {
-    await tx.userScore.update({
-      data: {
-        achievement: submitAchievement,
+  // ユーザーの譜面情報を取得、もしくは新規作成
+  const userTrack =
+    (await userTrackRepository.get(trackId)) ?? initialUserTrack(track);
+  const userScore = userTrack.scores[difficulty] ?? initialUserScore(score);
 
-        // クリア済みのはずなので failed は下ろす
-        failed: false,
-      },
-      where: { trackId_difficulty: { trackId, difficulty } },
+  const oldAchievement = userScore.achievement;
+
+  const buildSuccess = (newAchievement: number): LoadOhpHistorySuccess => ({
+    type: "success",
+    index,
+    title,
+    difficulty,
+    trackId,
+    oldAchievement,
+    submitAchievement,
+    newAchievement,
+  });
+
+  // 元々の記録より高ければ更新
+  if (oldAchievement < submitAchievement) {
+    const newUserScore = produce(userScore, (draft) => {
+      draft.achievement = submitAchievement;
+      draft.failed = false;
+      draft.skillPoint = trackSkillPoint(score.lv, submitAchievement);
+    });
+    const newUserTrack = produce(userTrack, (draft) => {
+      draft.scores[difficulty] = newUserScore;
     });
 
-    await updateSkillPoint(tx, trackId);
+    await userTrackRepository.save(newUserTrack);
 
-    return {
-      type: "success",
-      index,
-      title,
-      difficulty,
-      trackId,
-      oldAchievement,
-      submitAchievement,
-      newAchievement: submitAchievement,
-    };
+    return buildSuccess(submitAchievement);
   }
   // 元々の記録以下ならそのまま
   else {
-    return {
-      type: "success",
-      index,
-      title,
-      difficulty,
-      trackId,
-      oldAchievement,
-      submitAchievement,
-      newAchievement: oldAchievement,
-    };
+    return buildSuccess(oldAchievement);
   }
 }
 

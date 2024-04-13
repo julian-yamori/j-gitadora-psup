@@ -43,6 +43,8 @@
     // else を無くせば読みやすくなる、とは限らない
     "no-else-return": "off",
     // 最近は Component.defaultProps よりも ES6 のデフォルト引数の方がいいらしい
-    "react/require-default-props": "off"
+    "react/require-default-props": "off",
+    // immer を使うのに邪魔
+    "no-param-reassign": "off"
   }
 }

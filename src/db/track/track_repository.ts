@@ -16,10 +16,19 @@ export default class TrackRepository {
   /** IDを指定して曲データを一つ取得 */
   async get(id: string): Promise<Track | undefined> {
     const found = await this.prismaTransaction.track.findUnique({
-      include: {
-        scores: { select: { trackId: true, difficulty: true, lv: true } },
-      },
+      include: includeQuery(),
       where: { id },
+    });
+
+    if (found === null) return undefined;
+    return trackPrisma2Domain(found);
+  }
+
+  /** 曲名 (完全一致) を指定して曲データを一つ取得 */
+  async getByTitle(title: string): Promise<Track | undefined> {
+    const found = await this.prismaTransaction.track.findUnique({
+      include: includeQuery(),
+      where: { title },
     });
 
     if (found === null) return undefined;
@@ -75,6 +84,13 @@ export default class TrackRepository {
       data: { deleted: true },
     });
   }
+}
+
+/** データの取得時に使う include 句 */
+function includeQuery() {
+  return {
+    scores: { select: { trackId: true, difficulty: true, lv: true } },
+  };
 }
 
 async function updateTrackRecord(
