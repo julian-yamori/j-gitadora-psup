@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "build:load_ohp_history": "swc ./public_js/load_ohp_history.ts -o ./public/js/load_ohp_history.js",
+    "build:load_ohp_history": "swc ./src/public_js/load_ohp_history.ts -o ./public/js/load_ohp_history.js",
     "start": "next start",
     "lint": "run-p -l -c --aggregate-output lint:*",
     "lint:tsc": "tsc --noEmit",
