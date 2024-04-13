@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import PageTitle from "../../components/page_title";
 import prismaClient from "../../db/prisma_client";
 import { TrackListDto } from "../../db/track_list/track_list_dto";
@@ -20,6 +21,11 @@ export default async function Home({
 }) {
   const queryStr = queryToString(searchParams.query);
   const tracks = await searchTracks(queryStr);
+
+  // 1曲しかなければ、その曲のページへリダイレクト
+  if (tracks.length === 1) {
+    redirect(`/tracks/${tracks[0].id}`);
+  }
 
   return (
     <main>
