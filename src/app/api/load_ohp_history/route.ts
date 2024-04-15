@@ -22,6 +22,7 @@ import {
 } from "../../../db/load_ohp_history/load_result";
 import TrackRepository from "../../../db/track/track_repository";
 import UserTrackRepository from "../../../db/track/user_track_repository";
+import { TitleMapping, loadTitleMapping } from "./title_mapping";
 
 // eslint-disable-next-line import/prefer-default-export -- defaultにするとメソッド名を認識しなくなる
 export async function POST(request: Request): Promise<Response> {
@@ -29,11 +30,13 @@ export async function POST(request: Request): Promise<Response> {
   const jsonObj = JSON.parse(json);
   const histories = playHistoriesSchema.parse(jsonObj);
 
+  const titleMapping = await loadTitleMapping();
+
   // 全履歴を登録
   const results = await Promise.all(
     histories.map((history, index) =>
       prismaClient.$transaction(async (tx) =>
-        saveAchievement(history, index, tx),
+        saveAchievement(history, index, titleMapping, tx),
       ),
     ),
   );
@@ -56,15 +59,22 @@ const playHistoriesSchema = z.array(
 async function saveAchievement(
   history: PlayHistory,
   index: number,
+  titleMapping: TitleMapping,
   tx: PrismaTransaction,
 ): Promise<LoadOhpHistoryResult> {
-  const { title, difficulty, achievement: submitAchievement } = history;
+  const {
+    title: ohpTitle,
+    difficulty,
+    achievement: submitAchievement,
+  } = history;
 
   const trackRepository = new TrackRepository(tx);
   const userTrackRepository = new UserTrackRepository(tx);
 
+  const dbTitle = titleMapping[ohpTitle] ?? ohpTitle;
+
   // DB から該当する譜面を検索
-  const track = await trackRepository.getByTitle(title);
+  const track = await trackRepository.getByTitle(dbTitle);
   if (track === undefined) {
     return makeError(history, index, `曲データが見つかりません`);
   }
@@ -85,7 +95,7 @@ async function saveAchievement(
   const buildSuccess = (newAchievement: number): LoadOhpHistorySuccess => ({
     type: "success",
     index,
-    title,
+    title: dbTitle,
     difficulty,
     trackId,
     oldAchievement,
