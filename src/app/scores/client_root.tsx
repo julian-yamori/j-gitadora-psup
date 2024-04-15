@@ -25,7 +25,7 @@ export default function ClientRoot() {
   const tableTopRef = useRef<HTMLDivElement>(null);
   const showLoadingScreen = useShowLoadingScreen();
 
-  const handleFormSubmit = async (newFilter: ScoreFilter) => {
+  const handleFormSubmit = (newFilter: ScoreFilter) => {
     setFilter(newFilter);
     setPageIndex(0);
 
@@ -35,7 +35,7 @@ export default function ClientRoot() {
       })(),
     );
   };
-  const handleOrderChanged = async (newOrder: ScoreOrder) => {
+  const handleOrderChanged = (newOrder: ScoreOrder) => {
     setOrder(newOrder);
     setPageIndex(0);
     if (filter) {

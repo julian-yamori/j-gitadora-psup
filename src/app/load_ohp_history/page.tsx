@@ -20,7 +20,7 @@ function buildScript(): string {
 }
 
 /** 公式ページからのプレイ履歴取得ページ */
-export default async function Home() {
+export default function Home() {
   const script = buildScript();
 
   return (

@@ -12,7 +12,7 @@ export default function scoreFilterToWhere(scoreFilter: ScoreFilter) {
   return nodeGroupToWhere(scoreFilter);
 }
 
-function nodeToWhere(node: FilterNode): any {
+function nodeToWhere(node: FilterNode): unknown {
   const { nodeType } = node;
 
   switch (nodeType) {
@@ -61,7 +61,7 @@ function nodeNumberToWhere(node: FilterNodeNumber) {
   }
 }
 
-function fieldFilterNumber(target: FilterTargetNumber, condition: any) {
+function fieldFilterNumber(target: FilterTargetNumber, condition: unknown) {
   switch (target) {
     case "lv":
       return { [target]: condition };

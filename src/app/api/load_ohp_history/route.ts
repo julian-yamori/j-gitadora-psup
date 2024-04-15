@@ -27,7 +27,7 @@ import { TitleMapping, loadTitleMapping } from "./title_mapping";
 // eslint-disable-next-line import/prefer-default-export -- defaultにするとメソッド名を認識しなくなる
 export async function POST(request: Request): Promise<Response> {
   const json = await request.text();
-  const jsonObj = JSON.parse(json);
+  const jsonObj: unknown = JSON.parse(json);
   const histories = playHistoriesSchema.parse(jsonObj);
 
   const titleMapping = await loadTitleMapping();

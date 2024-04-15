@@ -9,13 +9,13 @@ export default function SearchTrackInput() {
   const router = useRouter();
   const [value, setValue] = useState("");
 
-  const doSearch = async () => {
-    await router.push(searchUrl(value));
+  const doSearch = () => {
+    router.push(searchUrl(value));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    await doSearch();
+    doSearch();
   };
 
   return (

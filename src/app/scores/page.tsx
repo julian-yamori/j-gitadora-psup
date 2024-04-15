@@ -5,7 +5,7 @@ import ClientRoot from "./client_root";
 const PAGE_TITLE = "譜面クエリ";
 export const metadata = createMetadata(PAGE_TITLE);
 
-export default async function Home() {
+export default function Home() {
   return (
     <main>
       <PageTitle title={PAGE_TITLE} />

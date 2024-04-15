@@ -44,7 +44,7 @@ export default function FilterForm({
   const isOpenState = useFilterItemState<boolean>(true);
   const snackbarState = useFailedSnackbarState();
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     const formCurrent = getRefNonNull(form);
     if (!formCurrent.reportValidity()) return;
 
