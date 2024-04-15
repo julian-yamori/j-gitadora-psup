@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 name: jgdps
 
@@ -16,6 +16,8 @@ services:
         target: /workspace/node_modules
     ports:
       - 127.0.0.1:3000:3000
+    environment:
+      URL_PREFIX: http://localhost:3000
     command: sleep infinity
 
   db:
