@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "npm run build:load_ohp_history && prisma generate && prisma db push && next build",
     "build:load_ohp_history": "swc ./src/public_js/load_ohp_history.ts -o ./public/js/load_ohp_history.js",
     "start": "next start",
     "lint": "run-p -l -c --aggregate-output lint:*",
