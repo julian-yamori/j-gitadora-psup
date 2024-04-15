@@ -34,7 +34,6 @@ export function useShowLoadingScreen(): (promise: Promise<unknown>) => void {
       setState((old) => [...old, promise]);
 
       /// Promise が終わったら state から削除する
-      // eslint-disable-next-line no-void
       void promise.finally(() =>
         setState((old) => old.filter((p) => p !== promise)),
       );

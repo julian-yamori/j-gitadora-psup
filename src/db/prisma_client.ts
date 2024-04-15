@@ -7,7 +7,7 @@ import { PrismaClient } from "@prisma/client";
 const prismaClientSingleton = () => new PrismaClient();
 
 declare global {
-  // eslint-disable-next-line vars-on-top, no-var
+  // eslint-disable-next-line no-var
   var prismaClient: undefined | ReturnType<typeof prismaClientSingleton>;
 }
 

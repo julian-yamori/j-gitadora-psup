@@ -21,7 +21,6 @@ type PlayHistory = Readonly<{
  * @param urlPrefix j-gitadora-psup の URL のプリフィクス
  * @param auth j-gitadora-psup へのリクエストの Authorization ヘッダの値
  */
-// eslint-disable-next-line @typescript-eslint/no-unused-expressions -- eval の結果としてこの関数式を渡す
 async (urlPrefix: string, auth: string) => {
   /** 公式 HP のページからプレイ履歴を読み込み */
   function readDocument(): PlayHistory[] {

@@ -24,7 +24,6 @@ import TrackRepository from "../../../db/track/track_repository";
 import UserTrackRepository from "../../../db/track/user_track_repository";
 import { TitleMapping, loadTitleMapping } from "./title_mapping";
 
-// eslint-disable-next-line import/prefer-default-export -- defaultにするとメソッド名を認識しなくなる
 export async function POST(request: Request): Promise<Response> {
   const json = await request.text();
   const jsonObj: unknown = JSON.parse(json);

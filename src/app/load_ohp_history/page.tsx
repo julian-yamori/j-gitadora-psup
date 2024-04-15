@@ -15,7 +15,6 @@ function buildScript(): string {
 
   const jsUrl = new URL("js/load_ohp_history.js", urlPrefix).toString();
 
-  // eslint-disable-next-line no-script-url
   return `javascript:{let a="Basic "+btoa("USER:PASSWORD");fetch("${jsUrl}",{headers: {"Authorization": a}}).then(async (r) => {eval(await r.text())("${urlPrefix}", a)});}`;
 }
 

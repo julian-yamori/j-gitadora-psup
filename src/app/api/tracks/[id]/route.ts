@@ -19,7 +19,6 @@ import {
 import formKeyByScore from "../form_key";
 
 /** 曲詳細画面からの情報の更新 */
-// eslint-disable-next-line import/prefer-default-export -- defaultにするとメソッド名を認識しなくなる
 export async function POST(
   request: Request,
   context: { params: { id: string } },

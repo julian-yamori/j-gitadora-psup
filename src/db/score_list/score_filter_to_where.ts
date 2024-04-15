@@ -47,7 +47,6 @@ function nodeNumberToWhere(node: FilterNodeNumber) {
       return fieldFilterNumber(target, { lte: range.value });
     case "MinMax":
       return {
-        // eslint-disable-next-line @typescript-eslint/naming-convention -- prismaのANDを使うため大文字許可
         AND: [
           fieldFilterNumber(target, { gte: range.min }),
           fieldFilterNumber(target, { lte: range.max }),

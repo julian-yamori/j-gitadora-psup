@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 
-// eslint-disable-next-line import/prefer-default-export
 export function middleware(req: NextRequest) {
   // .js への CORS のプリフライトリクエストで Basic 認証情報が削除される対策で、
   // OPTIONS だけ無条件で通す
@@ -22,7 +21,6 @@ export function middleware(req: NextRequest) {
   return new NextResponse("Unauthorized.", {
     status: 401,
     headers: {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       "WWW-authenticate": 'Basic realm="Secure Area"',
     },
   });

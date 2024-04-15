@@ -117,7 +117,6 @@ async function upsertScoreRecord(
 ): Promise<void> {
   await tx.score.upsert({
     where: {
-      // eslint-disable-next-line @typescript-eslint/naming-convention -- Prisma では _ で指定する必要がある
       trackId_difficulty: {
         trackId: score.trackId,
         difficulty: score.difficulty,

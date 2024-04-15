@@ -1,6 +1,3 @@
-/* eslint-disable class-methods-use-this -- 実質的にオーバーライドのようなものなので、thisが無いけどstaticにできない関数が多い */
-/* eslint-disable max-classes-per-file -- Result,Ok,Errをセットでexportしたい */
-
 /**
  * 処理に失敗するかもしれない関数の戻り値
  *
