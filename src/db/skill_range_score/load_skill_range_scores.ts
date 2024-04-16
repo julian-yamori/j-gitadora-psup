@@ -70,6 +70,7 @@ async function readDb(
         userTrack: { select: { track: { select: { title: true } } } },
       },
       where: {
+        skillPoint: { gt: 0 },
         userTrack: { track: { skillType, deleted: false } },
       },
       orderBy: [
