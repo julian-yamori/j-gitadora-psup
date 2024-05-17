@@ -3,24 +3,35 @@ import Link from "next/link";
 import createMetadata from "../_util/create_metadata";
 import PageTitle from "../../components/page_title";
 import CopyButton from "./copy_button";
+import fs from "node:fs";
+import path from "node:path";
 
 const PAGE_TITLE = "公式ページからのプレイ履歴取得";
 export const metadata = createMetadata(PAGE_TITLE);
 
-function buildScript(): string {
+async function buildScript(): Promise<string> {
+  // 環境変数から URL prefix を取得
   const urlPrefix = process.env.URL_PREFIX;
   if (urlPrefix === undefined) {
     throw new Error("env URL_PREFIX is empty");
   }
 
-  const jsUrl = new URL("js/load_ohp_history.js", urlPrefix).toString();
+  // クライアント側で実行するための JavaScript をファイルから読み込み
+  const filePath = path.join(process.cwd(), "load_ohp_history.js");
+  const script = await fs.promises.readFile(filePath, {
+    encoding: "utf-8",
+  });
 
-  return `javascript:{let a="Basic "+btoa("USER:PASSWORD");fetch("${jsUrl}",{headers: {"Authorization": a}}).then(async (r) => {eval(await r.text())("${urlPrefix}", a)});}`;
+  // スクリプト内の URL を環境変数から取得したものに差し替え
+  return script.replace(
+    'const urlPrefix = "http://localhost:3000";',
+    `const urlPrefix = "${urlPrefix}";`,
+  );
 }
 
 /** 公式ページからのプレイ履歴取得ページ */
-export default function Home() {
-  const script = buildScript();
+export default async function Home() {
+  const script = await buildScript();
 
   return (
     <main>
@@ -30,11 +41,11 @@ export default function Home() {
           公式のプレー履歴ページ
         </Link>
         <Typography>
-          このスクリプトの USER と PASSWORD
-          を書き換えてブックマークに追加し、公式 HP の「プレー履歴」ページで実行
+          このスクリプトの USER と PASSWORD を書き換えて Tampermonkey
+          のスクリプトに追加し、公式 HP の「プレー履歴」ページを開く。
         </Typography>
         <Paper sx={{ padding: 1 }}>
-          <code>${script}</code>
+          <code style={{ whiteSpace: "pre-wrap" }}>{script}</code>
         </Paper>
         <CopyButton script={script} />
       </Stack>
