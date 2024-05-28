@@ -1,5 +1,6 @@
 import {
   Paper,
+  Stack,
   Table,
   TableBody,
   TableCell,
@@ -8,6 +9,7 @@ import {
   TablePagination,
   TableRow,
   TableSortLabel,
+  Typography,
 } from "@mui/material";
 import Link from "next/link";
 import { ScoreListDto } from "../../db/score_list/score_list_dto";
@@ -19,7 +21,10 @@ import {
   primaryScoreOrder,
   scoreOrderSetItem,
 } from "../../domain/score_query/score_order";
-import { achievementToPercent } from "../../domain/track/achievement";
+import {
+  achievementToPercent,
+  achievementToRank,
+} from "../../domain/track/achievement";
 import { Difficulty } from "../../domain/track/difficulty";
 import { lvToString } from "../../domain/track/track";
 import { skillPointToDisplay } from "../../domain/track/user_track";
@@ -28,6 +33,7 @@ import {
   DifficultyPaper,
   SkillTypePaper,
 } from "../../components/track_info/type_papers";
+import { AchievementRankView } from "../../components/track_info/achievement_rank_view";
 
 export default function ScoresTable({
   scoresDto,
@@ -132,7 +138,9 @@ export default function ScoresTable({
                 </TableCell>
                 <TableCell>{lvToString(score.lv)}</TableCell>
                 <TableCell>{likeView(score.like)}</TableCell>
-                <TableCell>{achievementView(score.achievement)}</TableCell>
+                <TableCell>
+                  <AchievementView achievement={score.achievement} />
+                </TableCell>
                 <TableCell>{skillPointView(score.skillPoint)}</TableCell>
               </TableRow>
             ))}
@@ -215,8 +223,15 @@ function likeView(like: number | undefined): string {
   else return `★${like}`;
 }
 
-function achievementView(achievement: number | undefined): string {
-  return `${achievementToPercent(achievement ?? 0)}%`;
+function AchievementView({ achievement }: { achievement: number | undefined }) {
+  const rank =
+    achievement !== undefined ? achievementToRank(achievement) : undefined;
+  return (
+    <Stack direction="row" alignItems="center" spacing={1}>
+      <Typography>{achievementToPercent(achievement ?? 0)}%</Typography>
+      <AchievementRankView rank={rank} />
+    </Stack>
+  );
 }
 
 function skillPointView(skillPoint: number | undefined): string {

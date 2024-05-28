@@ -9,9 +9,13 @@ import {
 } from "../../../db/load_ohp_history/load_result";
 import neverError from "../../../utils/never_error";
 import prismaClient from "../../../db/prisma_client";
-import { achievementToPercent } from "../../../domain/track/achievement";
+import {
+  achievementToPercent,
+  achievementToRank,
+} from "../../../domain/track/achievement";
 import PageTitle from "../../../components/page_title";
 import { DifficultyPaper } from "../../../components/track_info/type_papers";
+import { AchievementRankView } from "../../../components/track_info/achievement_rank_view";
 
 export const dynamic = "force-dynamic";
 
@@ -119,13 +123,11 @@ function AchievementViewChanged({
   oldAchievement: number | undefined;
   newAchievement: number;
 }) {
-  const oldView =
-    oldAchievement !== undefined ? achievementToPercent(oldAchievement) : "--";
-  const newView = achievementToPercent(newAchievement);
-
   return (
-    <Stack direction="row" spacing={1}>
-      <Typography>{`${oldView}% -> ${newView}%`}</Typography>
+    <Stack direction="row" alignItems="center" spacing={1}>
+      <AchievementValueView achievement={oldAchievement} />
+      <Typography>{"->"}</Typography>
+      <AchievementValueView achievement={newAchievement} />
       <Typography color="green"> Updated!</Typography>
     </Stack>
   );
@@ -138,12 +140,33 @@ function AchievementViewNoChanged({
   submitAchievement: number;
   newAchievement: number;
 }) {
-  const submitView = achievementToPercent(submitAchievement);
-  const newView = achievementToPercent(newAchievement);
-
-  return <Typography>{`${submitView}% (前回: ${newView}%)`}</Typography>;
+  return (
+    <Stack direction="row" alignItems="center" spacing={1}>
+      <AchievementValueView achievement={submitAchievement} />
+      <Typography>{"(前回:"}</Typography>
+      <AchievementValueView achievement={newAchievement} />
+      <Typography>{")"}</Typography>
+    </Stack>
+  );
 }
 
 function FailedCotnent({ result }: { result: LoadOhpHistoryError }) {
   return <Typography color="red">{result.message}</Typography>;
+}
+
+function AchievementValueView({
+  achievement,
+}: {
+  achievement: number | undefined;
+}) {
+  if (achievement === undefined) {
+    return "--%";
+  }
+
+  return (
+    <>
+      <Typography>{achievementToPercent(achievement ?? 0)}%</Typography>
+      <AchievementRankView rank={achievementToRank(achievement)} />
+    </>
+  );
 }

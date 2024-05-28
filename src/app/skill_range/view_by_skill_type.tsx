@@ -1,21 +1,27 @@
 import {
   Paper,
+  Stack,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
+  Typography,
 } from "@mui/material";
 import { SkillRangeScore } from "../../db/skill_range_score/skill_range_score";
 import { SkillType } from "../../domain/track/skill_type";
 import Link from "next/link";
-import { achievementToPercent } from "../../domain/track/achievement";
+import {
+  achievementToPercent,
+  achievementToRank,
+} from "../../domain/track/achievement";
 import { skillPointToDisplay } from "../../domain/track/user_track";
 import { lvToString } from "../../domain/track/track";
 import {
   DifficultyPaper,
   SkillTypePaper,
 } from "../../components/track_info/type_papers";
+import { AchievementRankView } from "../../components/track_info/achievement_rank_view";
 
 export default function ViewBySkillType({
   skillType,
@@ -63,8 +69,19 @@ function Row({ rank, score }: { rank: number; score: SkillRangeScore }) {
         <DifficultyPaper difficulty={difficulty} />
       </TableCell>
       <TableCell>{skillPointToDisplay(skillPoint)}</TableCell>
-      <TableCell>{achievementToPercent(achievement)}</TableCell>
+      <TableCell>
+        <AchievementView achievement={achievement} />
+      </TableCell>
       <TableCell>{lvToString(lv)}</TableCell>
     </TableRow>
+  );
+}
+
+function AchievementView({ achievement }: { achievement: number }) {
+  return (
+    <Stack direction="row" alignItems="center" spacing={1}>
+      <Typography>{achievementToPercent(achievement ?? 0)}%</Typography>
+      <AchievementRankView rank={achievementToRank(achievement)} />
+    </Stack>
   );
 }

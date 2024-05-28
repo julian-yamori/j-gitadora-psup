@@ -1,6 +1,7 @@
 import {
   Checkbox,
   Paper,
+  Stack,
   Table,
   TableBody,
   TableCell,
@@ -22,6 +23,8 @@ import {
 } from "../../../domain/track/user_track";
 import AchievementInput from "./achievement_input";
 import { DifficultyPaper } from "../../../components/track_info/type_papers";
+import { achievementToRank } from "../../../domain/track/achievement";
+import { AchievementRankView } from "../../../components/track_info/achievement_rank_view";
 
 /** 曲詳細画面の、譜面毎のテーブル */
 export default function ScoresTable({
@@ -98,6 +101,8 @@ function ScoreRowExist({
   // UserScore が未定義なら初期値で代替
   const nonNullUserScore = userScore ?? initialUserScore(score);
 
+  const rank = achievementToRank(nonNullUserScore.achievement);
+
   return (
     <TableRow>
       <TableCell>
@@ -105,15 +110,18 @@ function ScoreRowExist({
       </TableCell>
       <TableCell align="right">{lvToString(score.lv)}</TableCell>
       <TableCell>
-        <AchievementInput
-          difficulty={score.difficulty}
-          achievement={nonNullUserScore.achievement}
-          failed={nonNullUserScore.failed}
-          onValueChange={(v) =>
-            onValueChange({ ...nonNullUserScore, achievement: v })
-          }
-          onValidChange={(v) => onAchievementValidChange(score.difficulty, v)}
-        />
+        <Stack direction="row" spacing={1}>
+          <AchievementInput
+            difficulty={score.difficulty}
+            achievement={nonNullUserScore.achievement}
+            failed={nonNullUserScore.failed}
+            onValueChange={(v) =>
+              onValueChange({ ...nonNullUserScore, achievement: v })
+            }
+            onValidChange={(v) => onAchievementValidChange(score.difficulty, v)}
+          />
+          <AchievementRankView rank={rank} />
+        </Stack>
       </TableCell>
       <TableCell align="center">
         <FailedInput
