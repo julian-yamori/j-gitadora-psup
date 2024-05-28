@@ -18,12 +18,12 @@ import {
   SaveSuccessSnackbar,
   useSaveSuccessSnackbarState,
 } from "../../../components/snackbar/save_success_snackbar";
-import { Difficulty } from "../../../domain/track/difficulty";
+import { ALL_DIFFICULTIES, Difficulty } from "../../../domain/track/difficulty";
 import { INITIAL, OpenType } from "../../../domain/track/open_type";
 import { Track } from "../../../domain/track/track";
 import { UserTrack, UserScore } from "../../../domain/track/user_track";
-import ScoresTable from "./scores_table";
 import { useShowLoadingScreen } from "../../../components/loading_screen";
+import { ScoreView } from "./score_view";
 
 export default function TrackForm({
   track,
@@ -109,13 +109,6 @@ export default function TrackForm({
             </Stack>
           </FormGroup>
 
-          <ScoresTable
-            track={track}
-            userTrack={userTrack}
-            onScoreChange={handleScoreChanged}
-            onAchievementValidChange={handleAchievementValidChanged}
-          />
-
           <TextField
             name="memo"
             label="メモ"
@@ -126,6 +119,19 @@ export default function TrackForm({
             multiline
             fullWidth
           />
+
+          {ALL_DIFFICULTIES.map((d) => {
+            const score = track.scores[d];
+            return score !== undefined ? (
+              <ScoreView
+                key={d}
+                score={score}
+                userScore={userTrack.scores[d]}
+                onValueChange={handleScoreChanged}
+                onAchievementValidChange={handleAchievementValidChanged}
+              />
+            ) : null;
+          })}
 
           <Button variant="contained" onClick={handleSubmit} disabled={!valid}>
             保存

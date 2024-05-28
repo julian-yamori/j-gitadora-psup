@@ -5,6 +5,7 @@ import React from "react";
 export default function AchievementInputView({
   value,
   onChange,
+  label,
   name,
   disabled,
   error,
@@ -12,6 +13,7 @@ export default function AchievementInputView({
 }: {
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => unknown;
+  label?: string;
   name?: string;
   disabled?: boolean;
   error?: boolean;
@@ -21,6 +23,7 @@ export default function AchievementInputView({
     <TextField
       value={value}
       onChange={onChange}
+      label={label}
       name={name}
       onBlur={onBlur}
       disabled={disabled}

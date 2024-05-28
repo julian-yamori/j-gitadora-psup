@@ -44,6 +44,7 @@ export default function AchievementInput({
 
   return (
     <AchievementInputView
+      label="達成率"
       name={formKeyByScore(difficulty, "achievement")}
       value={strValue}
       onChange={handleOnChange}
