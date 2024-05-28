@@ -20,14 +20,16 @@ import {
   scoreOrderSetItem,
 } from "../../domain/score_query/score_order";
 import { Difficulty } from "../../domain/track/difficulty";
-import { skillTypeToStr } from "../../domain/track/skill_type";
 import { lvToString } from "../../domain/track/track";
 import {
   achievementToPercent,
   skillPointToDisplay,
 } from "../../domain/track/user_track";
 import neverError from "../../utils/never_error";
-import { DifficultyPaper } from "../../components/track_info/type_papers";
+import {
+  DifficultyPaper,
+  SkillTypePaper,
+} from "../../components/track_info/type_papers";
 
 export default function ScoresTable({
   scoresDto,
@@ -123,7 +125,9 @@ export default function ScoresTable({
                 <TableCell>
                   <Link href={`/tracks/${score.trackId}`}>{score.title}</Link>
                 </TableCell>
-                <TableCell>{skillTypeToStr(score.skillType)}</TableCell>
+                <TableCell>
+                  <SkillTypePaper skillType={score.skillType} />
+                </TableCell>
                 <TableCell>{score.long ? "LONG" : undefined}</TableCell>
                 <TableCell>
                   <DifficultyPaper difficulty={score.difficulty} />

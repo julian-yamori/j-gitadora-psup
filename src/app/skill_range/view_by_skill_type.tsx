@@ -5,17 +5,19 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Typography,
 } from "@mui/material";
 import { SkillRangeScore } from "../../db/skill_range_score/skill_range_score";
-import { SkillType, skillTypeToStr } from "../../domain/track/skill_type";
+import { SkillType } from "../../domain/track/skill_type";
 import Link from "next/link";
 import {
   achievementToPercent,
   skillPointToDisplay,
 } from "../../domain/track/user_track";
 import { lvToString } from "../../domain/track/track";
-import { DifficultyPaper } from "../../components/track_info/type_papers";
+import {
+  DifficultyPaper,
+  SkillTypePaper,
+} from "../../components/track_info/type_papers";
 
 export default function ViewBySkillType({
   skillType,
@@ -26,7 +28,7 @@ export default function ViewBySkillType({
 }) {
   return (
     <Paper elevation={2} sx={{ padding: 1 }}>
-      <Typography variant="h5">{skillTypeToStr(skillType)}</Typography>
+      <SkillTypePaper skillType={skillType} />
       <TableContainer>
         <TableHead>
           <TableCell>順位</TableCell>
