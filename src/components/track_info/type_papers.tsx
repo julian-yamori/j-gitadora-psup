@@ -28,6 +28,7 @@ export function SkillTypePaper({ skillType }: { skillType: SkillType }) {
   }
 }
 
+/** 難易度表記の Paper */
 export function DifficultyPaper({ difficulty }: { difficulty: Difficulty }) {
   return (
     <TagPaper
