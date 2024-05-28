@@ -28,6 +28,10 @@ export type ScoreOrderItem = z.infer<typeof scoreOrderItemSchema>;
 export const scoreOrderSchema = z.array(scoreOrderItemSchema).readonly();
 export type ScoreOrder = z.infer<typeof scoreOrderSchema>;
 
+export function defaultScoreOrder(): ScoreOrder {
+  return [{ target: "lv", direction: "desc" }];
+}
+
 // 最も優先度が高いソートルールを取得
 export function primaryScoreOrder(
   order: ScoreOrder,

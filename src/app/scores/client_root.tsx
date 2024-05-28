@@ -7,7 +7,10 @@ import {
   scoreListDtoSchema,
 } from "../../db/score_list/score_list_dto";
 import { ScoreFilter } from "../../domain/score_query/score_filter";
-import { ScoreOrder } from "../../domain/score_query/score_order";
+import {
+  ScoreOrder,
+  defaultScoreOrder,
+} from "../../domain/score_query/score_order";
 import FilterForm from "./_filter_form/filter_form";
 import ScoresTable from "./scores_table";
 import assertResponseOk from "../_util/assert_response_ok";
@@ -19,7 +22,7 @@ const PAGE_SIZE = 50;
 export default function ClientRoot() {
   const [scoresDto, setScoresDto] = useState<ScoreListDto>();
   const [filter, setFilter] = useState<ScoreFilter>();
-  const [order, setOrder] = useState<ScoreOrder>([]);
+  const [order, setOrder] = useState<ScoreOrder>(defaultScoreOrder);
   const [pageIndex, setPageIndex] = useState(0);
 
   const tableTopRef = useRef<HTMLDivElement>(null);
