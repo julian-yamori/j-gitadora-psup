@@ -98,10 +98,13 @@ function FailedInput({
   failed: boolean;
   onChange: (value: boolean) => unknown;
 }) {
+  if (achievement !== 0) {
+    return null;
+  }
+
   return (
     <FormControlLabel
       label="Failed"
-      disabled={achievement !== 0}
       control={
         <Checkbox
           name={formKeyByScore(difficulty, "failed")}
