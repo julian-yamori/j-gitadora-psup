@@ -28,8 +28,8 @@ export default function AchievementInputView({
       onBlur={onBlur}
       disabled={disabled}
       size="small"
-      style={{ width: "6.5rem" }}
       inputProps={{
+        size: 5,
         inputMode: "decimal",
       }}
       InputProps={{
