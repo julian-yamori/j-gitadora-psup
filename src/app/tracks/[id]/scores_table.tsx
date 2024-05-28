@@ -11,11 +11,7 @@ import {
 } from "@mui/material";
 import React from "react";
 import formKeyByScore from "../../api/tracks/form_key";
-import {
-  ALL_DIFFICULTIES,
-  Difficulty,
-  difficultyToStr,
-} from "../../../domain/track/difficulty";
+import { ALL_DIFFICULTIES, Difficulty } from "../../../domain/track/difficulty";
 import { Track, Score, lvToString } from "../../../domain/track/track";
 import {
   UserTrack,
@@ -25,6 +21,7 @@ import {
   initialUserScore,
 } from "../../../domain/track/user_track";
 import AchievementInput from "./achievement_input";
+import { DifficultyPaper } from "../../../components/track_info/type_papers";
 
 /** 曲詳細画面の、譜面毎のテーブル */
 export default function ScoresTable({
@@ -75,7 +72,9 @@ export default function ScoresTable({
 function ScoreRowEmpty({ difficulty }: { difficulty: Difficulty }) {
   return (
     <TableRow>
-      <TableCell>{difficultyToStr(difficulty)}</TableCell>
+      <TableCell>
+        <DifficultyPaper difficulty={difficulty} />
+      </TableCell>
       <TableCell align="right">---</TableCell>
       <TableCell>---</TableCell>
       <TableCell align="center" />
@@ -101,7 +100,9 @@ function ScoreRowExist({
 
   return (
     <TableRow>
-      <TableCell>{difficultyToStr(score.difficulty)}</TableCell>
+      <TableCell>
+        <DifficultyPaper difficulty={score.difficulty} />
+      </TableCell>
       <TableCell align="right">{lvToString(score.lv)}</TableCell>
       <TableCell>
         <AchievementInput

@@ -6,6 +6,14 @@ import {
   skillTypeToStr,
 } from "../../domain/track/skill_type";
 import neverError from "../../utils/never_error";
+import {
+  ADVANCED,
+  Difficulty,
+  EXTREME,
+  MASTER,
+  BASIC,
+  difficultyToStr,
+} from "../../domain/track/difficulty";
 
 /** SkillPoint の枠区分表記の Paper */
 export function SkillTypePaper({ skillType }: { skillType: SkillType }) {
@@ -17,6 +25,31 @@ export function SkillTypePaper({ skillType }: { skillType: SkillType }) {
       return <TagPaper text={text} bgcolor="#00c000" textColor="#ff0" />;
     default:
       throw neverError(skillType);
+  }
+}
+
+export function DifficultyPaper({ difficulty }: { difficulty: Difficulty }) {
+  return (
+    <TagPaper
+      text={difficultyToStr(difficulty)}
+      bgcolor={difficultyColor(difficulty)}
+      textColor="#000"
+    />
+  );
+}
+
+function difficultyColor(difficulty: Difficulty): string {
+  switch (difficulty) {
+    case BASIC:
+      return "#5297ff";
+    case ADVANCED:
+      return "#beaf02;";
+    case EXTREME:
+      return "#e10035";
+    case MASTER:
+      return "#c800cf";
+    default:
+      throw neverError(difficulty);
   }
 }
 
@@ -40,7 +73,16 @@ function TagPaper({
   textColor: string;
 }) {
   return (
-    <Paper sx={{ color: textColor, bgcolor, padding: 0.8, fontWeight: "bold" }}>
+    <Paper
+      sx={{
+        color: textColor,
+        bgcolor,
+        padding: 0.8,
+        fontWeight: "bold",
+        textAlign: "center",
+        width: "fit-content",
+      }}
+    >
       {text}
     </Paper>
   );

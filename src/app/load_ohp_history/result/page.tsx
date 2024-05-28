@@ -1,4 +1,4 @@
-import { Box, Paper, Stack, Typography } from "@mui/material";
+import { Paper, Stack, Typography } from "@mui/material";
 import Link from "next/link";
 import createMetadata from "../../_util/create_metadata";
 import {
@@ -9,9 +9,9 @@ import {
 } from "../../../db/load_ohp_history/load_result";
 import neverError from "../../../utils/never_error";
 import prismaClient from "../../../db/prisma_client";
-import { difficultyToStr } from "../../../domain/track/difficulty";
 import { achievementToPercent } from "../../../domain/track/user_track";
 import PageTitle from "../../../components/page_title";
+import { DifficultyPaper } from "../../../components/track_info/type_papers";
 
 export const dynamic = "force-dynamic";
 
@@ -76,7 +76,7 @@ function SuccessContent({ result }: { result: LoadOhpHistorySuccess }) {
   return (
     <>
       <Link href={`/tracks/${trackId}`}>{title}</Link>
-      <Box>{difficultyToStr(difficulty)}</Box>
+      <DifficultyPaper difficulty={difficulty} />
       <AchievementView
         submitAchievement={submitAchievement}
         oldAchievement={oldAchievement}

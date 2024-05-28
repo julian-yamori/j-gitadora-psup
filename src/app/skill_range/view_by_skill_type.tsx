@@ -10,12 +10,12 @@ import {
 import { SkillRangeScore } from "../../db/skill_range_score/skill_range_score";
 import { SkillType, skillTypeToStr } from "../../domain/track/skill_type";
 import Link from "next/link";
-import { difficultyToStr } from "../../domain/track/difficulty";
 import {
   achievementToPercent,
   skillPointToDisplay,
 } from "../../domain/track/user_track";
 import { lvToString } from "../../domain/track/track";
+import { DifficultyPaper } from "../../components/track_info/type_papers";
 
 export default function ViewBySkillType({
   skillType,
@@ -59,7 +59,9 @@ function Row({ rank, score }: { rank: number; score: SkillRangeScore }) {
       <TableCell>
         <Link href={`/tracks/${trackId}`}>{title}</Link>
       </TableCell>
-      <TableCell>{difficultyToStr(difficulty)}</TableCell>
+      <TableCell>
+        <DifficultyPaper difficulty={difficulty} />
+      </TableCell>
       <TableCell>{skillPointToDisplay(skillPoint)}</TableCell>
       <TableCell>{achievementToPercent(achievement)}</TableCell>
       <TableCell>{lvToString(lv)}</TableCell>

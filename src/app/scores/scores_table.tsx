@@ -19,7 +19,7 @@ import {
   primaryScoreOrder,
   scoreOrderSetItem,
 } from "../../domain/score_query/score_order";
-import { Difficulty, difficultyToStr } from "../../domain/track/difficulty";
+import { Difficulty } from "../../domain/track/difficulty";
 import { skillTypeToStr } from "../../domain/track/skill_type";
 import { lvToString } from "../../domain/track/track";
 import {
@@ -27,6 +27,7 @@ import {
   skillPointToDisplay,
 } from "../../domain/track/user_track";
 import neverError from "../../utils/never_error";
+import { DifficultyPaper } from "../../components/track_info/type_papers";
 
 export default function ScoresTable({
   scoresDto,
@@ -124,7 +125,9 @@ export default function ScoresTable({
                 </TableCell>
                 <TableCell>{skillTypeToStr(score.skillType)}</TableCell>
                 <TableCell>{score.long ? "LONG" : undefined}</TableCell>
-                <TableCell>{difficultyToStr(score.difficulty)}</TableCell>
+                <TableCell>
+                  <DifficultyPaper difficulty={score.difficulty} />
+                </TableCell>
                 <TableCell>{lvToString(score.lv)}</TableCell>
                 <TableCell>{likeView(score.like)}</TableCell>
                 <TableCell>{achievementView(score.achievement)}</TableCell>
