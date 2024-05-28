@@ -2,13 +2,13 @@
 
 import { z } from "zod";
 import { produce } from "immer";
+import { achievementSchema } from "../../../domain/track/achievement";
 import { trackTitleSchema } from "../../../domain/track/track";
 import {
   difficultySchema,
   difficultyToStr,
 } from "../../../domain/track/difficulty";
 import {
-  achievementSchema,
   initialUserScore,
   initialUserTrack,
   trackSkillPoint,

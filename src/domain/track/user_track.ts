@@ -6,9 +6,6 @@ import { Score, Track } from "./track";
 // 曲の好み度
 export const likeSchema = z.number().int().min(1).max(5);
 
-// 達成率 (0〜1のfloat)
-export const achievementSchema = z.number().nonnegative().max(1);
-
 // 獲得スキルポイント
 export const skillPointSchema = z.number().nonnegative();
 
@@ -155,11 +152,6 @@ export function validateTrackLike(like: number): boolean {
 export function trackSkillPoint(lv: number, achievement: number): number {
   // lv * 達成率 * 20 (0.01単位で端数切り捨て)
   return Math.floor(lv * achievement * 2000) / 100;
-}
-
-/** 達成率の数値をパーセント表記の文字列に変換 */
-export function achievementToPercent(achievement: number): string {
-  return (achievement * 100).toFixed(2);
 }
 
 /** スキルポイントを表示用の文字列に変換 */

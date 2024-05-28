@@ -9,10 +9,8 @@ import {
 import { SkillRangeScore } from "../../db/skill_range_score/skill_range_score";
 import { SkillType } from "../../domain/track/skill_type";
 import Link from "next/link";
-import {
-  achievementToPercent,
-  skillPointToDisplay,
-} from "../../domain/track/user_track";
+import { achievementToPercent } from "../../domain/track/achievement";
+import { skillPointToDisplay } from "../../domain/track/user_track";
 import { lvToString } from "../../domain/track/track";
 import {
   DifficultyPaper,

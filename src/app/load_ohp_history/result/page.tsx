@@ -9,7 +9,7 @@ import {
 } from "../../../db/load_ohp_history/load_result";
 import neverError from "../../../utils/never_error";
 import prismaClient from "../../../db/prisma_client";
-import { achievementToPercent } from "../../../domain/track/user_track";
+import { achievementToPercent } from "../../../domain/track/achievement";
 import PageTitle from "../../../components/page_title";
 import { DifficultyPaper } from "../../../components/track_info/type_papers";
 

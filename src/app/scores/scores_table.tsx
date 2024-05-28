@@ -19,12 +19,10 @@ import {
   primaryScoreOrder,
   scoreOrderSetItem,
 } from "../../domain/score_query/score_order";
+import { achievementToPercent } from "../../domain/track/achievement";
 import { Difficulty } from "../../domain/track/difficulty";
 import { lvToString } from "../../domain/track/track";
-import {
-  achievementToPercent,
-  skillPointToDisplay,
-} from "../../domain/track/user_track";
+import { skillPointToDisplay } from "../../domain/track/user_track";
 import neverError from "../../utils/never_error";
 import {
   DifficultyPaper,

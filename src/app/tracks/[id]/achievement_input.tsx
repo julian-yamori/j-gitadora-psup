@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import formKeyByScore from "../../api/tracks/form_key";
 import AchievementInputView from "../../../components/controls/achievement_input_view";
 import { Difficulty } from "../../../domain/track/difficulty";
-import { achievementToPercent } from "../../../domain/track/user_track";
+import { achievementToPercent } from "../../../domain/track/achievement";
 
 /** 達成率のテキストボックス */
 export default function AchievementInput({
