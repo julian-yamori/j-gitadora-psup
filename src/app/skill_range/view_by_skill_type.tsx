@@ -8,7 +8,10 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { SkillRangeScore } from "../../db/skill_range_score/skill_range_score";
+import {
+  SKILL_RANGE,
+  SkillRangeScore,
+} from "../../db/skill_range_score/skill_range_score";
 import { SkillType } from "../../domain/track/skill_type";
 import Link from "next/link";
 import {
@@ -59,8 +62,11 @@ export default function ViewBySkillType({
 function Row({ rank, score }: { rank: number; score: SkillRangeScore }) {
   const { trackId, title, difficulty, skillPoint, achievement, lv } = score;
 
+  // スキル範囲外の曲はグレーアウト
+  const backgroundColor = rank <= SKILL_RANGE ? undefined : "#c8c8c8";
+
   return (
-    <TableRow>
+    <TableRow sx={{ backgroundColor }}>
       <TableCell>{rank}</TableCell>
       <TableCell>
         <Link href={`/tracks/${trackId}`}>{title}</Link>
