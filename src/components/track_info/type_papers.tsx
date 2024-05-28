@@ -17,12 +17,21 @@ import {
 
 /** SkillPoint の枠区分表記の Paper */
 export function SkillTypePaper({ skillType }: { skillType: SkillType }) {
-  const text = skillTypeToStr(skillType);
+  return (
+    <TagPaper
+      text={skillTypeToStr(skillType)}
+      bgcolor={skillTypeColor(skillType)}
+      textColor="#ff0"
+    />
+  );
+}
+
+function skillTypeColor(skillType: SkillType): string {
   switch (skillType) {
     case HOT:
-      return <TagPaper text={text} bgcolor="#e00000" textColor="#ffff00" />;
+      return "#e00000";
     case OTHER:
-      return <TagPaper text={text} bgcolor="#00c000" textColor="#ff0" />;
+      return "#00c000";
     default:
       throw neverError(skillType);
   }
