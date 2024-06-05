@@ -81,6 +81,18 @@ model UserScore {
   @@unique([trackId, difficulty])
 }
 
+model UserData {
+  // ID
+  // 1 レコードしか保存しない予定なので不要だけど、とりあえず
+  id String @id
+
+  playingMemo String
+
+  // 適正 Lv
+  matchLvMin Float?
+  matchLvMax Float?
+}
+
 model LoadOhpHistoryResult {
   index Int @id
 
