@@ -1,15 +1,9 @@
-import { Box, Card, Container, Typography } from "@mui/material";
+import DashboardScoreList from "./_dashboard/dashboard_scora_list";
 
 export default function Home() {
   return (
     <main>
-      <Container>
-        <Box>
-          <Card>
-            <Typography variant="h2">Hello World ~</Typography>
-          </Card>
-        </Box>
-      </Container>
+      <DashboardScoreList />
     </main>
   );
 }
