@@ -11,7 +11,6 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import NavigationMenu from "./navigation_menu";
-import Link from "next/link";
 
 export default function AppBar() {
   const [drawerOpened, setDrawerOpened] = useState(false);
@@ -37,9 +36,7 @@ export default function AppBar() {
           <MenuIcon />
         </IconButton>
 
-        <Link href="/" style={{ color: "inherit", textDecoration: "none" }}>
-          <Typography variant="h6">j GITADORA psup</Typography>
-        </Link>
+        <Typography variant="h6">j GITADORA psup</Typography>
 
         <Drawer open={drawerOpened} onClose={() => setDrawerOpened(false)}>
           <NavigationMenu />

@@ -3,18 +3,18 @@ import {
   achievementToPercent,
   achievementToRank,
 } from "../../domain/track/achievement";
-import { AchievementRankView } from "../../components/track_info/achievement_rank_view";
+import { AchievementRankView } from "../track_info/achievement_rank_view";
 import Link from "next/link";
 import {
   DifficultyPaper,
   LongPaper,
   SkillTypePaper,
-} from "../../components/track_info/type_papers";
+} from "../track_info/type_papers";
 import { lvToString } from "../../domain/track/track";
 import { ScoreListDtoRow } from "../../db/score_list/score_list_dto";
 
-/** ダッシュボード用の曲リスト共通コンポーネント */
-export default function DashboardScoresView({
+/** ウィッシュリスト系画面用の曲リスト共通コンポーネント */
+export default function WishListScoresView({
   scores,
 }: {
   /**

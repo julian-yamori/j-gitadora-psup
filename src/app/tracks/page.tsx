@@ -22,7 +22,7 @@ export default async function Home({
   const queryStr = queryToString(searchParams.query);
   const tracks = await searchTracks(queryStr);
 
-  // 1曲しかなければ、その曲のページへリダイレクト
+  // 1曲しかなければ、その曲のページへリダイレクト>
   if (tracks.length === 1) {
     redirect(`/tracks/${tracks[0].id}`);
   }

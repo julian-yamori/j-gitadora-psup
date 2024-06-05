@@ -11,6 +11,7 @@ export default function NavigationMenu() {
       <Divider />
       <MenuList>
         <Item text="譜面を詳細検索" href="/scores" />
+        <Item text="未達成リスト" href="/unskilled" />
         <Item text="スキル対象曲" href="/skill_range" />
         <Item text="公式 HP の履歴読み込み" href="/load_ohp_history" />
       </MenuList>
