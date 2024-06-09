@@ -6,6 +6,7 @@ import WishListScoresView from "../../components/wish_list/wish_list_scores_view
 import { HOT } from "../../domain/track/skill_type";
 import createMetadata from "../_util/create_metadata";
 import PageTitle from "../../components/page_title";
+import { loadMatchLevels } from "../../db/user_data";
 
 export const dynamic = "force-dynamic";
 
@@ -14,7 +15,13 @@ export const metadata = createMetadata(PAGE_TITLE);
 
 /** ダッシュボードの、達成率が一定未満の曲リスト */
 export default async function Page() {
-  const scores = await loadScores();
+  const { min: matchMin, max: matchMax } = await loadMatchLevels(prismaClient);
+
+  if (matchMin === undefined || matchMax === undefined) {
+    return <main>適正 Lv が設定されていません</main>;
+  }
+
+  const scores = await loadScores(matchMin, matchMax);
 
   return (
     <main>
@@ -25,7 +32,10 @@ export default async function Page() {
   );
 }
 
-async function loadScores(): Promise<ReadonlyArray<ScoreListDtoRow>> {
+async function loadScores(
+  matchMin: number,
+  matchMax: number,
+): Promise<ReadonlyArray<ScoreListDtoRow>> {
   return (
     await queryScoreList(prismaClient, {
       filter: {
@@ -40,7 +50,7 @@ async function loadScores(): Promise<ReadonlyArray<ScoreListDtoRow>> {
           {
             nodeType: "Number",
             target: "lv",
-            range: { rangeType: "MinMax", min: 5.3, max: 6.2 },
+            range: { rangeType: "MinMax", min: matchMin, max: matchMax },
           },
           {
             nodeType: "Group",
